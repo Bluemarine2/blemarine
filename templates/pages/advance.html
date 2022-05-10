@@ -1,0 +1,117 @@
+{% extends 'base/base.html' %}
+{% block content %}
+{% load static %}
+{% load multiply %}
+{% load humanize %}
+	<div>
+	<!-- content of the page-->
+	<!--Script menu -->
+	<script>
+	setTimeout(function(){menu("#home")},500);
+	</script>
+	<script type="text/javascript">
+	function changeModels(){
+		var maker = $( "#make option:selected" ).val();
+		$.ajax({
+    url:'/model',
+    type:'GET',
+    data: 'maker=' + maker,
+    dataType: 'json',
+    success: function( json ) {
+			$('#model').empty();
+			$('#model').append($('<option>').text("Select model").attr('value', -1));
+        $.each(json, function(id, value) {
+            $('#model').append($('<option>').text(value).attr('value', id));
+        });
+    }
+		});
+	}
+	function like(id){
+		url = "/like?id=" + id
+		var xmlHttp = new XMLHttpRequest();
+		xmlHttp.onreadystatechange = function(){
+			if (this.readyState == 4 && this.status == 201){
+				alert("Liked!");
+			}
+		};
+    xmlHttp.open("GET", url, true);
+    xmlHttp.send(null);
+	}
+	</script>
+
+	<script>
+	  function submitBodySearch(value) {
+	     document.getElementById('body').value = value;
+	     document.getElementById("body_forms").submit();
+	   }
+		 function submitMakeSearch(value) {
+ 	     document.getElementById('nmake').value = value;
+ 	     document.getElementById("maker_forms").submit();
+ 	   }
+	</script>
+	<section class="content advace_content">
+			<form action="" class="formulario">
+				<div class="col col-xs-12">
+					<h1>Personaliza los detalles específicos de tu búsqueda.</h1>
+					<h3 class="sub">¿Buscas detalles específicos en un coche? Complete todos los detalles que está buscando y le ahorraremos tiempo mostrándole una búsqueda personalizada con lo que usted especifica.</h3>
+					<img class="banner-img" src="/static/images/banner.png" alt="">
+				</div>
+    </form>
+    </section>
+    
+<!-- --------------------------------------------search by------------------------------------ -->
+	<section class="search_by">
+		<h2 class="text-center title">Busqueda Avanzada</h2>
+		<h3 class="text-center easily">Encuentra facilmente tu vehiculo por estilo o marca</h3>
+		<ul class="nav nav-tabs nav-center">
+		  <li id="op1" role="presentation" class="active"><a onclick="tags(1)" >Estilo</a></li>
+		  <li id="op2" role="presentation"><a onclick="tags(2)" >Marca</a></li>
+		</ul>
+		<div class="body">
+			<div class="tag1 view">
+				<form class="" action="/search" id="body_forms" method="post">
+				<div class="images row">
+				 {% csrf_token %}
+				 	<input type="hidden" name="type" value="simple">
+				  	<input type='hidden' id= 'body' name='body' value='' />
+					{% for obj in  body_styles %}
+					<div class="col col-lg-2 col-sm-4 ">
+						<a onclick="submitBodySearch({{obj.id}});"><label class="checkbox" ><img src="{{obj.image.url}}" alt="">{{obj.description}}</label></a>
+					</div>
+					{% if forloop.counter == 6 %}
+					</div>
+					<div id="morecars" class="collapse images">
+					{% endif %}
+					{% endfor %}
+				</div>
+				<span class="btn btn-link show-all" data-toggle="collapse" onclick="show_all()" data-target="#morecars"><hr><p id="text-show-all">Desplegar <i class="fa fa-chevron-down" aria-hidden="true"></i></p><hr></span>
+			</form>
+			</div>
+			 <div class="tag2 no-view">
+				<div class="cont-list row">
+					<form class="" action="/search" id="maker_forms" method="post">
+						{% csrf_token %}
+	 				 	<input type="hidden" name="type" value="simple">
+	 				  <input type='hidden' id='nmake' name='make' value='' />
+								{% for obj in  makers%}
+									{% if forloop.counter0 == 0 %}
+										<div class="list col-xs-6 col-sm-3">
+										<ul>
+									{% elif forloop.counter0|divisibleby:3 and forloop.counter0 != 0 %}
+										</ul>
+										</div>
+										<div class="list col-xs-6 col-sm-3">
+										<ul>
+									{% endif %}
+									<li><a onclick="submitMakeSearch({{obj.id}});">{{ obj.description }}</a></li>
+								{% endfor %}
+							</ul>
+							</div>
+						</form>
+				</div>
+			</div>
+
+		</div>
+	</section>
+
+{% endblock%}

@@ -1,0 +1,76 @@
+{% extends 'base/base34.html' %}
+{% block content %}
+{% load static %}
+{% load multiply %}
+{% load humanize %}
+
+
+
+<div class="page-header-area-2 gray">
+         <div class="container">
+            <div class="row">
+               <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                  <div class="small-breadcrumb">
+                     <div class=" breadcrumb-link">
+                        <ul>
+                           <li><a href="/">Inicio</a></li>
+                           <li><a class="active" href="#">Login</a></li>
+                        </ul>
+                     </div>
+                     <div class="header-page">
+                        <h1>Iniciar Sesión En Su Cuenta</h1>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      <!-- =-=-=-=-=-=-= Breadcrumb End =-=-=-=-=-=-= -->
+      <!-- =-=-=-=-=-=-= Main Content Area =-=-=-=-=-=-= -->
+      <div class="main-content-area clearfix">
+         <!-- =-=-=-=-=-=-= Latest Ads =-=-=-=-=-=-= -->
+         <section class="section-padding no-top gray">
+            <!-- Main Container -->
+            <div class="container">
+               <!-- Row -->
+               <div class="row">
+                  <!-- Middle Content Area -->
+                  <div class="col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
+                     <!--  Form -->
+                     <div class="form-grid">
+                       
+                       <form action="/login/" method="post" >
+						<h4 class="text-center">Usuario Registrado</h4>
+						{% csrf_token %}
+						<input type="hidden" name="type" value="log">
+						<p>¿Tienes una cuenta? Ingresar.</p>
+                          <label>Usuario</label>
+						<input  type="text" name="form-username" placeholder=" ingrese su Usuario" class="form-control" id="form-username">
+                         <div class="form-group">
+                              <label>Contraseña</label>
+                             <input  type="password" name="form-password" placeholder="Contraseña" class="form-control" id="form-password">
+                           </div>
+					
+						
+						<input class='btn btn-theme btn-lg btn-block' type="submit" name="Sign in" value="Ingresar">
+                         <h2 class="no-span"><b>(OR)</b></h2>
+                         
+                         <p>Desea Registrar en don carros</p>
+						 <a href="/create_listing" class="btn btn-lg btn-block btn-social btn-google">Vender</a>
+					</form>
+                       
+                       
+                      
+                     </div>
+                     <!-- Form -->
+                  </div>
+                  <!-- Middle Content Area  End -->
+               </div>
+               <!-- Row End -->
+            </div>
+            <!-- Main Container End -->
+         </section>
+
+
+
+{% endblock%}

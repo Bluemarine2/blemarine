@@ -1,0 +1,528 @@
+{% extends 'base/base34.html' %}
+{% block content %}
+{% load multiply %}
+		<div class="pages">
+	<!--Script menu -->
+	<script>
+	setTimeout(function(){menu("none")},500);
+	</script>
+	<script type="text/javascript">
+	function changeModels(){
+		var maker = $( "#make option:selected" ).val();
+		$('.opts').hide()
+		$(".no").text(maker?"Select Model":"Select Make")
+		$('._' + maker).show()
+		$("#model").val('');
+	}
+
+	function changeYT(){
+		var maker = $( "#make option:selected" ).val();
+		var model = $( "#model option:selected" ).val();
+		$('.minfo').hide()
+		if(!(model === -1 || maker === -1)){
+			$('.' + model).show()
+		}
+	}
+	</script>
+	<!-- content of the page-->
+	<!-- --------------------------------------------List search------------------------------------ -->
+      
+      
+      
+      
+      
+      <!-- =-=-=-=-=-=-= Breadcrumb =-=-=-=-=-=-= -->
+      <div class="page-header-area-2 gray">
+         <div class="container">
+            <div class="row">
+               <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                  <div class="small-breadcrumb">
+                     <div class=" breadcrumb-link">
+                        <ul>
+                           <li><a href="/">Inicio</a></li>
+                           <li><a class="active" href="#">Lista de carros</a></li>
+                        </ul>
+                     </div>
+                     <div class="header-page">
+                        <h1>Vista De Listado</h1>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      <!-- =-=-=-=-=-=-= Breadcrumb End =-=-=-=-=-=-= -->
+      <!-- =-=-=-=-=-=-= Main Content Area =-=-=-=-=-=-= -->
+      <div class="main-content-area clearfix">
+         <!-- =-=-=-=-=-=-= Latest Ads =-=-=-=-=-=-= -->
+         <section class="section-padding no-top gray">
+            <!-- Main Container -->
+            <div class="container">
+               <!-- Row -->
+               <div class="row">
+                  <!-- Middle Content Area -->
+                  <div class="col-md-8 col-md-push-4 col-lg-8 col-sx-12">
+                     <!-- Row -->
+                     <div class="row">
+                        <!-- Sorting Filters -->
+                        <div class="col-md-12 col-xs-12 col-sm-12 col-lg-12">
+                           <div class="clearfix"></div>
+                           <div class="listingTopFilterBar">
+                              <div class="col-md-7 col-xs-12 col-sm-7 no-padding">
+                                 <ul class="filterAdType">
+                                   	{% if cars %}
+								
+								
+                                    <li class="active"><a href="">All <small>{{cars|length}}</small></a> </li>
+                                    <li class=""> </li>
+                                    {% endif %}
+                                 </ul>
+                              </div>
+                              <div class="col-md-5 col-xs-12 col-sm-5 no-padding">
+                                 <div class="header-listing">
+                                    <h6></h6>
+                                    <div class="custom-select-box">
+                                      
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                        <!-- Sorting Filters End-->
+                        <div class="clearfix"></div>
+                        <div class="col-md-12 col-xs-12 col-sm-12">
+                           <ul class="list-unstyled">
+                              <!-- Listing Grid -->
+                                 	{% for obj in cars %}
+								{% if forloop.counter == 1 %}
+									<div class="tres">
+								{% endif %}
+                              <li>
+                                 <div class="well ad-listing clearfix">
+                                    <div class="col-md-5 col-sm-5 col-xs-12 grid-style no-padding">
+                                       <!-- Image Box -->
+                                       <div class="img-box">
+                                         
+                                         {% for id, im in all_photos.items %}
+										{% if id == obj.id%}
+										{% for i in im %}
+										{% if forloop.counter < 2%}
+											
+											<img src="{{i.image.url}}" class="img-responsive" alt="">
+											<!-- <div class="item"> -->
+                                          <div class="total-images"><strong>8</strong>fotos </div>
+                                          <div class="quick-view"> <a href="/detail/{{obj.id}}" data-toggle="modal" class="view-button"><i class="fa fa-search"></i></a> </div>
+                                      
+										{% endif %}
+										<!-- </div> -->
+										{% endfor %}
+										{% endif %}
+										{% endfor %}
+                                          
+                                          <div class="total-images"><strong></strong>fotos </div>
+                                          <div class="quick-view"> <a href="/detail/{{obj.id}}" data-toggle="modal" class="view-button"><i class="fa fa-search"></i></a> </div>
+                                       </div>
+                                       <!-- Ad Status --><span class="ad-status"> {{ obj.condition}} </span>
+                                       <!-- User Preview -->
+                                       <div class="user-preview">
+                                         {%if obj.owner.image%}
+									<div><img src="{{obj.owner.image.url}}" alt="" class="avatar avatar-small" ></div>
+									{% else %}
+								
+								{% endif %}
+                                       </div>
+                                    </div>
+                                    <div class="col-md-7 col-sm-7 col-xs-12">
+                                       <!-- Ad Content-->
+                                       <div class="row">
+                                          <div class="content-area">
+                                             <div class="col-md-12 col-sm-12 col-xs-12">
+                                                <!-- Ad Title -->
+                                                <h3><a href="/detail/{{obj.id}}" >{{obj.year}} {{obj.model.maker}} {{obj.model.description}}</a></h3>
+                                               										
+
+                                                <!-- Ad Meta Info -->
+                                                
+                                                <!-- Ad Description-->
+                                                <div class="ad-details">
+                                                   <ul class="list-unstyled">
+                                                      <li><i class="flaticon-dashboard"></i>{{ obj.mileage}} km</li>
+                                                      <li><i class="flaticon-vehicle-3"></i>{{ obj.fuel_t}}</li>
+                                                      <li><i class="flaticon-engine-2"></i>1800 cc</li>
+                                                      <li><i class="flaticon-calendar-2"></i>{{obj.year}}</li>
+                                                      <li><i class="flaticon-cogwheel-outline"></i>{{obj.exterior_color}}</li>
+                                                   </ul>
+                                                </div>
+                                                <div class="ad-price-simple">$ {{ obj.price}}</div>
+                                             </div>
+                                          </div>
+                                       </div>
+                                       <!-- Ad Content End -->
+                                    </div>
+                                 </div>
+                              </li>
+                            {% if forloop.counter|divisibleby:3 %}
+								
+									<div class="tres">
+							{% endif %}
+							{% endfor %}
+                           </ul>
+                        </div>
+                        <!-- Ads Archive End -->  
+                        <div class="clearfix"></div>
+                        <!-- Pagination -->  
+                        <div class="col-md-12 col-xs-12 col-sm-12">
+                           <ul class="pagination pagination-lg">
+                              	{% if current_page  > 1%}
+									<li>
+										<button style="border:none; padding: 10px;" type="submit" id="page" name="page" value="{{current_page|add:'-1'}}" >
+											<span aria-hidden="true">&laquo;</span>
+										</button>
+							    </li>
+									{% endif %}
+									{% for i in max_pages_range %}
+								    <li>
+										<button
+
+										{% if forloop.counter == current_page %}
+											class="btn btn-success"
+										{% endif %}
+										style="border:none; padding: 10px;" type="submit" id="page" name="page" value="{{forloop.counter}}" > {{forloop.counter}}</button>
+										</li>
+									{% endfor %}
+
+									{% if current_page < max_pages %}
+									<li>
+										<button style="border:none; padding: 10px;" type="submit" id="page" name="page" value="{{current_page|add:'1'}}" >
+											<span aria-hidden="true">&raquo;</span>
+										</button>
+							    </li>
+									{% endif %}
+                           </ul>
+                        </div>
+                        <!-- Pagination End -->  
+                     </div>
+                  </div>
+                  <!-- Middle Content Area  End -->
+                  <!-- Left Sidebar -->
+                   <div class="col-md-4 col-md-pull-8 col-sx-12">
+                     <!-- Sidebar Widgets -->
+                     <div class="sidebar">
+                        <!-- Panel group -->
+                        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                           <!-- Brands Panel -->    
+                           <div class="panel panel-default">
+                              <!-- Heading -->
+                              <div class="panel-heading" role="tab" id="headingTwo">
+                                 <h4 class="panel-title">
+                                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                    <i class="more-less glyphicon glyphicon-plus"></i>
+                                  Marca
+                                    </a>
+                                 </h4>
+                              </div>
+                              <!-- Content -->
+                              <div id="collapseTwo" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingTwo">
+                                 <div class="panel-body">
+                                    <!-- Search -->
+                                    <form class="form" enctype="multipart/form-data" role="form" action="/search" method="post">
+                                       {% csrf_token %}
+                                    
+                                    <!-- Brands List -->                              
+                                    <div class="skin-minimal">
+                                       <ul class="list">
+                                          <label>Seleccione la Marca</label>
+                                          {{ form.makefield.errors }}
+							{{ form.makefield }}
+                                       </ul>
+                                       
+                                    </div>
+                                    <!-- Brands List End -->                 
+                                 </div>
+                              </div>
+                           </div>
+                           <!-- Brands Panel End -->
+                           <!-- Condition Panel -->    
+                           <div class="panel panel-default">
+                              <!-- Heading -->
+                              <div class="panel-heading" role="tab" id="heading9">
+                                 <h4 class="panel-title">
+                                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse9" aria-expanded="false" aria-controls="collapse9">
+                                    <i class="more-less glyphicon glyphicon-plus"></i>
+                                   modelo
+                                    </a>
+                                 </h4>
+                              </div>
+                              <!-- Content -->
+                              <div id="collapse9" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading9">
+                                 <div class="panel-body">
+                                    <div class="skin-minimal">
+                                       <ul class="list">
+                                          <label>Seleccione el Modelo</label>
+                                          {{ form.modelfield.errors }}
+						{{ form.modelfield }}
+                                       </ul>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+                           <!-- Condition Panel End -->  
+                           <!-- Condition Panel -->    
+                           <div class="panel panel-default">
+                              <!-- Heading -->
+                              <div class="panel-heading" role="tab" id="headingThree">
+                                 <h4 class="panel-title">
+                                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                    <i class="more-less glyphicon glyphicon-plus"></i>
+                                    Condicion
+                                    </a>
+                                 </h4>
+                              </div>
+                              <!-- Content -->
+                              <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                                 <div class="panel-body">
+                                    <div class="skin-minimal">
+                                       <ul class="list">
+                                         
+                                         <input type="hidden" name="type" value="simple">
+					<div class="col-md-12 tira" id="condition">
+								<input type="radio" name="condition" id="New" value="Nuevo">
+								<label class="radio left" for="New">Nuevo</label>
+								<input type="radio" name="condition" id="Used" value="Usado">
+								<label class="radio left" for="Used">Usado</label>
+								<input type="radio" name="condition" id="certified" value="Certificado">
+								<label class="radio left" for="certified">Certificado</label>
+								<input type="radio" checked name="condition" id="All" value="All">
+								<label class="radio left" for="All">Todos</label>
+					</div>
+                                       </ul>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+                           <!-- Condition Panel End -->  
+                           <!-- Body Type Panel -->    
+                           <div class="panel panel-default">
+                              <!-- Heading -->
+                              <div class="panel-heading" role="tab" id="heading7">
+                                 <h4 class="panel-title">
+                                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse7" aria-expanded="false" aria-controls="collapse7">
+                                    <i class="more-less glyphicon glyphicon-plus"></i>
+                                    ciudad
+                                    </a>
+                                 </h4>
+                              </div>
+                              <!-- Content -->
+                              <div id="collapse7" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading7">
+                                 <div class="panel-body">
+                                    <div class="skin-minimal">
+                                       <ul class="list">
+                                          <li>
+                                             {{ form.city.errors }}
+							{{ form.city }}
+                                          </li>
+                                       </ul>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+                           <!-- Condition Panel End -->  
+                           <!-- Pricing Panel -->
+                           <div class="panel panel-default">
+                              <!-- Heading -->
+                              <div class="panel-heading" role="tab" id="headingfour">
+                                 <h4 class="panel-title">
+                                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapsefour" aria-expanded="false" aria-controls="collapsefour">
+                                    <i class="more-less glyphicon glyphicon-plus"></i>
+                                    Precio
+                                    </a>
+                                 </h4>
+                              </div>
+                              <!-- Content -->
+                              <div id="collapsefour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingfour">
+                                 <div class="panel-body">
+                                <span class="price-slider-value">Precio ($)
+                                   <input  type="text" name="bprice"  id="price-min" >
+                                   <input  type="text" name="fprice"  id="price-max" >
+                                   
+                                    </span>
+                                    <div id="price-slider"></div>
+                                  
+                                 </div>
+                              </div>
+                           </div>
+                           <!-- Pricing Panel End -->
+                           <!-- Year Panel -->    
+                           <div class="panel panel-default">
+                              <!-- Heading -->
+                              <div class="panel-heading" role="tab" id="heading8">
+                                 <h4 class="panel-title">
+                                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse8" aria-expanded="false" aria-controls="collapse8">
+                                    <i class="more-less glyphicon glyphicon-plus"></i>
+                                   seleccionar año
+                                    </a>
+                                 </h4>
+                              </div>
+                              <!-- Content -->
+                              <div id="collapse8" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading8">
+                                 <div class="panel-body">
+                                    <!-- Year List -->                              
+                                    <div class="skin-minimal">
+                                       <ul class="list">
+                                          <li>
+                                             <select class=" form-control search-year"id="byear" name="byear">
+		    				<option value="0">Del año</option>
+	  					</select>
+                                        
+                                              <select class=" form-control search-year"id="fyear" name="fyear">
+		    				<option value="10000">Al año</option>
+		  				</select>
+                                          </li>
+                                         
+                                       </ul>
+                                    </div>
+                                   
+                                  
+                                    <!-- Year List End --> 
+                                 </div>
+                              </div>
+                              <div class="form-group pull-right">
+                                    <button type="submit" class="btn btn-danger Search" aria-label="center Align">Buscar</button>
+                                 </div>
+                           </div>
+                            
+                           </form>
+                           <!-- Year Panel End -->  
+                           <!-- Latest Ads Panel -->
+                           <div class="panel panel-default">
+                              <!-- Heading -->
+                              <div class="panel-heading" >
+                                 <h4 class="panel-title">
+                                    <a>
+                                    Autos Reciente
+                                    </a>
+                                 </h4>
+                              </div>
+                              <!-- Content -->
+                              <div class="panel-collapse">
+                                 <div class="panel-body recent-ads">
+                                    <!-- Ads -->
+                                   {% for obj in cars %}
+							{% if forloop.counter == 1 %}
+							
+							{% endif %}
+                                    <div class="recent-ads-list">
+                                       <div class="recent-ads-container">
+                                          <div class="recent-ads-list-image">
+                                            
+                                            
+                                             {% for id, im in all_photos.items %}
+									{% if id == obj.id%}
+									{% for i in im %}
+									{% if forloop.counter < 2%}
+										<!-- <div> -->
+                        <a href="/detail/{{obj.id}}" class="recent-ads-list-image-inner">                    
+                          <img src="{{i.image.url}}"></a>
+										<!-- <div class="item"> -->
+									{% endif %}
+									<!-- </div> -->
+									{% endfor %}
+									{% endif %}
+									{% endfor %}
+									{%if authenticated%}
+									
+									{%endif%}
+                                             <!-- /.recent-ads-list-image-inner -->
+                                          </div>
+                                          <!-- /.recent-ads-list-image -->
+                                          <div class="recent-ads-list-content">
+                                             <h3 class="recent-ads-list-title">
+                                                <a href="/detail/{{obj.id}}">{{obj.model.year}} {{obj.model.maker}} {{obj.model.description}} </a>
+                                             </h3>
+                                             <ul class="recent-ads-list-location">
+                                                <li><a href="#">Don carros</a>,</li>
+                                               
+                                             </ul>
+                                             <div class="recent-ads-list-price">
+                                                ${{ obj.price}}
+                                             </div>
+                                             <!-- /.recent-ads-list-price -->
+                                          </div>
+                                          <!-- /.recent-ads-list-content -->
+                                       </div>
+                                       <!-- /.recent-ads-container -->
+                                    </div>
+                                    <!-- Ads -->
+                                    {% endfor %}
+                                   
+                                 </div>
+                              </div>
+                           </div>
+                           <!-- Latest Ads Panel End -->
+                        </div>
+                        <!-- panel-group end -->
+                     </div>
+                     <!-- Sidebar Widgets End -->
+                  </div>
+                  <!-- Left Sidebar End -->
+               </div> -->
+               </div>
+               <!-- Row End -->
+            </div>
+            <!-- Main Container End -->
+         </section>
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+		
+{% endblock %}

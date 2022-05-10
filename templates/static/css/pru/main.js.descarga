@@ -1,0 +1,3233 @@
+var isSuperCarrosMobile = false;
+PreLoad_RedirectToMobile();
+
+jQuery.RenderFixes = function() {
+    var device = $.DetectDeviceType();
+    if(device == 'phone' || device == 'tablet')
+    {
+        $("#header").css('position', 'absolute');
+        $("#bigsearch-filters").css('position', 'absolute');
+    }
+};
+
+jQuery.FrontpageSetup = function() {
+        
+    $("#FrontpageSearch").SearchifyFrontpage(1);
+    
+    $("DIV.homerow-3-center LI.sell-button INPUT").on("click", function(){
+        location.href = "/vender/";
+    });
+    
+    $("DIV.homerow-3-left LI.sell-button INPUT").on("click", function(){
+        location.href = "/garantizados/";
+    });
+    
+    // Code search
+    
+    $("DIV#CodeSearchDialog INPUT[type=text]").keyup(function(e){
+        if(e.keyCode == 13)
+        {
+            $("#FrontpageSearch").find("#DoSearch").trigger("click");
+        }
+    });
+    
+    $("DIV#CodeSearchDialog INPUT[type=button]").click(function(e){
+        $("#FrontpageSearch").find("#DoSearch").trigger("click");        
+    });
+    
+    $(".CodeSearch > A").click(function(e){
+        e.preventDefault();
+        $("DIV#CodeSearchDialog").toggleClass("visible");
+        $("DIV#CodeSearchDialog #CarId").val('');
+        if($("DIV#CodeSearchDialog").hasClass("visible")) { $("DIV#CodeSearchDialog #CarId").focus(); }
+    });
+    
+    if(window.location.href.indexOf("id_not_found") != -1) {
+        $("DIV#CodeSearchDialog").toggleClass("visible");
+        $("DIV#CodeSearchDialog > DIV#NotFoundMessage").toggleClass("visible");
+        $("DIV#CodeSearchDialog > DIV#NotFoundMessage").click(function(){
+            $(this).toggleClass("visible");
+        })
+    }
+    
+    //
+    
+    ActivateCarrousel();
+    ActivateRecentsNavigation(true);
+    
+    setTimeout(function() {
+        ActivateBrands();
+    }, 1000);
+    
+    function ActivateCarrousel() {
+    
+        CarrouselSetIndex(0);
+        CarrouselSetPage(0);
+        
+        var changeInterval = null;
+        
+        $(".homerow-carrousel LI").on("click", function(){
+            CarrouselSetIndex($(this).index());
+            clearInterval(changeInterval);
+        });
+        
+        $(".homerow-carrousel SPAN.prev").on("click", function(){
+            CarrouselPrevPage();
+            clearInterval(changeInterval);
+        });
+        
+        $(".homerow-carrousel SPAN.next").on("click", function(){
+            CarrouselNextPage();
+            clearInterval(changeInterval);
+        });
+        
+        changeInterval = setInterval(CarrouselNextImage, 5000);
+        
+        function CarrouselNextImage() {
+            var currentIndex = $(".homerow-carrousel UL LI.selected").index();
+            var maxIndex = $(".homerow-carrousel UL LI").length;
+            var nextIndex = currentIndex + 1;
+            if(nextIndex >= maxIndex) nextIndex = 0;
+            CarrouselSetIndex(nextIndex);
+        };
+        
+        function CarrouselSetIndex(idx) {
+            
+            CarrouselSetPage(Math.floor(idx / 4));
+            
+            var item = $(".homerow-carrousel-list UL LI").eq(idx);
+            
+            $(".homerow-carrousel > DIV.homerow-carrousel-detail").data("link", item.data("link"));
+            
+            $(".homerow-carrousel-detail DIV.title STRONG").text(item.data("title"));
+            $(".homerow-carrousel-detail DIV.subtitle SPAN").text(item.data("subtitle"));
+            $(".homerow-carrousel-detail").css("background-image", "url(" + item.data("image") + ")");
+            
+            $(".homerow-carrousel UL LI").removeClass("selected");
+            $(".homerow-carrousel UL LI").eq(idx).addClass("selected");
+            
+            $(".homerow-carrousel > DIV.homerow-carrousel-detail").unbind();
+            $(".homerow-carrousel > DIV.homerow-carrousel-detail").on("click", function(){
+                location.href = $(this).data("link");
+            });
+            
+            // Preload next image
+            
+            var nextItem = item = $(".homerow-carrousel-list UL LI").eq(idx + 1);
+            if(item.data("image"))
+            {
+                if (document.images) {
+                    var preloadImage = new Image();
+                    preloadImage.src = item.data("image");
+                }
+            }
+            
+        };
+        
+        function CarrouselPrevPage() {
+            var currPage = CarrouselGetCurrentPage();
+            var nextPage = currPage - 1;
+            if(nextPage < 0) nextPage = (CarrouselCountPages()-1);
+            CarrouselSetPage(nextPage);
+        };
+        
+        function CarrouselNextPage() {
+            var currPage = CarrouselGetCurrentPage();
+            var nextPage = currPage + 1;
+            if(nextPage >= CarrouselCountPages()) nextPage = 0;
+            CarrouselSetPage(nextPage);
+        };
+        
+        function CarrouselSetPage(p) {
+            $(".homerow-carrousel").data("page", p);
+            var pageHeight = 256;
+            $(".homerow-carrousel-list > UL").css("top", (pageHeight * p) * -1);
+        };
+        
+        function CarrouselGetCurrentPage() {
+            var p = parseInt($(".homerow-carrousel").data("page"));
+            if(p == null || isNaN(p)) p = 0;
+            return p;
+        };
+                
+        function CarrouselCountPages() {
+            return Math.ceil($(".homerow-carrousel-list UL LI").length / 4);
+        };
+        
+    };
+    
+    function ActivateRecentsNavigation(firstLoad)
+    {
+                
+        var prevUrl = $("#RecentsPrev").data("load");
+        var nextUrl = $("#RecentsNext").data("load");
+        
+        if(prevUrl == null || prevUrl == "") 
+            $("#RecentsPrev").addClass("disabled");
+        
+        if(nextUrl == null || nextUrl == "") 
+            $("#RecentsNext").addClass("disabled");
+        
+        $(".homerow-5-recent-nav A").click(function() {
+
+            var loadUrl = $(this).data("load");
+            var pageToLoad = $(this).data("page");
+            
+            if(loadUrl != null && loadUrl != "") 
+            {
+                
+                $.ajax({
+                    type: 'GET',
+                    dataType: 'html',
+                    url: loadUrl,
+                    success: function(html){
+                        $("#RecentsContainer").html(html);
+                        ActivateRecentsNavigation(false);
+                        $.cookie('FrontPageRecentsPage', pageToLoad, { path: '/' });
+                        
+                        if(history.replaceState) {
+                            var urlToSave = location.pathname;
+                            if(location.pathname.indexOf("?") == -1) {
+                                urlToSave = urlToSave + "?recentsPage=" + pageToLoad;
+                            } else {
+                                urlToSave = urlToSave + "&recentsPage=" + pageToLoad;
+                            }
+                            history.replaceState(null,null, urlToSave);
+                        }
+                        
+                    }
+                });
+            }
+            
+        });
+        
+        if(firstLoad) {
+            
+            if(history.replaceState) {
+                                
+                if(location.search != null && location.search.indexOf("=") != -1) {
+                    if(location.search.split("=")[0] == "?recentsPage") {
+                        if($.IsInteger(location.search.split("=")[1])) {
+                            var pageNum = parseInt(location.search.split("=")[1]);
+                            var loadUrl = '/assets/html/recents?PagingPageSkip=' + pageNum;
+                            $(".homerow-5-recent-nav A:first-child").data("load", loadUrl);
+                            $(".homerow-5-recent-nav A:first-child").data("page", pageNum);
+                            $(".homerow-5-recent-nav A:first-child").trigger("click");
+                        }
+                    }
+                }
+                
+                
+            } else {
+            
+                try {
+
+                    var loadedPageNum = $("#RecentsPagingPageSkip").val();
+                    var cookiePageNum = $.cookie('FrontPageRecentsPage');
+
+                    if($.IsInteger(cookiePageNum)) {
+                        if(loadedPageNum != cookiePageNum) {
+                            var loadUrl = '/assets/html/recents?PagingPageSkip=' + cookiePageNum;
+                            $(".homerow-5-recent-nav A:first-child").data("load", loadUrl);
+                            $(".homerow-5-recent-nav A:first-child").data("page", cookiePageNum);
+                            $(".homerow-5-recent-nav A:first-child").trigger("click");
+                        }
+                    }
+
+                } catch (error) {
+                }
+                
+            }
+            
+        }
+        
+    };
+    
+    function ActivateBrands() {
+        
+        $(".homerow-brands UL LI").remove();
+    
+        var brandsLogos = SearchBrandsByLogo.split(",");
+
+        for(var i = 0; i < brandsLogos.length; i++){
+            var newLogo = $("<li></li>");
+            var newImage = $("<img />");
+            newLogo.data("brand", brandsLogos[i]);
+            newImage.attr("src", "/assets/img/brands/" + brandsLogos[i] + ".png");
+            $(".homerow-brands UL").append(newLogo.append(newImage));
+        }
+    
+        $(".homerow-brands UL LI").on("click", function(){
+            if($(this).data("brand") == "Hino")
+            { 
+                location.href = "/v.pesados/cualquier-tipo/cualquier-provincia/" + $(this).data("brand") + "/";
+            } else {
+                location.href = "/carros/cualquier-tipo/cualquier-provincia/" + $(this).data("brand") + "/";
+            }
+        });
+        
+        $(".homerow-brands SPAN.prev").on("click", function(){
+            BrandsPrevPage();
+        });
+        
+        $(".homerow-brands SPAN.next").on("click", function(){
+            BrandsNextPage();
+        });
+        
+        function BrandsPrevPage() {
+            var currPage = BrandsGetCurrentPage();
+            var nextPage = currPage - 1;
+            if(nextPage < 0) nextPage = (BrandsCountPages()-1);
+            BrandsSetPage(nextPage);
+        };
+        
+        function BrandsNextPage() {
+            var currPage = BrandsGetCurrentPage();
+            var nextPage = currPage + 1;
+            if(nextPage >= BrandsCountPages()) nextPage = 0;
+            BrandsSetPage(nextPage);
+        };
+        
+        function BrandsSetPage(p) {
+            $(".homerow-brands").data("page", p);
+            var pageWidth = 858;
+            $(".homerow-brands > DIV > UL").css("left", (pageWidth * p) * -1);
+        };
+
+        function BrandsGetCurrentPage() {
+            var p = parseInt($(".homerow-brands").data("page"));
+            if(p == null || isNaN(p)) p = 0;
+            return p;
+        };
+        
+        function BrandsCountPages() {
+            return Math.ceil($(".homerow-brands UL LI").length / 11);
+        };
+        
+    };
+    
+};
+
+jQuery.SearchpageSetup = function(initialSearchParams) {
+
+    $.FavouritesHighlight("#bigsearch-results-inner-results UL LI");
+    $.StickyScrollable({ container: '#bigsearch', scrollable: '#bigsearch-filters', safetyMargin: 0 });
+    CheckHashRedirect();
+    ActivateSearch();
+    ActivatePhotos();
+    ActivatePagingLinks();
+    $.BackLinkSetCurrentURL();
+    
+    if(initialSearchParams != null)
+        SetInitialParams(initialSearchParams)
+    
+    function CheckHashRedirect() {
+        
+        // Check if theres a hash appended to the url. If so, it's a favourites or copy/paste
+        // Get it and redirect there
+        
+        if(window.location.hash != null){
+            if(window.location.hash.indexOf("#/buscar/") == 0) {
+                $('#bigsearch-results-inner-container').empty();
+                location.href = window.location.hash.substring(1);
+            }
+        }
+        
+    }
+        
+    function SetInitialParams(params) {
+        
+        $("#MainSearchBox").val(params.MainSearchText);
+        $("#Location").val(params.Location);
+        $("#LocationSearchBox").val(params.LocationSearchText);
+        $("#OrderText").text(params.OrderText);        
+        $("#ObjectType").val(params.ObjectType);
+        $("#ObjectCategory").val(params.ObjectCategory);
+        $("#Brand").val(params.Brand);
+        $("#Model").val(params.Model);
+        $("#Edition").val(params.Edition);
+        $("INPUT[Name='SearchFuel'][Value='" + params.Fuel + "']").prop('checked', 'checked');
+        
+        if(!$.FallOverCompatability()) {
+            
+            if(params.YearFrom != 0 && params.YearTo != 0) {
+                
+                if(params.YearFrom <= params.YearTo) {
+                    document.getElementById('YearSlider').noUiSlider.set([params.YearFrom, params.YearTo]);
+                    $("#YearFrom").val(params.YearFrom);
+                    $("#YearTo").val(params.YearTo);
+                }else {
+                    document.getElementById('YearSlider').noUiSlider.set([params.YearTo, params.YearFrom]);
+                    $("#YearFrom").val(params.YearTo);
+                    $("#YearTo").val(params.YearFrom);
+                }
+                
+            }
+
+            if(params.PriceFrom != 0 || params.PriceTo != 0) {
+                document.getElementById('PriceSlider').noUiSlider.set([params.PriceFrom, params.PriceTo]);        
+                $("#PriceFrom").val(params.PriceFrom);
+                $("#PriceTo").val(params.PriceTo);
+            }
+            
+        } else {
+            
+            $("#YearFromSelect").val(params.YearFrom);
+            $("#YearToSelect").val(params.YearTo);
+
+            $("#PriceToSelect").val(SearchPriceRanges[SearchPriceRanges.length-1] * 10);
+            $("#PriceFromSelect").val(params.PriceFrom);
+            $("#PriceToSelect").val(params.PriceTo);
+                        
+        }
+        
+        $("#Condition").val(params.Condition);
+        $("#Transmission").val(params.Transmission);
+        $("#Traction").val(params.Traction);
+        $("#Cylinders").val(params.Cylinders);
+        $("#Mileage").val(params.MileageFrom + "," + params.MileageTo);
+        $("#Color").val(params.Color);
+        $("#CustomerType").val(params.CustomerType);
+                
+        $("#OrderColumn").val(params.OrderColumn);
+        $("#OrderDirection").val(params.OrderColumnDirection);
+       
+        if(params.WithVideo == 1) $("#WithVideo").prop("checked", true);
+        if(params.CompThirdRow == 1) $("#CompThirdRow").prop("checked", true);
+        if(params.CompElectricTrunk == 1) $("#CompElectricTrunk").prop("checked", true);
+        if(params.CompSeats == 1) $("#CompSeats").prop("checked", true);
+        if(params.CompSunroof == 1) $("#CompSunroof").prop("checked", true);
+        if(params.CompPanoramic == 1) $("#CompPanoramic").prop("checked", true);
+        if(params.CompAdvKey == 1) $("#CompAdvKey").prop("checked", true);
+        if(params.CompAdvRadio == 1) $("#CompAdvRadio").prop("checked", true);
+        if(params.CompAdvLight == 1) $("#CompAdvLight").prop("checked", true);
+        if(params.CompNav == 1) $("#CompNav").prop("checked", true);
+        if(params.CompCamera == 1) $("#CompCamera").prop("checked", true);
+        if(params.CompCabin != 0) $("#CompCabin").val(params.CompCabin);
+        
+        FillSecondaryBrands();
+        FillSecondaryModels();
+        FillSecondaryEditions();
+        
+    };
+    
+    function ActivatePagingLinks() {
+        
+        $("#bigsearch-results-inner-lowerbar-pages A").on("click", function(e){
+            e.preventDefault();
+            var urlToLoad = $(this).attr("href");
+            LoadSearchResults(urlToLoad);
+        });
+        
+    };
+        
+    function LoadSearchResults(url) {
+        
+        if(false) {
+            location.href = url;
+            return;
+        }
+
+        $.BackLinkSet(url);
+        
+        var urlToLoad = url.indexOf('?') == -1 ? url + '?' + new Date().getTime() : url + '&' + new Date().getTime();
+
+        if(url.substring(0,1) != "/")
+            return false;
+
+        $.LoadingStart(75);
+        $('#bigsearch-results-inner-veil').addClass('visible');
+
+        $.ajax({
+            type: 'GET',
+            dataType: 'html',
+            url: urlToLoad,
+            success: function(html){
+
+                $.LoadingStart(100);
+
+                if(window.history.replaceState) {
+                    window.history.replaceState(null, null, url);
+                } else {
+                    window.location.hash = url;
+                }
+
+                $('#bigsearch-results-inner-container').empty().html(html);
+
+                window.scrollTo(0,0);
+                $('#bigsearch-results-inner-veil').removeClass('visible');
+                $.LoadingComplete();
+
+                RefreshCounters();
+                ActivatePhotos();
+                ActivatePagingLinks();     
+                $.FavouritesHighlight("#bigsearch-results-inner-results UL LI");
+                
+                if(ga) {
+                    ga('send', 'pageview', url);
+                }
+
+            },
+            error: function(jqXHR, textStatus, errorThrown){
+                $.LoadingComplete();
+            }
+        });
+        
+    };
+    
+    function RefreshCounters() {
+        if($("#LowerCounter1").length > 0) {
+            $("#UpperCounter1").html($("#LowerCounter1").html());
+            $("#UpperCounter2").html($("#LowerCounter2").html());
+        } else {
+            $("#UpperCounter1").html("0");
+            $("#UpperCounter2").html("0");
+        }
+    };
+    
+    function FillSecondaryBrands() {
+        
+        var brand = $("#Brand").val();
+        var objectType = $("#ObjectType").val();
+    
+        $("#BrandsList").removeClass("hidden");
+        $("#BrandsList UL LI").remove();
+
+        var brandsToShow = SearchBrands;
+
+        for(var b = 0;b<brandsToShow.length;b++) {
+            var objectTypes = SearchBrands[b].split("|")[2];
+            if(objectTypes.indexOf(objectType) != -1 || objectType == 0) {
+                $("#BrandsList UL").append("<li class='hidden' data-id='" + brandsToShow[b].split("|")[0] + "' data-label='" + brandsToShow[b].split("|")[1] + "'>" + brandsToShow[b].split("|")[1] + " <span>(" + brandsToShow[b].split("|")[4] + ")</span></li>");
+            }
+        }
+    
+        if(brand != 0)
+            $("#BrandsList UL").append("<li class='clear' data-id='0' data-label='Todas'>Limpiar filtro</li>");
+    
+        $("#BrandsList UL").append("<li class='more'>M&aacute;s marcas &raquo;</li>");
+
+        $("#BrandsList UL LI[data-id=" + brand + "]").addClass("selected");
+
+        $("#BrandsList UL LI:not(.more)").on("click", function(){
+
+            if($("#Brand").val() == $(this).data("id")) {
+                $("#BrandsList UL LI.clear").trigger("click");
+                return false;
+            }
+            
+            $("#Brand").val($(this).data("id"));
+            $("#Model").val("0");
+            $("#Edition").val("0");
+            $("#MainSearchBox").val($(this).data("label"));
+            $("#Condition").trigger("change");
+
+            $("#BrandsList UL LI").removeClass("selected");
+            $(this).addClass("selected");
+
+            FillSecondaryBrands();
+            FillSecondaryModels();
+
+        });
+
+        $("#BrandsList UL LI.more").on("click", function(){
+            $("#BrandsList UL LI:not(.more)").removeClass("hidden");
+        });
+
+        // Show a few of the models at a time only
+
+        var modelIndex = 0;
+        if(brand != 0) modelIndex = $("#BrandsList UL LI[data-id="+brand+"]").index();
+        var startIndex = modelIndex - 2;
+        if(startIndex < 0) startIndex = 0;
+        var endIndex = startIndex + 5;
+        $("#BrandsList UL LI:not(.more)").slice(startIndex, endIndex).removeClass("hidden");
+            
+    };
+    
+    function FillSecondaryModels() {
+        
+        var brand = $("#Brand").val();
+        var model = $("#Model").val();
+        var edition = $("#Edition").val();
+        
+        if(brand != null && brand != 0 && SearchModels[brand]) {
+            
+            var brandsToShow = SearchModels[brand];
+                    
+            $("#ModelsList").removeClass("hidden");
+            $("#ModelsList UL LI").remove();
+            
+            for(var b = 0;b<brandsToShow.length;b++) {
+                $("#ModelsList UL").append("<li class='hidden' data-id='" + SearchModels[brand][b].split("|")[0] + "' data-label='" + SearchModels[brand][b].split("|")[1] + "'>" + SearchModels[brand][b].split("|")[1] + " <span>(" + SearchModels[brand][b].split("|")[4] + ")</span></li>");
+            }
+            
+            if(model != 0)
+                $("#ModelsList UL").append("<li class='clear' data-id='0' data-label=''>Limpiar filtro</li>");
+            
+            $("#ModelsList UL").append("<li class='more'>M&aacute;s modelos &raquo;</li>");
+            
+            if(model != 0)
+                $("#ModelsList UL LI[data-id=" + model + "]").addClass("selected");
+            
+            $("#ModelsList UL LI:not(.more)").on("click", function(){
+                
+                if($("#Model").val() == $(this).data("id")) {
+                    if($("#Edition").val() == "0") {
+                        $("#ModelsList UL LI.clear").trigger("click");
+                    return false;
+                    } else {
+                        $("#Edition").val("0");
+                    }
+                }
+                
+                $("#Model").val($(this).data("id"));
+                $("#Edition").val("0");
+                $("#MainSearchBox").val(FindBrandName(brand) + " " + $(this).data("label"));
+                $("#Condition").trigger("change");
+                
+                $("#ModelsList UL LI").removeClass("selected");
+                $(this).addClass("selected");
+                
+                FillSecondaryModels();
+                FillSecondaryEditions();
+                
+            });
+            
+            $("#ModelsList UL LI.more").on("click", function(){
+                $("#ModelsList UL LI:not(.more)").removeClass("hidden");
+            });
+            
+            // Show a few of the models at a time only
+
+            if(model != null && model != 0 && false) {
+                $("#ModelsList UL LI[data-id="+model+"]").removeClass("hidden");
+            } else {
+                var modelIndex = 0;
+                if(brand != 0) modelIndex = $("#ModelsList UL LI[data-id="+model+"]").index();
+                var startIndex = modelIndex - 2;
+                if(startIndex < 0) startIndex = 0;
+                var endIndex = startIndex + 5;
+                $("#ModelsList UL LI:not(.more)").slice(startIndex, endIndex).removeClass("hidden");
+            }
+            
+        } else {
+            $("#ModelsList").addClass("hidden");
+        }
+        
+    };
+    
+    function FillSecondaryEditions() {
+
+        var brand = $("#Brand").val();
+        var model = $("#Model").val();
+        var edition = $("#Edition").val();
+        
+        if(model != null && model != 0) {
+            
+            var listUrl = "/assets/js/searchvalueseditions.js?model=" + model;
+            
+            $.ajax({
+                dataType: "json",
+                url: listUrl,
+                success: function(data){
+            
+                    if(!data.editions)
+                        return;
+                    
+                    if(data.editions.length == 0)
+                        return;
+
+                    var modelItem = $("#ModelsList UL LI[data-id=" + model + "]");
+
+                    for(var ed = data.editions.length-1;ed>=0;ed--) {
+                        modelItem.after("<li class='sub' data-id='" + data.editions[ed].id + "' data-label='" + data.editions[ed].name + "'>" + data.editions[ed].name + "</li>");
+                    }
+
+                    if(edition != 0)
+                        $("#ModelsList UL LI[data-id=" + edition + "]").addClass("selected");
+
+                    $("#ModelsList UL LI.sub").on("click", function(){
+
+                        if($("#Edition").val() == $(this).data("id")) {
+                            $("#Edition").val("0");
+                            $("#ModelsList UL LI.sub").removeClass("selected");
+                            $("#Condition").trigger("change");
+                            return false;
+                        }
+                        
+                        $("#Edition").val($(this).data("id"));
+                        $("#MainSearchBox").val(FindBrandName(brand) + " " + FindModelName(brand, model) + " " + $(this).data("label"));
+                        $("#Condition").trigger("change");
+
+                        $("#ModelsList UL LI.sub").removeClass("selected");
+                        $(this).addClass("selected");
+
+                    });
+            
+                }
+            });
+            
+        }
+                
+    };
+    
+    function FindBrandName(brandId) {
+        for(var i = 0; i < SearchBrands.length; i++) {
+            if(SearchBrands[i].split("|")[0] == brandId) {
+                return SearchBrands[i].split("|")[1];
+            }
+        }
+        return "-";
+    };  
+    
+    function FindModelName(brandId, modelId) {
+        for(var i = 0; i < SearchModels[brandId].length; i++) {
+            if(SearchModels[brandId][i].split("|")[0] == modelId) {
+                return SearchModels[brandId][i].split("|")[1];
+            }
+        }
+        return "-";
+    }; 
+    
+    function ActivateSearch() {
+        
+        FillGenericLists();
+        FillYears();
+        FillPrices();
+        ApplyTriggers();
+        
+        if($.FallOverCompatability()) {
+            $("#YearFromSelect").css("display", "inline-block");
+            $("#YearToSelect").css("display", "inline-block");
+            $("#PriceFromSelect").css("display", "inline-block");
+            $("#PriceToSelect").css("display", "inline-block");
+            $(".bigsearch-filters-inner-box-slider").css("display", "none");
+            $(".bigsearch-filters-inner-box-rangeinfo").css("display", "none");
+            $("UL.bigsearch-filters-inner-box-radio").addClass("FailOver");
+            $("#bigsearch-results").addClass("FailOver");
+        }
+        
+        $("#MainSearchBox").AutoComplete("/assets/js/autocomplete-search-main.js", "bigsearch-autocomplete", "<h3>Escribe una marca, modelo o tipo...</h3>", function(resultElement){
+
+            resultElement.find("A").on("click", function(){
+                var brand = $(this).parent().data("brand");
+                var model = $(this).parent().data("model");
+                var edition = $(this).parent().data("edition");
+                var objecttype = $(this).parent().data("objecttype");
+                var objectcategory = $(this).parent().data("objectcategory");
+                $("#ObjectType").val(objecttype);
+                $("#ObjectCategory").val(objectcategory);
+                $("#Brand").val(brand);
+                $("#Model").val(model);
+                $("#Edition").val(edition);
+                $("#MainSearchBox").val($(this).text());
+                FillSecondaryBrands();
+                FillSecondaryModels();
+                FillSecondaryEditions();
+                DoSearch();
+            });
+            
+        });
+        
+        $("#LocationSearchBox").AutoComplete("/assets/js/autocomplete-search-location.js", "bigsearch-autocomplete", "<h3>Escribe una ciudad o provincia...</h3>", function(resultElement){
+
+            resultElement.find("A").on("click", function(){
+                var location = $(this).parent().data("location");
+                $("#Location").val(location);
+                $("#LocationSearchBox").val($(this).text());
+                DoSearch();
+            });
+            
+        });
+        
+        $("#bigsearch-results-inner-topbar-controls UL.generic-link-dropdown A").on("click", function(){
+            var order = $(this).data("order");
+            var column = $(this).data("column");
+            var text  = $(this).data("text");
+            $("#OrderColumn").val(column);
+            $("#OrderDirection").val(order);
+            $("#OrderText").text(text);
+            DoSearch();
+        });
+        
+        function DoSearch() {
+
+            // Get vars
+
+            var selectedObjectType = $("#ObjectType").val();
+            var selectedObjectCategory = $("#ObjectCategory").val();
+            var selectedBrand = $("#Brand").val();
+            var selectedModel = $("#Model").val();
+            var selectedEdition = $("#Edition").val();
+            var selectedFuel = $("INPUT[Name='SearchFuel']:checked").val();
+            var selectedCondition = $("#Condition").val();
+            var selectedPriceFrom = $("#PriceFrom").val();
+            var selectedPriceTo = $("#PriceTo").val();
+            var selectedYearFrom = $("#YearFrom").val();
+            var selectedYearTo = $("#YearTo").val();
+            var selectedLocation = $("#Location").val();
+            var selectedTransmission = $("#Transmission").val();
+            var selectedCylinders = $("#Cylinders").val();
+            var selectedTraction = $("#Traction").val();
+            var selectedCompCabin = $("#CompCabin").val();
+            var selectedMileage = $("#Mileage").val();
+            var selectedColor = $("#Color").val();
+            var selectedCustomerType = $("#CustomerType").val();
+            var selectedOrderDirection = $("#OrderDirection").val();
+            var selectedOrderColumn = $("#OrderColumn").val();
+            
+            // Build query url
+
+            var searchUrl = "/buscar/?do=1";
+
+            if(selectedObjectType != 0)
+                searchUrl += "&ObjectType=" + selectedObjectType;
+                
+            if(selectedObjectCategory != 0)
+                searchUrl += "&ObjectCategory=" + selectedObjectCategory;
+
+            if(selectedBrand != 0)
+                searchUrl += "&Brand=" + selectedBrand;
+            
+            if(selectedModel != 0)
+                searchUrl += "&Model=" + selectedModel;
+            
+            if(selectedEdition != 0)
+                searchUrl += "&Edition=" + selectedEdition;
+            
+            if(selectedFuel != 0)
+                searchUrl += "&Fuel=" + selectedFuel;
+            
+            if(selectedLocation != 0)
+                searchUrl += "&Location=" + selectedLocation;
+
+            if(selectedPriceFrom && selectedPriceTo && (selectedPriceFrom != 0 || selectedPriceTo != 0))
+                searchUrl += "&PriceFrom=" + selectedPriceFrom + "&PriceTo=" + selectedPriceTo;
+
+            if(selectedYearFrom && selectedYearFrom != 0 && selectedYearTo && selectedYearTo != 0)
+                searchUrl += "&YearFrom=" + selectedYearFrom + "&YearTo=" + selectedYearTo;
+
+            //Fuel
+
+            if(selectedTraction != 0)
+                searchUrl += "&Traction=" + selectedTraction;
+            
+            if(selectedCompCabin != 0)
+                searchUrl += "&CompCabin=" + selectedCompCabin;
+            
+            if(selectedTransmission != 0)
+                searchUrl += "&Transmission=" + selectedTransmission;
+            
+            if(selectedCylinders != 0)
+                searchUrl += "&Cylinders=" + selectedCylinders;
+            
+            if(selectedColor != 0)
+                searchUrl += "&Color=" + selectedColor;
+            
+            if(selectedCondition != 0)
+                searchUrl += "&Condition=" + selectedCondition;
+
+            if(selectedCustomerType != "")
+                searchUrl += "&CustomerType=" + selectedCustomerType;
+
+            if(selectedMileage != "0,0" && selectedMileage.indexOf(",") != -1)
+            {
+                searchUrl += "&MileageFrom=" + selectedMileage.split(",")[0];
+                searchUrl += "&MileageTo=" + selectedMileage.split(",")[1];
+            }
+            
+            if(selectedOrderDirection != "")
+                searchUrl += "&OrderDirection=" + selectedOrderDirection;
+            
+            if(selectedOrderColumn != "")
+                searchUrl += "&OrderColumn=" + selectedOrderColumn;
+            
+            if($("#WithVideo").prop("checked")) searchUrl += "&WithVideo=1";
+            if($("#CompThirdRow").prop("checked")) searchUrl += "&CompThirdRow=1";
+            if($("#CompElectricTrunk").prop("checked")) searchUrl += "&CompElectricTrunk=1";
+            if($("#CompSeats").prop("checked")) searchUrl += "&CompSeats=1";
+            if($("#CompSunroof").prop("checked")) searchUrl += "&CompSunroof=1";
+            if($("#CompPanoramic").prop("checked")) searchUrl += "&CompPanoramic=1";
+            if($("#CompAdvKey").prop("checked")) searchUrl += "&CompAdvKey=1";
+            if($("#CompAdvRadio").prop("checked")) searchUrl += "&CompAdvRadio=1";
+            if($("#CompAdvLight").prop("checked")) searchUrl += "&CompAdvLight=1";
+            if($("#CompNav").prop("checked")) searchUrl += "&CompNav=1";
+            if($("#CompCamera").prop("checked")) searchUrl += "&CompCamera=1";
+            
+            
+            LoadSearchResults(searchUrl);
+            //alert(searchUrl);
+            
+        };
+        
+        function ApplyTriggers() {
+            
+            $(".bigsearch-filters-inner-box-others SELECT").on("change", function(e){
+                DoSearch();
+            });
+            
+            $(".bigsearch-filters-inner-box-others INPUT[type=checkbox]").on("click", function(e){
+                DoSearch();
+            });
+            
+            $("INPUT[name='SearchFuel']").on("change", function(e){
+                DoSearch();
+            });
+   
+        };
+        
+        function FillPrices() {
+            
+            if($("#PriceFrom").val() == 0)
+                $("#PriceFrom").val(SearchPriceRanges[0]);
+                
+            if($("#PriceTo").val() == 0)
+                $("#PriceTo").val(SearchPriceRanges[SearchPriceRanges.length-1]*10);
+            
+            var currentSelection = new Array();
+            currentSelection[0] = parseInt($("#PriceFrom").val());
+            currentSelection[1] = parseInt($("#PriceTo").val());
+            
+            if(!$.FallOverCompatability()) {
+                
+                var priceSlider = document.getElementById('PriceSlider');
+
+                noUiSlider.create(priceSlider, {
+                    start: currentSelection,
+                    connect: true,
+                    behaviour: 'drag',
+                    step: 25000,
+                    range: {
+                        'min':0,
+                        'max':2075000
+                    }
+                });
+            
+                priceSlider.noUiSlider.on('update', function(values, handle){
+                    var lowValue = $.FormatNumber(values[0],0)
+                    var topValue = $.FormatNumber(values[1],0)
+                    var maxValue = parseInt(SearchPriceRanges[SearchPriceRanges.length-1]);
+                    if(parseInt(values[1]) > maxValue) topValue = $.FormatNumber(maxValue,0) + "+";
+                    $("#PriceLabelFrom").html(lowValue);
+                    $("#PriceLabelTo").html(topValue);
+                });
+            
+                priceSlider.noUiSlider.on('change', function(values, handle){
+
+                    var lowValue = parseInt(values[0]);
+                    var topValue = parseInt(values[1]);
+                    var maxValue = parseInt(SearchPriceRanges[SearchPriceRanges.length-1]);
+                    if(topValue > maxValue) topValue = (maxValue*10);
+
+                    if(lowValue != parseInt($("#PriceFrom").val()) || topValue != parseInt($("#PriceTo").val())) {
+                        $("#PriceFrom").val(lowValue);
+                        $("#PriceTo").val(topValue);
+                        DoSearch();
+                    }
+
+                });
+                
+            } else {
+            
+                $("#PriceFromSelect").each(function () {
+                    
+                    //$(this).append("<option value='0'>Desde</option>");
+                    var price = 0;
+                    var priceLabel = "";
+                    for(var i = 0; i < SearchPriceRanges.length; i++)
+                    {
+                        price = SearchPriceRanges[i];
+                        priceLabel = "RD$ " + $.FormatNumber(price,0);
+                        $(this).append("<option value='" + price + "'> " + priceLabel + "</option>");
+                    }
+                    
+                    $(this).on("change", function() {
+                        $("#PriceFrom").val($(this).val());
+                        DoSearch();
+                    });
+                    
+                });
+
+                $("#PriceToSelect").each(function () {
+                    
+                    //$(this).append("<option value='0'>Hasta</option>");
+                    var price = 0;
+                    var priceLabel = "";
+                    for(var i = 1; i < SearchPriceRanges.length; i++)
+                    {
+                        price = SearchPriceRanges[i];
+                        priceLabel = "RD$ " + $.FormatNumber(price,0);
+                        $(this).append("<option value='" + price + "'> " + priceLabel + "</option>");
+                    }
+                    price = SearchPriceRanges[SearchPriceRanges.length-1] * 10;
+                    priceLabel = "RD$ " + $.FormatNumber(SearchPriceRanges[SearchPriceRanges.length-1],0) + "+";
+                    $(this).append("<option value='" + price + "'> " + priceLabel + "</option>");
+                    
+                    $(this).on("change", function() {
+                        $("#PriceTo").val($(this).val());
+                        DoSearch();
+                    });
+                    
+                });
+                
+                
+            
+            }
+            
+        };
+        
+        function FillYears() {
+            
+            if($("#YearFrom").val() == 0)
+                $("#YearFrom").val(SearchYearRanges[0]);
+                
+            if($("#YearTo").val() == 0)
+                $("#YearTo").val(SearchYearRanges[1]);
+            
+            var currentSelection = new Array();
+            currentSelection[0] = parseInt($("#YearFrom").val());
+            currentSelection[1] = parseInt($("#YearTo").val());
+            
+            if(!$.FallOverCompatability()) {
+            
+                var yearSlider = document.getElementById('YearSlider');
+
+                noUiSlider.create(yearSlider, {
+                    start: currentSelection,
+                    connect: true,
+                    behaviour: 'drag',
+                    step: 1,
+                    range: {
+                        'min': parseInt(SearchYearRanges[0]),
+                        'max': parseInt(SearchYearRanges[1])
+                    }
+                });
+
+                yearSlider.noUiSlider.on('update', function(values, handle){
+                    $("#YearLabelFrom").html(parseInt(values[0]));
+                    $("#YearLabelTo").html(parseInt(values[1]));
+                });
+
+                yearSlider.noUiSlider.on('change', function(values, handle){
+                    var yearFrom = parseInt(values[0]);
+                    var yearTo = parseInt(values[1]);
+                    if(yearFrom != parseInt($("#YearFrom").val()) || yearTo != parseInt($("#YearTo").val())) {
+                        $("#YearFrom").val(parseInt(values[0]));
+                        $("#YearTo").val(parseInt(values[1]));
+                        DoSearch();
+                    }
+                });
+            
+            } else {
+                
+                $("#YearFromSelect").each(function () {
+                    
+                    $(this).append("<option value='0'>Desde</option>");
+                    var yearStart = (SearchYearRanges[0] > SearchYearRanges[1] ? SearchYearRanges[0] : SearchYearRanges[1]);
+                    var yearEnd = (SearchYearRanges[0] < SearchYearRanges[1] ? SearchYearRanges[0] : SearchYearRanges[1]);
+                    for(var i = yearEnd; i <= yearStart; i++)
+                    {
+                        $(this).append("<option value='" + i + "'>" + i + "</option>");
+                    }
+                              
+                    $(this).on("change", function() {
+                        $("#YearFrom").val($(this).val());
+                        DoSearch();
+                    });
+                    
+                });
+                
+                $("#YearToSelect").each(function () {
+                    $(this).append("<option value='0'>Hasta</option>");
+                    var yearStart = (SearchYearRanges[0] > SearchYearRanges[1] ? SearchYearRanges[0] : SearchYearRanges[1]);
+                    var yearEnd = (SearchYearRanges[0] < SearchYearRanges[1] ? SearchYearRanges[0] : SearchYearRanges[1]);
+                    for(var i = yearEnd; i <= yearStart; i++)
+                    {
+                        $(this).append("<option value='" + i + "'>" + i + "</option>");
+                    }
+                    
+                                        
+                    $(this).on("change", function() {
+                        $("#YearTo").val($(this).val());
+                        DoSearch();
+                    });
+                    
+                });
+                
+            }
+                        
+        };
+        
+        function FillGenericLists() {
+            
+            // Reset
+            
+            $("#Condition option").remove();
+            $("#Transmission option").remove();
+            $("#Traction option").remove();
+            $("#Cylinders option").remove();
+            $("#Mileage option").remove();
+            $("#Color option").remove();
+            $("#CustomerType option").remove();
+            
+            // Defaults
+
+            $("#Condition").append("<option value='0'>Nuevo y Usado</option>");
+            $("#Transmission").append("<option value='0'>Todas</option>");
+            $("#Traction").append("<option value='0'>Todas</option>");
+            $("#Cylinders").append("<option value='0'>Todos</option>");
+            $("#Mileage").append("<option value='0,0'>Todos</option>");
+            $("#Color").append("<option value='0'>Todos</option>");
+            $("#CustomerType").append("<option value=''>Todos</option>");
+            $("#CompCabin").append("<option value=''>Todos</option>");
+            
+            // Fill conditions
+            
+            for(var i = 0; i < SearchConditions.length; i++)
+            {
+               $("#Condition").append("<option value='" + SearchConditions[i].split("|")[0] + "'>" + SearchConditions[i].split("|")[1] + "</option>");
+            }
+            
+            // Fill transmision
+            
+            for(var i = 0; i < SearchTransmissions.length; i++)
+            {
+               $("#Transmission").append("<option value='" + SearchTransmissions[i].split("|")[0] + "'>" + SearchTransmissions[i].split("|")[1] + "</option>");
+            }
+            
+            // Fill traction
+            
+            for(var i = 0; i < SearchTractions.length; i++)
+            {
+               $("#Traction").append("<option value='" + SearchTractions[i].split("|")[0] + "'>" + SearchTractions[i].split("|")[1] + "</option>");
+            }
+            
+            // Fill cylinders
+            
+            for(var i = 0; i < SearchCylinders.length; i++)
+            {
+               $("#Cylinders").append("<option value='" + SearchCylinders[i].split("|")[0] + "'>" + SearchCylinders[i].split("|")[1] + "</option>");
+            }
+            
+            // Fill mileage
+            
+            for(var i = 0; i < SearchMileageRanges.length; i++)
+            {
+                var milFrom = SearchMileageRanges[i];
+                var milTo = SearchMileageRanges[i+1];
+                var milValue = milFrom + "," + (milTo ? milTo : (milFrom*10));
+                var milLabel = "";
+                if(milTo) milLabel = $.FormatNumber(milFrom,0) + " hasta " + $.FormatNumber(milTo,0);
+                if(!milTo) milLabel = $.FormatNumber(milFrom,0) + "+";
+                $("#Mileage").append("<option value='" + milValue + "'> " + milLabel + "</option>");
+            }
+            
+            // Fill color
+            
+            for(var i = 0; i < SearchColors.length; i++)
+            {
+               $("#Color").append("<option value='" + SearchColors[i].split("|")[0] + "'>" + SearchColors[i].split("|")[1] + "</option>");
+            }
+            
+            // Fill CustomerTypes
+            
+            for(var i = 0; i < SearchCustomerTypes.length; i++)
+            {
+               $("#CustomerType").append("<option value='" + SearchCustomerTypes[i].split("|")[0] + "'>" + SearchCustomerTypes[i].split("|")[1] + "</option>");
+            }
+            
+            // Fill cabin types
+            
+            $("#CompCabin").append("<option value='1'>Cabina simple</option>");
+            $("#CompCabin").append("<option value='2'>Cabina y cuarta</option>");
+            $("#CompCabin").append("<option value='3'>Cabina y media</option>");
+            $("#CompCabin").append("<option value='4'>Cabina doble</option>");
+            
+        };
+
+    };
+    
+    function ActivatePhotos() {
+        
+        $("#bigsearch-results-inner-results LI SPAN").on("click", function (e) {
+
+            e.preventDefault();
+            var currentImgUrl = $(this).parent().find("IMG.real").attr("src");
+            var photoString = $(this).parent().parent().parent().data("photos");
+            var offsetDesired = $(this).hasClass("prev") ? -1 : 1;
+            var currentPhotoId = GetImageIdFromUrl(currentImgUrl);
+            var newId = GetImageIdInList(currentPhotoId, photoString, offsetDesired);
+            var newImgUrl = SetImageIdToUrl(newId, currentImgUrl);
+
+            $(this).parent().find("IMG.real").attr("src", newImgUrl);
+
+        });
+        
+        function GetImageIdFromUrl(photoUrl) {
+            var id = photoUrl;
+            id = id.substring(id.lastIndexOf("/") + 1);
+            id = id.substring(0, id.indexOf("."));
+            return id;
+        };
+
+        function SetImageIdToUrl(id, photoUrl) {
+            var newUrl = photoUrl;
+            newUrl = newUrl.substring(0, newUrl.lastIndexOf("/") + 1);
+            newUrl += id;
+            newUrl += ".jpg";
+            return newUrl;
+        };
+
+        function GetImageIdInList(currentId, photoString, offset) {
+
+            var photos = photoString.split(",");
+            var currentIndex = 0;
+            for (var i = 0; i < photoString.length; i++) {
+                if (photos[i] == currentId) {
+                    currentIndex = i;
+                    break;
+                }
+            }
+
+            currentIndex += offset;
+            if (currentIndex < 0) currentIndex = photos.length - 1;
+            if (currentIndex > photos.length - 1) currentIndex = 0;
+            return photos[currentIndex];
+
+        };
+        
+    };
+    
+};
+
+jQuery.DealerSetup = function() {
+    
+    $.StickyScrollable({ container:'#detail', scrollable:'#detail-right', safetyMargin:50 }); 
+    
+    $.BackLinkSetCurrentURL();
+
+    // Back link enabling, via cookie check
+    
+    if ($.BackLinkExists("DealerList")) {
+        $("#BackLink A").attr('href', $.BackLinkGet(false, "DealerList"));
+    } else {
+        $("#BackLink").remove();
+    }
+    
+    // Contact form
+    
+    $("#ContactSeller").on("click", function(){
+        
+        $("#ContactSeller").parent().css("display", "none");
+        $("#ContactForm").addClass("visible");
+        $("#MainForm").find("input[type=button]").css('visibility', 'hidden');
+        
+        $.ajax({
+            url: "/assets/js/GetFormRequestId?t=" + new Date().getTime(),
+            dataType: "text",
+            success: function (data) {
+                
+                $("#FormRequestId").val(data);
+                $.LoadReCaptcha("ReCaptchaContainer", "normal");
+                $("#MainForm").find("input[type=button]").css('visibility', '');
+                
+                // Enable form
+                
+                $('#SubmitButton').click(function () {
+                    $('#MainForm').submit();
+                    return false;
+                });
+
+                $("#MainForm").submit(function () {
+
+                    if (!$.FormIsSubmitting('#MainForm')) {
+
+                        $.FormSubmitting(true, { form: '#MainForm', buttons: '#SubmitButton' });
+
+                        $.SendForm({
+                            url: $(this).attr('action'),
+                            data: $(this).serialize(),
+                            onSuccess: function () {
+                                $("#ContactForm").removeClass("visible");
+                                $("#ContactFormSuccess").addClass("visible");
+                            },
+                            onValidationError: function () {
+                                $.FormSubmitting(false, { form: '#MainForm', buttons: '#SubmitButton' });
+                            }
+                        });
+
+                    }
+
+                    return false;
+
+                });
+
+                
+            }
+        });
+        
+    });
+    
+};
+
+jQuery.AdDetailSetup = function() {
+        
+    // Back link enabling, via cookie check
+    
+    if ($.BackLinkExists()) {
+        $(".back-button A").attr('href', $.BackLinkGet());
+    } else {
+        $(".back-button").remove();
+    }
+    
+    // Correlation setting
+    
+    Register();
+    
+    // Sticky for vendor info
+    
+    $.StickyScrollable({ container:'#detail', scrollable:'#detail-right', safetyMargin:50 }); 
+    
+    // Handle favourites
+
+    $(".save-button A").on("click", function(){
+        $.FavouritesAdd(adId);
+    });
+    
+    // Loan calc
+
+    //$.LoanCalcSetup();
+    
+    // Sharing
+    
+    $("#detail-ad-info-share > A#ShareFb").click(function(){
+        $.SharerDesktop('fb');
+    });
+    
+    $("#detail-ad-info-share > A#ShareTw").click(function(){
+        $.SharerDesktop('tweet');
+    });
+    
+    $("#detail-ad-info-share > A#ShareGg").click(function(){
+        $.SharerDesktop('g+');
+    });
+    
+    $("#detail-ad-info-share > A#ShareEm").click(function(){
+        $.SharerDesktop('email');
+    });
+    
+    // Contact form
+    
+    $("#ContactSeller, #ContactSellerTestDrive").on("click", function(event){
+
+        if(event.target.id == "ContactSellerTestDrive")
+        {
+            $("#FormHeader1").css("display", "none");
+            $("#FormHeader2").css("display", "block");
+            $("#FormIsTestDrive").val("1");
+        } else {
+            $("#FormHeader1").css("display", "block");
+            $("#FormHeader2").css("display", "none");
+            $("#FormIsTestDrive").val("0");
+        }
+        
+        $.ajax({
+            url: "/assets/js/GetFormRequestId?t=" + new Date().getTime(),
+            dataType: "text",
+            success: function (data) {
+                
+                $("#FormRequestId").val(data);
+                $.LoadReCaptcha("ReCaptchaContainer", "normal");
+                $("#MainForm").find("input[type=button]").css('visibility', '');
+                $("#Name").focus();
+                $('#ContactOverlay.overlay-form').addClass('visible');
+                
+                // Enable form
+                
+                $('#SubmitButton').click(function () {
+                    $('#MainForm').submit();
+                    return false;
+                });
+                
+                $('#CloseButton, #CancelButton').click(function () {
+                    $('#ContactOverlay.overlay-form').removeClass('visible');
+                });
+
+                $("#MainForm").submit(function () {
+
+                    if (!$.FormIsSubmitting('#MainForm')) {
+
+                        $.FormSubmitting(true, { form: '#MainForm', buttons: '#SubmitButton' });
+
+                        $.SendForm({
+                            url: $(this).attr('action'),
+                            data: $(this).serialize(),
+                            onSuccess: function () {
+                                $("#MainForm").css("display", "none");
+                                $("#FormMessage").css("display", "none");
+                                $("#FormSentMessage").css("display", "block");
+                                $("#FormSent").css("display", "block");
+                            },
+                            onValidationError: function () {
+                                $.FormSubmitting(false, { form: '#MainForm', buttons: '#SubmitButton' });
+                            }
+                        });
+
+                    }
+
+                    return false;
+
+                });
+
+            }
+        });         
+
+    });
+
+    // Remove white spacing for inline-block
+
+    $("#detail-ad-info-photos").RemoveWhiteSpacing();
+    $("#detail-ad-info-photos UL").RemoveWhiteSpacing();
+    $("#detail-ad-info-photos LI").RemoveWhiteSpacing();
+    $("#detail-ad-info-photos A").RemoveWhiteSpacing();
+    
+    // Photos management (enlarge, loading, high res assignment)
+
+    $("#detail-ad-info-photos > UL > LI > A").on('click', function(e) {
+        e.preventDefault();
+        var selectedIndex = $(this).parent().index();
+        var href = $(this).attr("href");
+        var indexInGallery = GalleryGetIndexByPhotoId($(this).data("photo"));
+        GalleryOpen(indexInGallery);
+    });
+    
+    $("#photo-viewer-image-prev A").on('click', function() {
+        GalleryPrev();        
+    }); 
+    
+    $("#photo-viewer-image-next A").on('click', function() {
+        GalleryNext();        
+    }); 
+    
+    $("#photo-viewer-close A").on('click', function() {
+        GalleryClose();        
+    });  
+
+    $("#photo-viewer-background").on('click', function() {
+        GalleryClose();
+    });  
+
+    $("#photo-viewer-thumbs LI A").on('click', function(e) {
+
+        e.preventDefault();
+        var src = $(this).attr("href");
+        var applyAsBackground = false;
+
+        $("#photo-viewer-thumbs LI A").removeClass("selected");
+        $(this).addClass("selected");
+
+        // This is to apply the image as a background
+        // Only if the browser supports contain background-size
+
+        var testBgSize = document.createElement("DIV");
+        try {
+            testBgSize.style.backgroundSize = "contain";
+        } catch(err) { }
+
+        applyAsBackground = (testBgSize.style.backgroundSize == "contain");
+
+        if(applyAsBackground)
+        {
+            $("#photo-viewer-image IMG").css("display", "none");
+            $("#photo-viewer-image-wrapper-table").css("background-image", "url(" + src + ")");
+        }
+        else
+        {
+            $("#photo-viewer-image IMG").css("display", "");
+            $("#photo-viewer-image IMG").attr("src", src);
+        }
+
+    });
+    
+    function GalleryOpen(photoIndex) {
+        
+        if(photoIndex == null) photoIndex = 0;
+        
+        if(!$('#photo-viewer').hasClass("visible")) {
+            $('#photo-viewer').addClass('visible');
+        }
+        $('#photo-viewer').addClass('visible');
+        
+        GallerySetIndex(photoIndex);
+        GalleryBindKeyboardNav();
+        
+    };
+    
+    function GalleryClose() {
+        GalleryUnBindKeyboardNav();
+        if($('#photo-viewer').hasClass("visible")) {
+            $('#photo-viewer').removeClass('visible');
+        }
+    };
+        
+    function GallerySetIndex(photoIndex) {
+        $("#photo-viewer-thumbs LI").eq(photoIndex).find("A").trigger("click");
+    };
+    
+    function GalleryGetIndexByPhotoId(id) {
+        var foundIndex = $("#photo-viewer-thumbs LI:has(A[data-photo="+id+"])").index();
+        if(foundIndex == -1) foundIndex = 0;
+        return foundIndex;
+    };
+        
+    function GalleryBindKeyboardNav() {
+    
+        $(document).on("keydown", function(e) {
+            
+            // Close/esc
+            if(e.keyCode == 27)
+                GalleryClose();
+
+            // Previous
+            if(e.keyCode == 37 || e.keyCode == 38)
+                GalleryPrev();
+
+            // Next
+            if(e.keyCode == 39 || e.keyCode == 40)
+                GalleryNext();
+            
+        });
+    };
+    
+    function GalleryNext() {
+        
+        if($("#photo-viewer-thumbs LI A.selected").length == 1) {
+
+            var selectedIndex = $("#photo-viewer-thumbs LI").index($("LI:has(A.selected)"));
+            var nextIndex = -1;
+            var total = $("#photo-viewer-thumbs LI").length;
+            nextIndex = selectedIndex + 1;
+            if(nextIndex >= total) nextIndex = 0;
+            
+            if(nextIndex != -1) {
+                GallerySetIndex(nextIndex);
+            }
+
+        }
+        
+    };
+    
+    function GalleryPrev() {
+        
+        if($("#photo-viewer-thumbs LI A.selected").length == 1) {
+
+            var selectedIndex = $("#photo-viewer-thumbs LI").index($("LI:has(A.selected)"));
+            var nextIndex = -1;
+            var total = $("#photo-viewer-thumbs LI").length;
+            nextIndex = selectedIndex - 1;
+            if(nextIndex < 0) nextIndex = total-1;
+            
+            if(nextIndex != -1) {
+                GallerySetIndex(nextIndex);
+            }
+
+        }
+        
+    };
+    
+    function GalleryUnBindKeyboardNav() {
+        $(document).unbind("keydown");
+    };
+    
+    function Register() {
+        setTimeout(RegisterDo, 1000);
+    };
+    
+    function RegisterDo() {
+        
+        var p1 = adId;
+        var p2 = adKey.replace(/0/g, '');
+        p3 = $.cookie('AdRegister');
+        
+        if(p3 == null) {
+            p3 = $.RandomString(64);
+            $.cookie('AdRegister', p3, { expires: 999, path: '/', domain: TopDomainName });
+        }
+        
+        var u = AdRegisterPublicUrl + "?action=Register&p3=" + p3 + "&p2=" + p2 + "&p1=" + p1;
+        var ping = new Image();
+        ping.src = u;
+        
+        ping.addEventListener('load', function() {  
+         }, false);
+        
+        ping.addEventListener('error', function() {  
+         }, false);
+        
+    };
+    
+};
+
+jQuery.AdFinanzSetup = function (options) {
+	
+	var defaults = {
+        waitMs: 1500,
+        forNewCar: 0,
+        carAgeYears: 0,
+        carPrice: 0,
+        carBrand: 0,
+        carFuel: 0,
+        carCategory: 0,
+        carAdId: 0,
+        carAdCustomerId :0,
+        onBeforeSend: null,
+        onDataAvailable: null,
+        onError: null
+	};
+
+	var options = $.extend(defaults, options);
+
+	// Call ajax
+	
+    if(options.onBeforeSend) options.onBeforeSend();	
+    
+    setTimeout(function() {
+    
+        var url = '/Finanz/CalculateFast';
+        url += '?ForNewCar=' + options.forNewCar;
+        url += '&CarAgeYears=' + options.carAgeYears;
+        url += '&CarPrice=' + options.carPrice;
+        url += '&CarAdId=' + options.carAdId;
+        url += '&CarAdCustomerId=' + options.carAdCustomerId;
+        url += '&CarBrand=' + options.carBrand;
+        url += '&CarFuel=' + options.carFuel;
+        url += '&CarCategory=' + options.carCategory;
+        
+        $.ajax({
+            type: 'GET',
+            url: url,
+            success: function(data){
+                if(options.onDataAvailable) options.onDataAvailable(data);		
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                if(options.onError) options.onError(textStatus);
+            }
+        });
+        
+    }, options.waitMs);
+			
+};
+
+jQuery.AdFinanzSetupPromo = function (options) {
+	
+	var defaults = {
+        waitMs: 1500,
+        forNewCar: 0,
+        carAgeYears: 0,
+        carPrice: 0,
+        carBrand: 0,
+        carFuel: 0,
+        carCategory: 0,
+        carAdId: 0,
+        carAdCustomerId :0,
+        onBeforeSend: null,
+        onDataAvailable: null,
+        onError: null
+	};
+
+	var options = $.extend(defaults, options);
+
+	// Call ajax
+	
+    if(options.onBeforeSend) options.onBeforeSend();	
+    
+    setTimeout(function() {
+    
+        var url = '/Finanz/CalculateMultiple';
+        url += '?entity=30&ForNewCar=' + options.forNewCar;
+        url += '&CarAgeYears=' + options.carAgeYears;
+        url += '&CarPrice=' + options.carPrice;
+        url += '&CarAdId=' + options.carAdId;
+        url += '&CarAdCustomerId=' + options.carAdCustomerId;
+        url += '&CarBrand=' + options.carBrand;
+        url += '&CarFuel=' + options.carFuel;
+        url += '&CarCategory=' + options.carCategory;
+        
+        $.ajax({
+            type: 'GET',
+            url: url,
+            success: function(data){
+                if(options.onDataAvailable) options.onDataAvailable(data);		
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                if(options.onError) options.onError(textStatus);
+            }
+        });
+        
+    }, options.waitMs);
+			
+};
+
+jQuery.AdFinanzSetupPromoMultiple = function (options) {
+	
+	var defaults = {
+        waitMs: 100,
+        forNewCar: 0,
+        carAgeYears: 0,
+        carPrice: 0,
+        carBrand: 0,
+        carFuel: 0,
+        carCategory: 0,
+        carAdId: 0,
+        carAdCustomerId :0,
+        onBeforeSend: null,
+        onDataAvailable: null,
+        onError: null
+	};
+
+	var options = $.extend(defaults, options);
+
+	// Call ajax
+	
+    if(options.onBeforeSend) options.onBeforeSend();	
+    
+    setTimeout(function() {
+    
+        var url = '/Finanz/CalculateFastMultipleEntities';
+        url += '?entity=20&ForNewCar=' + options.forNewCar;
+        url += '&CarAgeYears=' + options.carAgeYears;
+        url += '&CarPrice=' + options.carPrice;
+        url += '&CarAdId=' + options.carAdId;
+        url += '&CarAdCustomerId=' + options.carAdCustomerId;
+        url += '&CarBrand=' + options.carBrand;
+        url += '&CarFuel=' + options.carFuel;
+        url += '&CarCategory=' + options.carCategory;
+        
+        $.ajax({
+            type: 'GET',
+            url: url,
+            success: function(data){
+                if(options.onDataAvailable) options.onDataAvailable(data);		
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                if(options.onError) options.onError(textStatus);
+            }
+        });
+        
+    }, options.waitMs);
+			
+};
+
+jQuery.AdSearchRegister = function (data, channel) {
+        
+    var p1 = 1;
+    var p2 = data;
+    var p3 = $.cookie('AdRegister');
+    var p4 = parseInt(channel);
+    
+    if(p3 == null) {
+        p3 = $.RandomString(64);
+        $.cookie('AdRegister', p3, { expires: 999, path: '/', domain: TopDomainName });
+    }
+
+    var u = AdRegisterPublicUrl + "?action=RegisterAdSearch&p3=" + p3 + "&p2=" + p2 + "&p1=" + p1 + "&p4=" + p4;
+    var ping = new Image();
+    ping.src = u;
+
+    ping.addEventListener('load', function() {  
+     }, false);
+
+    ping.addEventListener('error', function() {  
+     }, false);
+
+};
+
+jQuery.FinanzSearchRegister = function (data, channel) {
+        
+    var p1 = 1;
+    var p2 = data;
+    var p3 = $.cookie('AdRegister');
+    var p4 = parseInt(channel);
+
+    if(p3 == null) {
+        p3 = $.RandomString(64);
+        $.cookie('AdRegister', p3, { expires: 999, path: '/', domain: TopDomainName });
+    }
+
+    var u = AdRegisterPublicUrl + "?action=RegisterFinanzSearch&p3=" + p3 + "&p2=" + p2 + "&p1=" + p1 + "&p4=" + p4;
+    var ping = new Image();
+    ping.src = u;
+
+    ping.addEventListener('load', function() {  
+     }, false);
+
+    ping.addEventListener('error', function() {  
+     }, false);
+
+};
+
+jQuery.MailAlertsSetup = function () {
+    
+    // Setup form
+    
+    $("#CreateMailAlert").on("click", function(){ 
+        
+        // Clear status
+
+        $("#ReCaptchaContainer").html('');
+        $("#MainForm").css("display", "");
+        $("#FormMessage").css("display", "");
+        $("#FormMessage2").css("display", "");
+        $("#FormMessage3").css("display", "");
+        $("#FormSentMessage").css("display", "none");
+        $("#FormSent").css("display", "none");
+        $.FormSubmitting(false, { form: '#MainForm', buttons: '#SubmitButton' });
+        
+        // Copy search data to notification
+
+        $("#MailAlertObjectCategory").val($("#ObjectCategory").val());
+        $("#MailAlertBrand").val($("#Brand").val());
+        $("#MailAlertModel").val($("#Model").val());
+        $("#MailAlertPriceFrom").val($("#PriceFrom").val());
+        $("#MailAlertPriceTo").val($("#PriceTo").val());
+        $("#MailAlertYearFrom").val($("#YearFrom").val());
+        $("#MailAlertYearTo").val($("#YearTo").val());
+        
+        // Continue
+        
+        $.ajax({
+            url: "/assets/js/GetFormRequestId?t=" + new Date().getTime(),
+            dataType: "text",
+            success: function (data) {
+                
+                $("#FormRequestId").val(data);
+                $.LoadReCaptcha("ReCaptchaContainer", "normal");
+                $("#MainForm").find("input[type=button]").css('visibility', '');
+                $("#Email").focus();
+                $('#MailAlertOverlay.overlay-form').addClass('visible');
+                
+                // Enable form
+                
+                $('#SubmitButton').click(function () {
+                    $('#MainForm').submit();
+                    return false;
+                });
+                
+                $('#CloseButton, #CancelButton').click(function () {
+                    $('#MailAlertOverlay.overlay-form').removeClass('visible');
+                });
+
+                $("#MainForm").submit(function () {
+
+                    if (!$.FormIsSubmitting('#MainForm')) {
+
+                        $.FormSubmitting(true, { form: '#MainForm', buttons: '#SubmitButton' });
+
+                        $.SendForm({
+                            url: $(this).attr('action'),
+                            data: $(this).serialize(),
+                            onSuccess: function () {
+                                $("#MainForm").css("display", "none");
+                                $("#FormMessage").css("display", "none");
+                                $("#FormMessage2").css("display", "none");
+                                $("#FormMessage3").css("display", "none");
+                                $("#FormSentMessage").css("display", "block");
+                                $("#FormSent").css("display", "block");
+                            },
+                            onValidationError: function () {
+                                $.FormSubmitting(false, { form: '#MainForm', buttons: '#SubmitButton' });
+                            }
+                        });
+
+                    }
+
+                    return false;
+
+                });
+
+            }
+        });         
+
+    });
+        
+};
+
+jQuery.HeaderScrollHide = function (hideOnPx) {
+    
+    if(hideOnPx == null)
+        hideOnPx = 70;
+    
+    $(window).on("scroll", function(){
+        
+        var distanceY = window.pageYOffset || document.documentElement.scrollTop
+        
+        if (distanceY > hideOnPx) {
+            $('#header').addClass('smaller');
+        } else {
+            $('#header').removeClass('smaller');
+        }
+        
+    });
+    
+};
+
+jQuery.HeaderMouseOverShow = function () {
+    
+    $("#header").on("mouseover", function(){
+        $(this).removeClass("smaller");
+    });
+
+    $("#header").on("mouseout", function(){
+        $(this).addClass("smaller");
+    });
+    
+};
+
+(function($){
+    jQuery.fn.extend({
+
+        SearchifyFrontpage: function(objectType) {
+
+            return this.each(function() { 
+
+                if(objectType == null)
+                    objectType = 1;
+                
+                // This is for the extended search trigger
+                
+                $(".homerow-1-left").mouseover(function (){
+                    $(".homerow-1").addClass("extended");
+                });
+                
+                $(".homerow-1-left").mouseleave(function (){
+                    $(".homerow-1").removeClass("extended");
+                });
+                
+                // This is for the extended special items
+                
+                $(".homerow-1-right").mouseover(function (){
+                    $(".homerow-1").addClass("extended-right");
+                });
+                
+                $(".homerow-1-right").mouseleave(function (){
+                    $(".homerow-1").removeClass("extended-right");
+                });
+                
+                
+                // Remove/reset lists
+                
+                $(this).find("#ObjectCategory option").remove();
+                $(this).find("#Model option").remove();
+                $(this).find("#Condition option").remove();
+                $(this).find("#YearFrom option").remove();
+                $(this).find("#YearTo option").remove();
+                $(this).find("#PriceFrom option").remove();
+                $(this).find("#PriceTo option").remove();
+                $(this).find("#Location option").remove();
+                
+                // Fill definitions for always present controls
+
+                $(this).find("#ObjectType").val(objectType);
+                $(this).find("#Model").append("<option value='0'>Todos los Modelos</option>");
+                $(this).find("#Condition").append("<option value='0'>Nuevo/Usado</option>");
+
+                FillBrands($(this));
+
+                for(var i = 0; i < SearchConditions.length; i++)
+                {
+                   $(this).find("#Condition").append("<option value='" + SearchConditions[i].split("|")[0] + "'>" + SearchConditions[i].split("|")[1] + "</option>");
+                }
+                $(this).find("#Condition").append("<option value='999'>Usado Garantizado</option>");
+
+                // Handle condition change for certified
+                
+                $(this).find("#Condition").unbind();
+                
+                $(this).find("#Condition").on("change", function() {
+                    if($(this).val() == '999') {
+                        location.href = '/garantizados';
+                    }
+                });
+                
+                // Handle refill of brands for category type. Resets also the models
+                
+                $(this).find("#ObjectCategory").unbind();
+                
+                $(this).find("#ObjectCategory").on("change", function() {
+                    
+                    FillBrands($(this));
+                    FillModels($(this));
+                    
+                });
+                
+                // Handle brand change and models fillup
+
+                $(this).find("#Brand").unbind();
+                
+                $(this).find("#Brand").on("change", function() {
+                    
+                    FillModels($(this));
+
+                });
+
+                // Definitions for controls not always present
+
+                $(this).find("#ObjectCategory").each(function () {
+                    $(this).append("<option value='0'>Tipos de " + SearchObjectTypes[objectType-1].split("|")[1] + "</option>");
+                    for(var i = 0; i < SearchObjectCategories.length; i++)
+                    {
+                        if(SearchObjectCategories[i].split("|")[1] == objectType)
+                            $(this).append("<option value='" + SearchObjectCategories[i].split("|")[0] + "'>" + SearchObjectCategories[i].split("|")[3] + "</option>");
+                    }
+                });
+                
+                $(this).find("#YearFrom").each(function () {
+                    $(this).append("<option value='0'>-</option>");
+                    var yearStart = (SearchYearRanges[0] > SearchYearRanges[1] ? SearchYearRanges[0] : SearchYearRanges[1]);
+                    var yearEnd = (SearchYearRanges[0] < SearchYearRanges[1] ? SearchYearRanges[0] : SearchYearRanges[1]);
+                    for(var i = yearStart; i >= yearEnd; i--)
+                    {
+                        $(this).append("<option value='" + i + "'>" + i + "</option>");
+                    }
+                });
+                
+                $(this).find("#YearTo").each(function () {
+                    $(this).append("<option value='0'>-</option>");
+                    var yearStart = (SearchYearRanges[0] > SearchYearRanges[1] ? SearchYearRanges[0] : SearchYearRanges[1]);
+                    var yearEnd = (SearchYearRanges[0] < SearchYearRanges[1] ? SearchYearRanges[0] : SearchYearRanges[1]);
+                    for(var i = yearStart; i >= yearEnd; i--)
+                    {
+                        $(this).append("<option value='" + i + "'>" + i + "</option>");
+                    }
+                });
+                
+                $(this).find("#PriceFrom").each(function () {
+                    $(this).append("<option value='0'>-</option>");
+                    var price = 0;
+                    var priceLabel = "";
+                    for(var i = 0; i < SearchPriceRanges.length; i++)
+                    {
+                        price = SearchPriceRanges[i];
+                        priceLabel = "RD$ " + $.FormatNumber(price,0);
+                        $(this).append("<option value='" + price + "'> " + priceLabel + "</option>");
+                    }
+                });
+
+                $(this).find("#PriceTo").each(function () {
+                    $(this).append("<option value='0'>-</option>");
+                    var price = 0;
+                    var priceLabel = "";
+                    for(var i = 1; i < SearchPriceRanges.length; i++)
+                    {
+                        price = SearchPriceRanges[i];
+                        priceLabel = "RD$ " + $.FormatNumber(price,0);
+                        $(this).append("<option value='" + price + "'> " + priceLabel + "</option>");
+                    }
+                    price = SearchPriceRanges[SearchPriceRanges.length-1] * 10;
+                    priceLabel = "RD$ " + $.FormatNumber(SearchPriceRanges[SearchPriceRanges.length-1],0) + "+";
+                    $(this).append("<option value='" + price + "'> " + priceLabel + "</option>");
+                });
+                
+                $(this).find("#PriceFrom").change(function () {
+                    var index1 = $(this).parentsUntil("form").find("#PriceFrom").prop('selectedIndex');
+                    var index2 = $(this).parentsUntil("form").find("#PriceTo").prop('selectedIndex');
+                    if(index1 > index2) {
+                        $(this).parentsUntil("form").find("#PriceTo").prop('selectedIndex', index1);
+                    }
+                })
+
+                $(this).find("#PriceTo").change(function () {
+                    var index1 = $(this).parentsUntil("form").find("#PriceFrom").prop('selectedIndex');
+                    var index2 = $(this).parentsUntil("form").find("#PriceTo").prop('selectedIndex');
+                    if(index2 < index1) {
+                        $(this).parentsUntil("form").find("#PriceFrom").prop('selectedIndex', index2);
+                    }
+                })
+
+                $(this).find("#Location").each(function () {
+                    $(this).append("<option value='0'>Todas las Provincias</option>");
+                    for(var i = 0; i < SearchLocations.length; i++)
+                    {
+                        // Override DN to separate in 4
+                        //if(SearchLocations[i].split("|")[0] == "6")
+                        //{
+                        //} else {
+                            $(this).append("<option value='" + SearchLocations[i].split("|")[0] + "'>" + SearchLocations[i].split("|")[1] + "</option>");
+                        //}
+                    }
+                });
+
+                // Search ignition
+                
+                $(this).find("#DoSearch").unbind();
+                
+                $(this).find("#DoSearch").on("click", function() {                    
+
+                    // Get vars
+
+                    var searchCodeCarId = $(this).parentsUntil("form").find("#CarId").val();
+                    var selectedObjectType = GetSelectedType($(this));
+                    var selectedObjectCategory = GetSelectedCategory($(this));
+                    var selectedBrand = $(this).parentsUntil("form").find("#Brand").val();
+                    var selectedBrandName = $(this).parentsUntil("form").find("#Brand option:selected").text();
+                    var selectedModel = $(this).parentsUntil("form").find("#Model").val();
+                    var selectedModelName = $(this).parentsUntil("form").find("#Model option:selected").text();
+                    var selectedCondition = $(this).parentsUntil("form").find("#Condition").val();
+
+                    var selectedPriceFrom = $(this).parentsUntil("form").find("#PriceFrom").val();
+                    var selectedPriceTo = $(this).parentsUntil("form").find("#PriceTo").val();
+                    var selectedYearFrom = $(this).parentsUntil("form").find("#YearFrom").val();
+                    var selectedYearTo = $(this).parentsUntil("form").find("#YearTo").val();
+                    var selectedLocation = $(this).parentsUntil("form").find("#Location").val();
+                    var selectedLocationName = $(this).parentsUntil("form").find("#Location option:selected").text();
+
+                    if(selectedLocation == null) selectedLocation = 0;
+                    
+                    // Check if we search by code/pid
+                    
+                    if(searchCodeCarId != null)
+                    {
+                        if(searchCodeCarId != "")
+                        {
+                            location.href = "/Id/" + searchCodeCarId;
+                            return;
+                        }
+                    }
+                    
+                    // Fix for when year or price are only selected in one side
+                    
+                    if(selectedYearFrom != 0 || selectedYearTo != 0)
+                    {
+                        if(selectedYearFrom == 0) selectedYearFrom = SearchYearRanges[0];
+                        if(selectedYearTo == 0) selectedYearTo = SearchYearRanges[1];
+                    }
+                    
+                                        
+                    if(selectedPriceFrom != 0 || selectedPriceTo != 0)
+                    {
+                        if(selectedPriceFrom == 0) selectedPriceFrom = SearchPriceRanges[0];
+                        if(selectedPriceTo == 0) selectedPriceTo = SearchPriceRanges[SearchPriceRanges.length - 1] * 10;
+                    }
+                                        
+                    // Build query url
+
+                    var searchUrl = "/" + SearchObjectTypes[selectedObjectType-1].split("|")[2] + "/";
+                    
+                    // If brand is JMC, we go for 'todos'
+                    
+                    if(selectedBrand != 0) {
+                        if(selectedBrand == 167) {
+                            searchUrl = "/todos/";
+                        }
+                    }                        
+                        
+                    // Continue
+                    
+                    if(selectedObjectCategory != 0) {
+                        searchUrl += FindCategory(selectedObjectCategory).split("|")[2] + "/";
+                    } else {
+                        searchUrl += "cualquier-tipo/"
+                    }
+                    
+                    if(selectedLocation != 0) {
+                        searchUrl += selectedLocationName + "/";
+                    } else {
+                        searchUrl += "cualquier-provincia/"
+                    }
+                    
+                    if(selectedBrand != 0)
+                        searchUrl += selectedBrandName + "/";
+
+                    if(selectedModel != 0)
+                        searchUrl += selectedModelName + "/";
+
+                    // If none of the above is set, just apply a "todos"
+                    
+                    if(selectedObjectCategory == 0 && selectedBrand == 0 && selectedModel == 0 && selectedLocation == 0)
+                        searchUrl += "ver-todos/";
+                    
+                    // Qs parameters
+                    
+                    if(selectedPriceFrom && selectedPriceTo && (selectedPriceFrom != 0 || selectedPriceTo != 0))
+                        searchUrl += (searchUrl.indexOf("?") == -1 ? "?" : "&") + "PriceFrom=" + selectedPriceFrom + "&PriceTo=" + selectedPriceTo;
+
+                    if(selectedYearFrom && selectedYearFrom != 0 && selectedYearTo && selectedYearTo != 0)
+                        searchUrl += (searchUrl.indexOf("?") == -1 ? "?" : "&") + "YearFrom=" + selectedYearFrom + "&YearTo=" + selectedYearTo;
+
+                    if(selectedCondition != 0)
+                        searchUrl += (searchUrl.indexOf("?") == -1 ? "?" : "&") + "Condition=" + selectedCondition;
+
+                    location.href = searchUrl;
+                    
+                });
+
+                // Function definitions
+                
+                function FindCategory(categoryId) {
+                    for(var i = 0; i < SearchObjectCategories.length; i++)
+                    {
+                        if(("." + SearchObjectCategories[i]).indexOf("." + categoryId + "|") != -1)
+                            return SearchObjectCategories[i];
+                    }
+                };               
+                
+                function GetSelectedType(source) {
+                    var type = source.parentsUntil("form").find("#ObjectType").val();
+                    return type;
+                };
+                
+                function GetSelectedCategory(source) {
+                    var category = source.parentsUntil("form").find("#ObjectCategory").val();
+                    if(category == null) category = 0;
+                    return category;
+                };
+                
+                function FillBrands(source) {
+
+                    var objectType = GetSelectedType(source);
+                    var objectCategory = GetSelectedCategory(source);
+                    var brandsSelect = source.parentsUntil("form").find("#Brand");
+                    
+                    source.parentsUntil("form").find("#Brand option").remove();
+                    brandsSelect.append("<option value='0'>Todas las Marcas</option>");
+                    
+                    for(var i = 0; i < SearchBrands.length; i++)
+                    {
+                        var objectTypes = SearchBrands[i].split("|")[2];
+                        var objectCategories = "," + SearchBrands[i].split("|")[3] + ",";
+                        if(objectTypes.indexOf(objectType) != -1)
+                            if(objectCategory == 0 || objectCategories.indexOf("," + objectCategory + ",") != -1)
+                                brandsSelect.append("<option value='" + SearchBrands[i].split("|")[0] + "'>" + SearchBrands[i].split("|")[1] + "</option>");
+                    }
+                    
+                };
+                
+                function FillModels(source) {
+
+                    var objectType = GetSelectedType(source);
+                    var objectCategory = GetSelectedCategory(source);
+                    var selectedId = source.parentsUntil("form").find("#Brand").val();
+                    var modelsSelect = source.parentsUntil("form").find("#Model");
+                    var modelsToFill = SearchModels[selectedId];
+                    
+                    source.parentsUntil("form").find("#Model option").remove();
+                    source.parentsUntil("form").find("#Model").append("<option value='0'>Todos los Modelos</option>");
+
+                    if(selectedId == 0)
+                        return;
+                    
+                    for(var i = 0; i < modelsToFill.length; i++)
+                    {
+                        var objectTypes = modelsToFill[i].split("|")[2];
+                        var objectCategories = "," + modelsToFill[i].split("|")[3] + ",";
+                        if(objectTypes.indexOf(objectType) != -1)
+                            if(objectCategory == 0 || objectCategories.indexOf("," + objectCategory + ",") != -1)
+                                modelsSelect.append("<option value='" + modelsToFill[i].split("|")[0] + "'>" + modelsToFill[i].split("|")[1] + "</option>");
+                    }
+                    
+                };
+                
+            });
+
+        }
+
+    });
+})(jQuery);
+
+jQuery.LoadingStart = function(percent) {
+    var roundedPercent = 0;
+    if(percent <= 25) roundedPercent = 25;
+    if(percent > 25) roundedPercent = 50;
+    if(percent > 50) roundedPercent = 75;
+    if(percent > 75) roundedPercent = 100;
+    $('#header-loader').removeClass('hidden');
+    $('#header-loader').removeClass('p0'); 
+    $('#header-loader').removeClass('p25'); 
+    $('#header-loader').removeClass('p50');
+    $('#header-loader').removeClass('p75');
+    $('#header-loader').removeClass('p100');
+    $('#header-loader').addClass('p' + roundedPercent);    
+};
+
+jQuery.LoadingComplete = function() {
+    $('#header-loader').removeClass('p25'); 
+    $('#header-loader').removeClass('p50');
+    $('#header-loader').removeClass('p75');
+    $('#header-loader').addClass('p100'); 
+    
+    setTimeout(function () {
+        $('#header-loader').addClass('hidden');
+        $('#header-loader').removeClass('p100'); 
+    }, 1000);
+   
+};
+
+jQuery.StickyScrollable = function (options) {
+	
+	var defaults = {
+		container: '',
+		scrollable: '',
+        safetyMargin: 50
+	};
+
+	var options = $.extend(defaults, options);
+
+    if($(options.container).length != 1 || $(options.scrollable).length != 1)
+       return;
+        
+    $(window).on('scroll touchmove', function() {
+        
+        var safetyMargin = options.safetyMargin;
+        var containerObject = $(options.container);
+        var scrollableObject = $(options.scrollable);
+        var newMargin = 0;
+        var currentWindowScroll = $(window).scrollTop();
+            
+        if(scrollableObject.height() < $(window).height()) {
+            
+            // Scroll fixing the upper part
+            
+            if(currentWindowScroll > containerObject.offset().top)
+                newMargin = currentWindowScroll - containerObject.offset().top;
+            
+        } else {
+            
+            // Scroll fixing the lower part
+            
+            if(currentWindowScroll + $(window).height() > (containerObject.offset().top + scrollableObject.height() + safetyMargin))
+                newMargin = (currentWindowScroll + $(window).height()) - containerObject.offset().top - scrollableObject.height() - safetyMargin;
+                            
+        }
+        
+        if((newMargin + scrollableObject.height()) > (containerObject.height() - safetyMargin))
+                newMargin = containerObject.height() - safetyMargin - scrollableObject.height();
+                        
+        if(newMargin < 0)
+            newMargin = 0;
+            
+        scrollableObject.css('margin-top', newMargin);        
+        
+    });
+	
+}; 
+
+jQuery.BackLinkSetCurrentURL = function(blockName) {
+
+    if(window.location.hash.length >1) {
+        $.BackLinkSet(window.location.hash.substr(1), blockName);
+    } else {
+        $.BackLinkSet(location.pathname + location.search, blockName);
+    }
+    
+};
+
+jQuery.BackLinkSet = function(url, blockName) {
+    if(blockName == null) blockName = '';
+    var cookieId = (blockName == '') ? 'MobileBackLinkUrl' : 'MobileBackLinkUrl-' + blockName;
+    $.cookie(cookieId, url.toString(), { expires: 1, path: '/' } );
+};
+
+jQuery.BackLinkExists = function(blockName) {
+    if(blockName == null) blockName = '';
+    var cookieId = (blockName == '') ? 'MobileBackLinkUrl' : 'MobileBackLinkUrl-' + blockName;
+    var oreo = $.cookie(cookieId);
+    return (oreo != null);
+};
+
+jQuery.BackLinkGet = function(remove, blockName) {
+    if(remove == null) remove = true;
+    if(blockName == null) blockName = '';
+    var cookieId = (blockName == '') ? 'MobileBackLinkUrl' : 'MobileBackLinkUrl-' + blockName;
+    var oreo = $.cookie(cookieId);
+    if(remove) $.cookie(cookieId, null, { path: '/' });
+    return oreo;
+};
+
+jQuery.FavouritesSetUp = function() {
+	
+    $("#favourites").on("mouseenter", function(){
+
+        var favsLoaded = $("#favourites").data("loaded");
+        if(favsLoaded == null) {
+            
+            $("#favourites").data("loaded", "true");
+            
+            $.ajax({
+                type: 'GET',
+                dataType: 'html',
+                url: '/assets/js/Favourites?d=' + new Date(),
+                success: function(html){
+
+                    $("#favourites-panel").html(html);
+
+                    $("#favourites-panel DIV.delete-control").on('click', function (e) {
+
+                        e.preventDefault();
+                        $.FavouritesDel($(this).data('adid'));
+                        $(this).parent().addClass("animated");
+                        $(this).parent().addClass("hidden");
+
+                        var objectToRemove = $(this).parent();
+                        setTimeout(function () {
+                            objectToRemove.remove();
+                            UpdateFavourites();
+                        }, 500, objectToRemove);
+
+                    });
+                    
+                    $("#favourites-panel P.tools A").on('click', function (e) {
+
+                        $.FavouritesDelAll();
+                        $("#favourites-panel LI").addClass("animated");
+                        $("#favourites-panel LI").addClass("hidden");
+                        $("#favourites-panel P.tools").css("display", "none");
+                        
+                        setTimeout(function () {
+                            $("#favourites-panel LI").remove();
+                            UpdateFavourites();
+                        }, 500);
+                        
+                        e.preventDefault();
+                        
+                    });
+
+                }
+            });
+        
+        }
+        
+    });
+    
+    $("#favourites").on("mouseleave", function(){
+        $("#favourites").removeClass("forced-open");
+    });
+    
+    function UpdateFavourites() {
+        var count = $("#favourites-panel UL").children().length
+        $("#favourites-counter").text(count);
+        if(count == 0) $("#favourites-panel P.tools").css("display", "none");
+    }
+    
+};
+
+jQuery.FavouritesExists = function(id) {
+
+    if(!$.IsInteger(id))
+        return false;
+    
+    var oreo = $.cookie('FavouritesString');
+    if(oreo == null) oreo = "";
+    return (("," + oreo + ",").indexOf("," + id + ",") != -1);
+    
+};
+
+jQuery.FavouritesAdd = function(id) {
+
+    if(!$.IsInteger(id))
+        return;
+    
+    var oreo = $.cookie('FavouritesString');
+    var idString = "";
+    
+    idString = id;
+    
+    if(oreo != null)
+    {
+        var ids = oreo.split(",");
+        for(var i = 0;i<ids.length;i++) {
+            if($.IsInteger(ids[i]) && ids[i] != id) {
+                idString += "," + ids[i];
+            }
+        }
+    }
+
+    $.cookie('FavouritesString', idString, { expires: 999, path: '/' });
+    $("#favourites").data("loaded", null);
+    $("#favourites").addClass("forced-open"); 
+    $("#favourites").trigger("mouseenter");
+    
+    // Track analytics
+        
+    ga('send', 'event', {
+        eventCategory: 'Favourites',
+        eventAction: 'AddFavourite'
+    });
+
+};
+
+jQuery.FavouritesDel = function(id) {
+
+    if(!$.IsInteger(id))
+        return;
+    
+    var oreo = $.cookie('FavouritesString');
+    var idString = "";
+    
+    if(oreo != null)
+    {
+        var ids = oreo.split(",");
+        for(var i = 0;i<ids.length;i++) {
+            if($.IsInteger(ids[i]) && ids[i] != id) {
+                idString += (idString == "" ? "" : ",") + ids[i];
+            }
+        }
+    }
+    
+    $.cookie('FavouritesString', idString, { expires: 999, path: '/' });
+        
+};
+
+jQuery.FavouritesDelAll = function() {
+        
+    $.cookie('FavouritesString', "", { expires: 999, path: '/' });
+    
+    $("#favourites").trigger("mouseenter");
+        
+};
+
+jQuery.FavouritesHighlight = function(selectorText) {
+   
+    $(selectorText).each(function(){
+        if($.FavouritesExists($(this).data("id"))) {
+           $(this).addClass("favourite");
+        }
+    });
+    
+};
+
+jQuery.SharerDesktop = function(channel) {
+
+    var pageTitle = document.title;
+    var urlToShare = location.href;
+    var urlToSend = '';
+    
+    ga('send', 'event', {
+        eventCategory: 'Share',
+        eventAction: 'AdOn' + channel.toUpperCase()
+    });
+    
+    //
+    
+    urlToShare = urlToShare + (urlToShare.indexOf('?') == -1 ? '?' : '&') + 'utm_source=AdOn' + encodeURIComponent(channel.toUpperCase()) + '&utm_medium=sharer';
+    
+    //
+    
+    if(channel == 'fb')
+    {
+        urlToSend = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(urlToShare);
+    }
+    
+    if(channel == 'tweet')
+    {
+        urlToSend = 'https://twitter.com/share?url=' + encodeURIComponent(urlToShare) + '&text=' + encodeURIComponent(pageTitle);
+    }
+    
+    if(channel == 'g+')
+    {
+        urlToSend = 'https://plus.google.com/share?url=' + encodeURIComponent(urlToShare);
+    }
+    
+    if(channel == 'ws')
+    {
+        urlToSend = 'whatsapp://send?text=' + encodeURIComponent('Anuncio SuperCarros.com: ') + encodeURIComponent(urlToShare);
+        var link = document.createElement('a');
+        link.href = urlToSend;
+        document.body.appendChild(link);
+        link.click();        
+    }
+    
+    if(channel == 'ws2')
+    {
+        urlToSend = 'https://wa.me/?text=' + encodeURIComponent('SuperCarros.com Financiamiento: ') + encodeURIComponent(urlToShare);
+        var link = document.createElement('a');
+        link.href = urlToSend;
+        document.body.appendChild(link);
+        link.click();        
+    }
+    
+    if(channel == 'email')
+    {
+        urlToSend = 'mailto:?to=&subject=' + encodeURIComponent('Link SuperCarros.com') + '&body=' + encodeURIComponent('Un amigo ha compartido contigo un link en SuperCarros.com, puedes verlo aquí: ' + urlToShare);
+        var link = document.createElement('a');
+        link.href = urlToSend;
+        document.body.appendChild(link);
+        link.click();        
+    }
+    
+    if(channel == 'fb' || channel == 'tweet' || channel == 'g+')
+    {
+        var winWidth = 550;
+        var winHeight = 400;
+        var winTop = (screen.height / 2) - (winHeight / 2);
+        var winLeft = (screen.width / 2) - (winWidth / 2);
+        window.open(urlToSend, 'sharer', 'top=' + winTop + ',left=' + winLeft + ',toolbar=0,status=0,width='+winWidth+',height='+winHeight);    
+    } else {
+        location.href = urlToSend;
+    }
+
+};
+
+/**
+ * jQuery Cookie plugin
+ *
+ * Copyright (c) 2010 Klaus Hartl (stilbuero.de)
+ * Dual licensed under the MIT and GPL licenses:
+ * http://www.opensource.org/licenses/mit-license.php
+ * http://www.gnu.org/licenses/gpl.html
+ *
+ */
+jQuery.cookie = function (key, value, options) {
+
+    // key and at least value given, set cookie...
+    if (arguments.length > 1 && String(value) !== "[object Object]") {
+        options = jQuery.extend({}, options);
+
+        if (value === null || value === undefined) {
+            options.expires = -1;
+        }
+
+        if (typeof options.expires === 'number') {
+            var days = options.expires, t = options.expires = new Date();
+            t.setDate(t.getDate() + days);
+        }
+
+        value = String(value);
+
+        return (document.cookie = [
+            encodeURIComponent(key), '=',
+            options.raw ? value : encodeURIComponent(value),
+            options.expires ? '; expires=' + options.expires.toUTCString() : '', // use expires attribute, max-age is not supported by IE
+            options.path ? '; path=' + options.path : '',
+            options.domain ? '; domain=' + options.domain : '',
+            options.secure ? '; secure' : ''
+        ].join(''));
+    }
+
+    // key and possibly options given, get cookie...
+    options = value || {};
+    var result, decode = options.raw ? function (s) { return s; } : decodeURIComponent;
+    return (result = new RegExp('(?:^|; )' + encodeURIComponent(key) + '=([^;]*)').exec(document.cookie)) ? decode(result[1]) : null;
+};
+
+jQuery.CookiesEnabled = function() {
+    $.cookie('test_cookie', 'somevalue', { path: '/' });
+    if ($.cookie('test_cookie') == 'somevalue') {
+        $.cookie('test_cookie', null);
+        return true;
+    }
+    return false;
+};
+
+jQuery.IsInteger = function(x) {
+    return /^[1-9][0-9]{0,7}$/.test(x);
+};
+
+jQuery.FormatNumber = function(n, c, d, t) {
+
+    if(n == null)
+        n = 0;
+
+    c = isNaN(c = Math.abs(c)) ? 2 : c, 
+    d = d == undefined ? "." : d, 
+    t = t == undefined ? "," : t, 
+    s = n < 0 ? "-" : "", 
+    i = parseInt(n = Math.abs(+n || 0).toFixed(c)) + "", 
+    j = (j = i.length) > 3 ? j % 3 : 0;
+    return s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
+
+};
+
+jQuery.RandomString = function(length, chars) {
+    if(chars == null) chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    var r = '';
+    for (var i = length; i > 0; --i) r += chars[Math.round(Math.random() * (chars.length - 1))];
+    return r;
+};
+
+(function($){
+    jQuery.fn.extend({
+
+        RemoveWhiteSpacing: function() {
+
+            return this.each(function() { 
+
+                $(this).contents().filter(function () {
+                    return this.nodeType === 3;
+                }).remove();               
+
+            });
+
+        }
+
+    });
+})(jQuery);
+
+(function($){
+	jQuery.fn.extend({
+
+		AutoComplete: function(url, className, initialHtml, loadCallBack) {
+		
+			return this.each(function() { 
+
+                var input = $(this);
+				var searchTimeout = 0;
+				var resultsDivID = $(this).attr('id') + 'AutoCompleteList';
+				var html = '<div id="' + resultsDivID + '" class="' + className + '">' + $(this).attr('id') + 'AutoCompleteList</div>';
+				$(this).after(html);
+				var resultsDiv = $('#'+resultsDivID);
+                resultsDiv.css('display', 'none');
+                
+				//
+				
+				$(this).click(function() {
+					
+                    if(initialHtml != null) {
+                        resultsDiv.css('display', 'block');
+                        resultsDiv.html(initialHtml);
+                    }
+                    
+                    $(this).data('DoInstantSearch', 'true');
+                    $(this).data('LastTextInput', $(this).val());
+                    $(this).trigger('keyup');
+                    $(this).val('');
+
+                });
+                
+				$(this).blur(function() {
+					
+                    hideTimeout = setTimeout(function()  {
+						resultsDiv.css('display', 'none');
+					}, 250);
+                    
+                    var textVal = $(this).val();	
+                    var lastTextVal = $(this).data('LastTextInput');
+                    
+                    if($(this).val() == '') {
+                        if(lastTextVal != null)
+                        {
+                            $(this).val(lastTextVal);
+                        }
+                    }
+                    
+				});
+					
+				$(this).keyup(function() {
+				
+					var textVal = $(this).val();	
+				
+					if(textVal.length > 2 || !isNaN(parseFloat(textVal))) {	
+				
+                        var timeoutToSearch = 500;
+                        var doInstantSearch = $(this).data('DoInstantSearch');
+                        $(this).data('DoInstantSearch', null);
+                        
+                        if(doInstantSearch == 'true')
+                            timeoutToSearch = 25;
+                        
+						clearTimeout(searchTimeout);
+						searchTimeout = setTimeout(function() {
+							
+                            var urlToLoad = url + (url.indexOf('?') == -1 ? "?" : "&") + "text=" + textVal + "&t=" + new Date().getTime();
+                            
+                            $.ajax({
+                                type: 'GET',
+                                dataType: 'html',
+                                url: urlToLoad,
+                                success: function(html){
+                    
+                                    resultsDiv.css('display', 'block');
+                                    resultsDiv.html(html);
+                                    loadCallBack(resultsDiv);
+
+                                }
+                            });
+                            
+						}, timeoutToSearch);
+					} else {
+						resultsDiv.css('display', 'none');
+						clearTimeout(searchTimeout);
+					}
+				
+				});
+
+				//
+
+			});
+
+		}
+
+	});
+})(jQuery);
+
+jQuery.DetectDeviceType = function() {
+    
+    var desktop = "desktop";
+    var tablet = "tablet";
+    var phone = "phone";
+
+    if(!navigator)
+        desktop
+        
+    var agent = navigator.userAgent;
+
+    if(agent.match(/iphone/i) || agent.match(/ipod/i))
+        return phone;
+    
+    if(agent.match(/ipad/i) || agent.match(/tablet/i))
+        return tablet;
+    
+    if((agent.match(/blackberry/i) || agent.match(/bb10/i)) && !agent.match(/tablet/i))
+        return phone;
+    
+    if((agent.match(/android/i)) && !agent.match(/tablet/i))
+        return phone;
+    
+    if((agent.match(/windows phone/i)) || agent.match(/nokia/i))
+        return phone;
+    
+    return desktop;
+    
+};
+
+jQuery.RedirectToMobile = function() {
+    $.RedirectOnDeviceDetected(MobileSiteUrl, "phone");
+};
+
+jQuery.RedirectToDesktop = function() {
+    $.RedirectOnDeviceDetected(DesktopSiteUrl, "desktop,tablet");
+};
+
+jQuery.RedirectOnDeviceDetected = function(redirectUrl, allowedDevicesForRedirect) {
+
+    if(!$.CookiesEnabled() || !location.pathname || AllowedRedirectPaths == null || !AllowedRedirectPaths)
+        return;
+    
+    if($.cookie("DeviceRedirect"))
+        return;
+    
+    var detectedDevice = $.DetectDeviceType();
+
+    if(allowedDevicesForRedirect.indexOf(detectedDevice) == -1)
+        return;
+
+    if(location.href.toLowerCase().indexOf("redirected") != -1) {
+        $.cookie("DeviceRedirect", "true");
+        return;  
+    }
+    
+    var acceptableRedirects = AllowedRedirectPaths.split(",");
+    for(var i = 0; i < acceptableRedirects.length;i++) {
+        var testPart = location.pathname.substring(0, acceptableRedirects[i].length).toLocaleLowerCase();
+        if(acceptableRedirects[i] == "/" && location.pathname == "/") break;
+        if(acceptableRedirects[i] == testPart) break;
+        if(i == acceptableRedirects.length-1) return;
+    }
+    
+    var u = location.pathname + (location.search.length > 0 ? location.search : "") + (location.hash.length > 0 ? location.hash : "");
+    u = u.replace(/\/\//g, "/");
+    u = (redirectUrl.trim().charAt(redirectUrl.length-1) == "/" ? redirectUrl.trim().substr(0,redirectUrl.trim().length-1) : redirectUrl.trim()) + u;    
+    $.cookie("DeviceRedirect", "true");
+    location.href = u;
+    
+};
+
+jQuery.SendForm = function (options) {
+	
+	var defaults = {
+		type: 'POST',
+		url: '',
+		data: null,
+		dataType: 'json',
+		successUrl: '',
+		errorUrl: '',
+		showValidationMessages: true,
+		onSuccess: null,
+		onError: null,
+		onValidationError: null,
+        messagesDestinationDiv: '',
+        maxMessageCount: 999
+	};
+
+	var options = $.extend(defaults, options);
+
+	// Fix for IE8/IE7 empty posts resetting to GET
+	
+	if(options.type == 'POST')
+	{
+		if(options.data == '' || options.data == null) {
+			options.data = 'DummyKey=DummyValue';
+		}
+	}
+
+	// Call ajax
+	
+	$.ajax({
+		type: options.type,
+		url: options.url,
+		data: options.data,
+		dataType: options.dataType,
+		success: function(data){
+		
+			// Check if this is a Json redirect
+		
+			try {
+				if(data.redirect && data.url != null) {
+					location.href = data.url;
+					return;
+				}
+			} catch(err){ /* Json test end */ 
+			}
+			
+			// Process next
+		
+			if(data.Success) {
+
+				if(options.onSuccess) options.onSuccess(data);
+				if(options.successUrl != '') location.href = options.successUrl;
+				
+			} else {
+				
+				if(options.onValidationError) options.onValidationError(data);
+				
+				if(options.showValidationMessages) {
+					
+					if(data.ValidationMessages.length == 0){
+						var tempMessages = new Array();
+						tempMessages[0] = data.Message;
+						$.ShowValidationMessages(tempMessages, { messagesDestinationDiv: options.messagesDestinationDiv, maxMessageCount: options.maxMessageCount });
+					} else {
+						$.ShowValidationMessages(data.ValidationMessages, { messagesDestinationDiv: options.messagesDestinationDiv, maxMessageCount: options.maxMessageCount });
+                                                
+                        if(data.ValidationMessages[0].FieldName != '') {
+                            var scrollContainer = $([document.documentElement, document.body]);
+                            var scrollTarget = $("#" + data.ValidationMessages[0].FieldName);
+                            $([document.documentElement, document.body]).animate({
+                                scrollTop: $("#" + data.ValidationMessages[0].FieldName).offset().top - 100
+                            }, 500);
+                        }
+                                                
+					}
+					
+				}
+			}
+		
+		},
+		statusCode: {
+			302: function(jqXHR, textStatus, errorThrown) {
+				alert('redirect!');
+			}
+		},
+		error: function(jqXHR, textStatus, errorThrown) {
+			if(options.onError) options.onError();
+			if(!options.onError) alert('El requerimiento no pudo ser procesado.');
+			if(options.errorUrl != '') location.href = options.errorUrl;
+		}
+	});
+			
+};
+
+jQuery.ShowValidationMessages = function(validationMessages, options) {
+	
+    //set default options
+	var defaults = {
+		messagesDestinationDiv: '',
+        maxMessageCount: 999,
+		highlightFields: true,
+	};
+
+	// call in the default otions
+	var options = $.extend(defaults, options);
+
+	// Generate list of messages
+	
+	var messagesHtml = '';
+	
+	if(validationMessages != null) {
+
+        var m = 0;
+        
+        messagesHtml += '<ul>';
+
+        for(var i=0;i<validationMessages.length;i++) {
+            if(validationMessages[i].Message != null) {
+                messagesHtml += '<li>' + validationMessages[i].Message + '</li>';
+                m++;
+                if(m >= options.maxMessageCount) break;
+            }
+        }
+
+        messagesHtml += '</ul>';
+
+		//
+
+		$(options.messagesDestinationDiv).html(messagesHtml);
+		
+		// Reset labels with invalid state
+		
+		$('label').removeClass('FieldInvalid');
+        $('*.FieldInvalid').removeClass('FieldInvalid');
+	
+		// Try to set the labels/fields error messages
+	
+		if(options.highlightFields) {
+			
+			for(var i=0;i<validationMessages.length;i++) {
+				if(validationMessages[i].FieldName != null && validationMessages[i].FieldName != '') {
+		
+					// Set labels in red
+					$('label[for$='+validationMessages[i].FieldName+']').addClass('FieldInvalid');
+                    $('label[data-validation-fields*='+validationMessages[i].FieldName+']').addClass('FieldInvalid');
+                    		
+					// This is for inputs, like textboxes and textareas
+					$('*[id$='+validationMessages[i].FieldName).each(function() { 
+
+						if($(this).attr('type') == 'text' || $(this).attr('type') == 'checkbox' || $(this).attr('type') == 'password' || $(this).attr('type') == 'radio' || $(this).prop('tagName') == 'SELECT' || $(this).prop('tagName') == 'TEXTAREA' || $(this).hasClass("validatable")) {
+							$(this).addClass('FieldInvalid');
+							$(this).focus(function(){
+								$(this).removeClass('FieldInvalid');
+								$('label[for='+this.id+']').removeClass('FieldInvalid');
+                                $('label[data-validation-fields*='+this.id+']').removeClass('FieldInvalid');
+							});
+						}
+										
+					});
+					
+				}
+				
+			}
+				
+		}
+	
+	}
+		
+};
+
+jQuery.FormIsSubmitting = function (form) {
+		
+	if(form) {
+		var b = $(form).data('isSubmitting');
+		return (b == null) ? false : b;
+	} else {
+		return false;
+	}
+	
+};
+
+jQuery.FormSubmitting = function (isSubmitting, options) {
+	
+	var defaults = {
+		form: null,
+		buttons: null
+	};
+
+	var options = $.extend(defaults, options);
+	
+	if(options.form) {
+		$(options.form).data('isSubmitting', isSubmitting);
+	}
+	
+	if(options.buttons) {
+		if(isSubmitting) {
+			$(options.buttons).addClass('FormSubmitting');
+		} else {
+			$(options.buttons).removeClass('FormSubmitting');
+		}
+	}
+	
+};
+
+jQuery.FallOverCompatability = function() {
+
+    if(!navigator)
+        return false;
+
+    var agent = navigator.userAgent;
+    
+    if(agent.indexOf("MSIE 7") != -1 || agent.indexOf("MSIE 8") != -1)
+        return true;
+    
+    return false;
+    
+};
+
+var LoadReCaptchaLastContainerId = '';
+var LoadReCaptchaLastSize = '';
+jQuery.LoadReCaptcha = function (containerId, size) {
+    
+    if(size == null) size = 'normal';
+    
+    LoadReCaptchaLastContainerId = containerId;
+    LoadReCaptchaLastSize = size;
+    
+    $.ajax({
+        url: "https://www.google.com/recaptcha/api.js?onload=LoadReCaptchaCallback&render=explicit&hl=es",
+        dataType: "script",
+        success: function () {
+        }
+    });
+    
+};
+
+function LoadReCaptchaCallback() {
+
+    grecaptcha.render(LoadReCaptchaLastContainerId, {
+        'sitekey': ReCaptchaSiteKey,
+        type: 'image',
+        theme: 'light',
+        size: LoadReCaptchaLastSize
+    });
+    
+}
+
+/* ----------- */
+
+/* PreLoad functions, ready for running at load moment */
+
+function PreLoad_DetectDeviceType() {
+        
+    var desktop = "desktop";
+    var tablet = "tablet";
+    var phone = "phone";
+
+    if(!navigator)
+        return desktop;
+        
+    var agent = navigator.userAgent;
+        
+    if(agent.match(/iphone/i) || agent.match(/ipod/i))
+        return phone;
+    
+    if(agent.match(/ipad/i) || agent.match(/tablet/i))
+        return tablet;
+    
+    if((agent.match(/blackberry/i) || agent.match(/bb10/i)) && !agent.match(/tablet/i))
+        return phone;
+    
+    if((agent.match(/android/i)) && !agent.match(/tablet/i))
+        return phone;
+    
+    if((agent.match(/windows phone/i)) || agent.match(/nokia/i))
+        return phone;
+    
+    return desktop;
+    
+};
+
+function PreLoad_RedirectToMobile() {
+    PreLoad_RedirectOnDeviceDetected(MobileSiteUrl, "phone");
+};
+
+function PreLoad_RedirectToDesktop() {
+    PreLoad_RedirectOnDeviceDetected(DesktopSiteUrl, "desktop,tablet");
+};
+
+function PreLoad_RedirectOnDeviceDetected(redirectUrl, allowedDevicesForRedirect) {
+
+    if(!PreLoad_CookiesEnabled() || !location.pathname || AllowedRedirectPaths == null || !AllowedRedirectPaths)
+        return;
+    
+    if(PreLoad_Cookie("DeviceRedirect2"))
+        return;
+    
+    var detectedDevice = PreLoad_DetectDeviceType();
+
+    if(allowedDevicesForRedirect.indexOf(detectedDevice) == -1)
+        return;
+
+    if(location.href.toLowerCase().indexOf("redirected") != -1) {
+        PreLoad_Cookie("DeviceRedirect2", "true");
+        return;  
+    }
+    
+    var acceptableRedirects = AllowedRedirectPaths.split(",");
+    for(var i = 0; i < acceptableRedirects.length;i++) {
+        var testPart = location.pathname.substring(0, acceptableRedirects[i].length).toLocaleLowerCase();
+        if(acceptableRedirects[i] == "/" && location.pathname == "/") break;
+        if(acceptableRedirects[i] == testPart && location.pathname != "/") break;
+        if(i == acceptableRedirects.length-1) return;
+    }
+
+    var deniedRedirects = DeniedRedirects.split(",");
+    for(var i = 0; i < deniedRedirects.length;i++) {
+        var testPart = location.pathname.toLocaleLowerCase();
+        if(testPart.indexOf(deniedRedirects[i]) >= 0) return;
+    }
+
+    var r = document.referrer;
+    if(r != null) r = encodeURIComponent(r);
+    
+    var u = location.pathname + (location.search.length > 0 ? location.search : "") 
+    u = u + (u.indexOf("?") == -1 ? "?utm_referrer=" + r : "&utm_referrer=" + r);
+    u = u + (location.hash.length > 0 ? location.hash : "");
+    u = u.replace(/\/\//g, "/");
+    u = (redirectUrl.trim().charAt(redirectUrl.length-1) == "/" ? redirectUrl.trim().substr(0,redirectUrl.trim().length-1) : redirectUrl.trim()) + u;    
+    //PreLoad_Cookie("DeviceRedirect2", "true");
+    location.href = u;
+    
+};
+
+function PreLoad_Cookie(key, value) {
+ 
+    var path = "/";
+    var raw = null;
+    var expires = null;
+    var domain = null;
+    var secure = null
+    
+    if (arguments.length > 1 && String(value) !== "[object Object]") {
+        
+        if (value === null || value === undefined) {
+            expires = -1;
+        }
+
+        if (typeof expires === 'number') {
+            var days = expires, t = expires = new Date();
+            t.setDate(t.getDate() + days);
+        }
+
+        value = String(value);
+
+        return (document.cookie = [
+            encodeURIComponent(key), '=',
+            raw ? value : encodeURIComponent(value),
+            expires ? '; expires=' + expires.toUTCString() : '', // use expires attribute, max-age is not supported by IE
+            path ? '; path=' + path : '',
+            domain ? '; domain=' + domain : '',
+            secure ? '; secure' : ''
+        ].join(''));
+    }
+
+    // key and possibly options given, get cookie...
+    //options = value || {};
+    var result, decode = raw ? function (s) { return s; } : decodeURIComponent;
+    return (result = new RegExp('(?:^|; )' + encodeURIComponent(key) + '=([^;]*)').exec(document.cookie)) ? decode(result[1]) : null;
+};
+
+function PreLoad_CookiesEnabled() {
+    PreLoad_Cookie('test_cookie', 'somevalue', { path: '/' });
+    if (PreLoad_Cookie('test_cookie') == 'somevalue') {
+        PreLoad_Cookie('test_cookie', null);
+        return true;
+    }
+    return false;
+};
+
+function SessionPings(seconds) {
+
+    var t = setInterval(function () {
+
+        $.ajax({
+            accept: 'text/json',
+            url: '/Login/SessionPing',
+            type: 'GET',
+            contentType: false,
+            complete: function(xmlHttp) {
+                console.log(xmlHttp.responseText);
+            }
+
+        });
+
+    }, seconds * 1000);
+
+}

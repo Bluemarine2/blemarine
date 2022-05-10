@@ -1,0 +1,566 @@
+{% extends 'base/base.html' %}
+{% block content %}
+{% load static %}
+{% load multiply %}
+{% load humanize %}
+	<div>
+    
+    
+	<!-- content of the page-->
+	<!--Script menu -->
+	<script>
+	setTimeout(function(){menu("#home")},500);
+	</script>
+	<script type="text/javascript">
+	function changeModels(){
+		var maker = $( "#make option:selected" ).val();
+		$.ajax({
+    url:'/model',
+    type:'GET',
+    data: 'maker=' + maker,
+    dataType: 'json',
+    success: function( json ) {
+			$('#model').empty();
+			$('#model').append($('<option>').text("Select model").attr('value', -1));
+        $.each(json, function(id, value) {
+            $('#model').append($('<option>').text(value).attr('value', id));
+        });
+    }
+		});
+	}
+	function like(id){
+		url = "/like?id=" + id
+		var xmlHttp = new XMLHttpRequest();
+		xmlHttp.onreadystatechange = function(){
+			if (this.readyState == 4 && this.status == 201){
+				alert("Liked!");
+			}
+		};
+    xmlHttp.open("GET", url, true);
+    xmlHttp.send(null);
+	}
+	</script>
+
+	<script>
+	  function submitBodySearch(value) {
+	     document.getElementById('body').value = value;
+	     document.getElementById("body_forms").submit();
+	   }
+		 function submitMakeSearch(value) {
+ 	     document.getElementById('nmake').value = value;
+ 	     document.getElementById("maker_forms").submit();
+ 	   }
+    
+	</script>
+<br><br>
+    
+	<div class="row contenedor__slider">
+		<div class=" search col-md-3 row " id="search">
+			<form class="form" enctype="multipart/form-data" role="form" action="/search" method="post">
+				{% csrf_token %}
+					<div class="col-md-12">
+						<h2 class="text-center">Encuentra tu proximo vehiculo.</h2>
+						<a name="search"></a>
+					</div>
+					<input type="hidden" name="type" value="simple">
+					<div class="col-md-12 tira" id="condition">
+								<input type="radio" name="condition" id="New" value="Nuevo">
+								<label class="radio left" for="New">Nuevo</label>
+								<input type="radio" name="condition" id="Used" value="Usado">
+								<label class="radio left" for="Used">Usado</label>
+								<input type="radio" name="condition" id="certified" value="Certificado">
+								<label class="radio left" for="certified">Certificado</label>
+								<input type="radio" checked name="condition" id="All" value="All">
+								<label class="radio left" for="All">Todos</label>
+					</div>
+        <table class="customTable">
+  <tbody>
+    <tr>
+      <td>{{ form.makefield.errors }}
+							{{ form.makefield }}</td>
+      <td>{{ form.modelfield.errors }}
+						{{ form.modelfield }}</td>
+    </tr>
+    <tr>
+      <td><select class="dropdown" id="byear" name="byear">
+		    				<option value="0">Del año</option>
+	  					</select></td>
+      <td><select class="dropdown" id="fyear" name="fyear">
+		    				<option value="10000">Al año</option>
+		  				</select></td>
+    </tr>
+    <tr>
+      <td><select class="dropdown" id="bprice" name="bprice">
+							<option value="0">Precio Mínimo</option>
+		  				</select></td>
+      <td><select class="dropdown" id="fprice" name="fprice">
+							<option value="1000000000000">Precio Máximo</option>
+		  				</select></td>
+    </tr>
+    <tr>
+      <td>
+        {{ form.city.errors }}
+							{{ form.city }}
+      </td>
+      <td>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type="submit" class="btn btn-danger Search" aria-label="center Align">Buscar</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+     
+        
+        
+			</form>
+		</div>
+		<div class="banner col-md-9 visible-md visible-lg">
+			<div id="myCarousel" class="carousel slide" data-ride="carousel">
+			<!-- Indicators -->
+			<ol class="carousel-indicators">
+				<li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+				<li data-target="#myCarousel" data-slide-to="1"></li>
+				<li data-target="#myCarousel" data-slide-to="2"></li>
+			</ol>
+			<!-- Wrapper for slides -->
+			<div class="carousel-inner" role="listbox">
+				{%for slide in slides%}
+					{%if slide.image%}
+						<div class="item {%	if forloop.counter0 == 0%}active{%endif%}">
+							<img class="adaptar" src="{{slide.image.url}}" alt="slide">
+							<div class="text">
+                <h1><a href="{{slide.url_1}}"><FONT COLOR="#fa3737">{{slide.title_1}}</FONT></a></h1>
+                <h2><a href="{{slide.url_2}}"><FONT COLOR="red">{{slide.title_2}}</FONT></a></h2>
+                <h3><a href="{{slide.url_3}}"><FONT COLOR="blue">{{slide.title_3}}</FONT></a></h3>
+							</div>
+						</div>
+					{%endif%}
+				{%endfor%}
+			</div>
+			<!-- Left and right controls -->
+			<a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
+				<span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+				<span class="sr-only">Anterio</span>
+			</a>
+			<a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
+				<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+				<span class="sr-only">siguiente</span>
+			</a>
+			</div>
+		</div>
+	</div>
+	<section class="bottom-box row">
+    <center>
+		<a href="/Planes_servicios" class="col-sm-6 col-md-3 bottom-box__box">
+			<img src="/static/images/Car_Review_Blog.jpg" alt="">
+			<h3>Planes y Servicios</h3>
+		</a>
+		<a href="/find_local_search" class="col-sm-6 col-md-3 bottom-box__box">
+			<img src="/static/images/Find_local_dealer.jpg" alt="">
+			<h3>Buscar distribuidor</h3>
+		</a>
+		<a href="/sell" class="col-sm-6 col-md-3 bottom-box__box">
+			<img src="/static/images/sell.jpg" alt="">
+			<h3>Vender tu carro</h3>
+		</a>
+		<a href="/guia" class="col-sm-6 col-md-3 bottom-box__box">
+			<img src="/static/images/tips.jpg" alt="">
+			<h3>Guia de Registro</h3>
+		</a>
+    </center>
+	</section>
+    
+    <section class="section-padding gray">
+            <!-- Main Container -->
+            <div class="bottom-box row">
+               <!-- Row -->
+               <div class="row">
+                  <div class="clearfix"></div>
+                  <!-- Heading Area -->
+                  <div class="heading-panel">
+                     <div class="col-xs-12 col-md-12 col-sm-12 text-center">
+                        <!-- Main Title -->
+                        <h1>Automovil mas destacado</h1>
+                        <!-- Short Description -->
+                        <p class="heading-text">ranking de popularidad</p>
+                     </div>
+                  </div>
+                  <!-- Middle Content Box -->
+                  <div class="row">
+                     <div class="col-md-12 col-xs-12 col-sm-12 text-center ">
+                        <ul class="compare-masonry">
+                           <li class="col-md-6 col-sm-6 col-xs-12">
+                              <div class="comparison-box">
+                                 <div class="col-md-6 col-sm-12 col-xs-12">
+                                    <div class="compare-grid">
+                                          <a href="https://doncarros-vladimirmacloviw959615.codeanyapp.com/detail/25/" class="">
+                                          <img src="/static/images/ranki/ranki5estreña.jpg"  alt=""  width="400" height="200" /></a>
+                                       <h2><a href="https://doncarros-vladimirmacloviw959615.codeanyapp.com/detail/25/">1992 Acura integra
+</a></h2>
+                                      <h5><a href="https://doncarros-vladimirmacloviw959615.codeanyapp.com/dealer/jhonatan/"><FONT COLOR="#fa3737">Su pagina web</a></font></h5>
+                                       <div class="rating">
+                                          <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                                       </div>
+                                    </div>
+                                 </div>
+                             
+                                 <div class="col-md-6 col-sm-12 col-xs-12">
+                                    <div class="compare-grid">
+                                          <a href="https://doncarros-vladimirmacloviw959615.codeanyapp.com/detail/20/" class="">
+                                            <img src="/static/images/ranki/ranki42.jpg" alt="" width="400" height="200" /></a>
+                                       <h2><a href="https://doncarros-vladimirmacloviw959615.codeanyapp.com/detail/20/">1997 Alfa-romeo spider</a></h2>
+                                      <h5><a href="https://doncarros-vladimirmacloviw959615.codeanyapp.com/dealer/kevin/"><FONT COLOR="#fa3737">Su pagina web</a></font></h5>
+                                       <div class="rating">
+                                          <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star-o"></i>
+                                       </div>
+                                    </div>
+                                 </div>
+                                 <div class="clearfix"></div>
+                              </div>
+                           </li>
+                            <li class="col-md-6 col-sm-6 col-xs-12">
+                              <div class="comparison-box">
+                                 <div class="col-md-6 col-sm-12 col-xs-12">
+                                    <div class="compare-grid">
+                                          <a href="https://doncarros-vladimirmacloviw959615.codeanyapp.com/detail/25/" class="">
+                                          <img src="/static/images/ranki/ranki5estreña.jpg" alt=""  width="400" height="200" /></a>
+                                       <h2><a href="https://doncarros-vladimirmacloviw959615.codeanyapp.com/detail/25/">1992 Acura integra
+</a></h2>
+                                      <h5><a href="https://doncarros-vladimirmacloviw959615.codeanyapp.com/dealer/jhonatan/"><FONT COLOR="#fa3737">Su pagina web</a></font></h5>
+                                       <div class="rating">
+                                          <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                                       </div>
+                                    </div>
+                                 </div>
+                             
+                                 <div class="col-md-6 col-sm-12 col-xs-12">
+                                    <div class="compare-grid">
+                                          <a href="https://doncarros-vladimirmacloviw959615.codeanyapp.com/detail/20/" class="">
+                                            <img src="/static/images/ranki/ranki42.jpg" alt="" width="400" height="200" /></a>
+                                       <h2><a href="https://doncarros-vladimirmacloviw959615.codeanyapp.com/detail/20/">1997 Alfa-romeo spider</a></h2>
+                                      <h5><a href="https://doncarros-vladimirmacloviw959615.codeanyapp.com/dealer/kevin/"><FONT COLOR="#fa3737">Su pagina web</a></font></h5>
+                                       <div class="rating">
+                                          <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star-o"></i>
+                                       </div>
+                                    </div>
+                                 </div>
+                                 <div class="clearfix"></div>
+                              </div>
+                           </li>
+                            <li class="col-md-6 col-sm-6 col-xs-12">
+                              <div class="comparison-box">
+                                 <div class="col-md-6 col-sm-12 col-xs-12">
+                                    <div class="compare-grid">
+                                          <a href="https://doncarros-vladimirmacloviw959615.codeanyapp.com/detail/25/" class="">
+                                          <img src="/static/images/ranki/ranki5estreña.jpg" alt=""  width="400" height="200" /></a>
+                                       <h2><a href="https://doncarros-vladimirmacloviw959615.codeanyapp.com/detail/25/">1992 Acura integra
+</a></h2>
+                                      <h5><a href="https://doncarros-vladimirmacloviw959615.codeanyapp.com/dealer/jhonatan/"><FONT COLOR="#fa3737">Su pagina web</a></font></h5>
+                                       <div class="rating">
+                                          <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                                       </div>
+                                    </div>
+                                 </div>
+                             
+                                 <div class="col-md-6 col-sm-12 col-xs-12">
+                                    <div class="compare-grid">
+                                          <a href="https://doncarros-vladimirmacloviw959615.codeanyapp.com/detail/20/" class="">
+                                            <img src="/static/images/ranki/ranki42.jpg" alt="" width="400" height="200" /></a>
+                                       <h2><a href="https://doncarros-vladimirmacloviw959615.codeanyapp.com/detail/20/">1997 Alfa-romeo spider</a></h2>
+                                      <h5><a href="https://doncarros-vladimirmacloviw959615.codeanyapp.com/dealer/kevin/"><FONT COLOR="#fa3737">Su pagina web</a></font></h5>
+                                       <div class="rating">
+                                          <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star-o"></i>
+                                       </div>
+                                    </div>
+                                 </div>
+                                 <div class="clearfix"></div>
+                              </div>
+                           </li>
+                            <li class="col-md-6 col-sm-6 col-xs-12">
+                              <div class="comparison-box">
+                                 <div class="col-md-6 col-sm-12 col-xs-12">
+                                    <div class="compare-grid">
+                                          <a href="https://doncarros-vladimirmacloviw959615.codeanyapp.com/detail/25/" class="">
+                                          <img src="/static/images/ranki/ranki5estreña.jpg" alt=""  width="400" height="200" /></a>
+                                       <h2><a href="https://doncarros-vladimirmacloviw959615.codeanyapp.com/detail/25/">1992 Acura integra
+</a></h2>
+                                      <h5><a href="https://doncarros-vladimirmacloviw959615.codeanyapp.com/dealer/jhonatan/"><FONT COLOR="#fa3737">Su pagina web</a></font></h5>
+                                       <div class="rating">
+                                          <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                                       </div>
+                                    </div>
+                                 </div>
+                             
+                                 <div class="col-md-6 col-sm-12 col-xs-12">
+                                    <div class="compare-grid">
+                                          <a href="https://doncarros-vladimirmacloviw959615.codeanyapp.com/detail/20/" class="">
+                                            <img src="/static/images/ranki/ranki42.jpg" alt="" width="400" height="200" /></a>
+                                       <h2><a href="https://doncarros-vladimirmacloviw959615.codeanyapp.com/detail/20/">1997 Alfa-romeo spider</a></h2>
+                                      <h5><a href="https://doncarros-vladimirmacloviw959615.codeanyapp.com/dealer/kevin/"><FONT COLOR="#fa3737">Su pagina web</a></font></h5>
+                                       <div class="rating">
+                                          <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star-o"></i>
+                                       </div>
+                                    </div>
+                                 </div>
+                                 <div class="clearfix"></div>
+                              </div>
+                           </li>
+                        </ul>
+                     </div>
+                  </div>
+                  
+               </div>
+            </div>
+         </section>
+<!-- --------------------------------------------search by------------------------------------ -->
+	<section class="search_by">
+		<h2 class="text-center title">Busqueda Rapida</h2>
+		<h3 class="text-center easily">Encuentra facilmente tu vehiculo por estilo o marca</h3>
+		<ul class="nav nav-tabs nav-center">
+		  <li id="op1" role="presentation" class="active"><a onclick="tags(1)" >Estilo</a></li>
+		  <li id="op2" role="presentation"><a onclick="tags(2)" >Marca</a></li>
+		</ul>
+		<div class="body">
+			<div class="tag1 view">
+				<form class="" action="/search" id="body_forms" method="post">
+				<div class="images row">
+				 {% csrf_token %}
+				 	<input type="hidden" name="type" value="simple">
+				  	<input type='hidden' id= 'body' name='body' value='' />
+					{% for obj in  body_styles %}
+					<div class="col col-lg-2 col-sm-4 ">
+						<a onclick="submitBodySearch({{obj.id}});"><label class="checkbox" ><img src="{{obj.image.url}}" alt="">{{obj.description}}</label></a>
+					</div>
+					{% if forloop.counter == 6 %}
+					</div>
+					<div id="morecars" class="collapse images">
+					{% endif %}
+					{% endfor %}
+				</div>
+				<span class="btn btn-link show-all" data-toggle="collapse" onclick="show_all()" data-target="#morecars"><hr><p id="text-show-all">Desplegar <i class="fa fa-chevron-down" aria-hidden="true"></i></p><hr></span>
+			</form>
+			</div>
+			 <div class="tag2 no-view">
+				<div class="cont-list row">
+					<form class="" action="/search" id="maker_forms" method="post">
+						{% csrf_token %}
+	 				 	<input type="hidden" name="type" value="simple">
+	 				  <input type='hidden' id='nmake' name='make' value='' />
+								{% for obj in  makers%}
+									{% if forloop.counter0 == 0 %}
+										<div class="list col-xs-6 col-sm-3">
+										<ul>
+									{% elif forloop.counter0|divisibleby:3 and forloop.counter0 != 0 %}
+										</ul>
+										</div>
+										<div class="list col-xs-6 col-sm-3">
+										<ul>
+									{% endif %}
+									<li><a onclick="submitMakeSearch({{obj.id}});">{{ obj.description }}</a></li>
+								{% endfor %}
+							</ul>
+							</div>
+						</form>
+				</div>
+			</div>
+
+		</div>
+	</section>
+ <section class="custom-padding">
+            <!-- Main Container -->
+            <div class="bottom-box row">
+               <!-- Row -->
+               <div class="row">
+                  <div class="clearfix"></div>
+                  <!-- Heading Area -->
+                  <div class="heading-panel">
+                     <div class="col-xs-12 col-md-12 col-sm-12 text-center">
+                        <!-- Main Title -->
+                        <h1>Lista <span class="heading-color"> de </span> los Carros</h1>
+                        <!-- Short Description -->
+                        <p class="heading-text">que hay en las pagina de Doncarros</p>
+                     </div>
+                  </div>
+                  <!-- Middle Content Box -->
+                 <form class="" action="/" method="get">
+                   
+                    <table class="customTable2">
+  <tbody>
+    <tr>
+      <td><select class="holapru2" onchange="this.form.submit()" id="filter" name="filter">
+				    				<option
+										{% if filter == 1%}
+											selected="selected"
+										{%endif%}
+										value="1"> Mas Antiguo</option>
+				    				<option
+										{% if filter == 2%}
+											selected="selected"
+										{%endif%}
+										value="2">Reciente</option>
+				    				<option
+										{% if filter == 3%}
+											selected="selected"
+										{%endif%}
+										value="3">Año: Mas Antiguo</option>
+				    				<option
+										{% if filter == 4%}
+											selected="selected"
+										{%endif%}
+										value="4">Año: Mas Nueva</option>
+				    				<option
+										{% if filter == 5%}
+											selected="selected"
+										{%endif%}
+										value="5">Precio : Mas Alto</option>
+				    				<option
+										{% if filter == 6%}
+											selected="selected"
+										{%endif%}
+										value="6">Precio : Mas Bajo</option>
+				  				</select></td>
+      <td> <select class="holapru2" onchange="this.form.submit()" id="result" name="result">
+										<option
+										{% if result == 10%}
+											selected="selected"
+										{%endif%}
+										 value="10" > página: 10 </option>
+										<option
+										{% if result == 20%}
+											selected="selected"
+										{%endif%}
+										value="20" > página: 20 </option>
+										<option
+										{% if result == 50%}
+											selected="selected"
+										{%endif%}
+										 value="50" > página: 50 </option>
+										<option
+										{% if result == 100%}
+											selected="selected"
+										{%endif%}
+										value="100" > página: 100 </option>
+				  				</select></td>
+    </tr>
+   
+  </tbody>
+</table>
+                   
+                   
+                  
+                  <div class="row">
+                     <div class="col-md-12 col-xs-12 col-sm-12">
+                        <div class="posts-masonry">
+                          <section id="cambiar" class="cards list row">
+							{% for obj in cars %}
+							{% if forloop.counter == 1 %}
+								<div class="tres">
+							{% endif %}
+                           <div class="col-md-4 col-xs-12 col-sm-6">
+                              <!-- Ad Box -->
+                              <div class="category-grid-box">
+                                 <!-- Ad Img -->
+                                 <div class="category-grid-img">
+                                   {% for id, im in all_photos.items %}
+									{% if id == obj.id%}
+									{% for i in im %}
+									{% if forloop.counter < 2%}
+										<!-- <div> -->
+										<img class="img-responsive" src="{{i.image.url}}">
+										<!-- <div class="item"> -->
+									{% endif %}
+									<!-- </div> -->
+									{% endfor %}
+									{% endif %}
+									{% endfor %}
+									{%if authenticated%}
+										<a id="mlist1" onclick="like({{obj.id}});" class="favoritos"><i class="glyphicon glyphicon-star"></i></a>
+									{%endif%}
+                                    <!-- Ad Status -->
+                                    <!-- User Review -->
+                                     <div class="user-preview">
+                                       <a href="/detail/{{obj.id}}">
+                                         	{% if obj.owner.is_dealer %}
+								{%if obj.owner.image%}
+									<div><img src="{{obj.owner.image.url}}" alt="" class="avatar avatar-small" ></div>
+									{% else %}
+								
+								{% endif %}
+								
+								{% else %}
+							
+								{% endif %}
+								{% if obj.owner.phone%}
+								{% endif %}
+								
+                                         
+            
+                                         
+                                         
+                                  </a>
+                                    </div>
+                                    <!-- View Details --><a class="view-details"  href="/detail/{{obj.id}}"><FONT COLOR="black">{{obj.model.year}} {{obj.model.maker}} {{obj.model.description}}</FONT></a>
+									 <a onclick="collapse('#CarInfo{{forloop.counter}}','#Car{{forloop.counter}}')"><i id="Car{{forloop.counter}}"></i></a>
+                                   <!-- Additional Info -->
+                                    <div class="additional-information">
+                                       <p>.</p>
+                                       <p>.</p>
+                                      <p><a  href="/detail/{{obj.id}}"><h3>
+                                        
+                                        <FONT COLOR="black">Ver detalles</FONT></a></h3></p>
+                                       <p>.</p>
+                                       <p>.</p>
+                                    </div>
+                                    <!-- Additional Info End-->
+                                 </div>
+                                 <!-- Ad Img End -->
+                                 <div class="short-description">
+                                    <!-- Ad Category -->
+                                    <div class="category-title"> <span><a href="/detail/{{obj.id}}">modelo y especificaciones </a></span> </div>
+                                    <!-- Ad Title -->
+                                   <h3><a title="" href="/detail/{{obj.id}}">{{obj.model.year}} {{obj.model.maker}} {{obj.model.description}} </a>
+                                   <a onclick="collapse('#CarInfo{{forloop.counter}}','#Car{{forloop.counter}}')"><i id="Car{{forloop.counter}}"></i></a>
+                                   </h3>
+                                    <!-- Price -->
+                                   <div class="price">${{ obj.price | intcomma}}<span class="negotiable"><FONT COLOR="blue">({{ obj.condition}})</FONT></span></div>
+                                 </div>
+                                 <!-- Addition Info -->
+                                  <div class="ad-info">
+                                    <ul>
+                                       <li><i class="flaticon-fuel-1"></i>{{ obj.fuel_t}}</li>
+                                       <li><i class="flaticon-dashboard"></i>{{ obj.mileage}}Km</li>
+                                       <li><i class="flaticon-engine-2"></i> {{obj.model.year}}</li>
+                                    </ul>
+                                 </div>
+                              </div>
+                              <!-- Ad Box End -->
+                           </div>
+                            <div class="tres">
+                      
+                     {% endfor %}
+
+						</section>
+                    <nav>
+
+						 
+						</form>
+						</nav>
+						</div>
+						</div>
+            </div>
+                
+	</div>
+                          
+                        </div>
+                     </div>
+                  </div>
+                  <!-- Middle Content Box End -->
+                  <img alt="" class="block-content wow zoomIn " width="100%" data-wow-delay="0ms" data-wow-duration="3500ms" src="/static/images/20.jpg">
+               </div>
+               <!-- Row End -->
+            </div>
+            <!-- Main Container End -->
+         </section>
+
+</div>
+
+{% endblock%}

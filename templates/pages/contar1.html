@@ -1,0 +1,32 @@
+{% extends 'base/base34.html' %}
+{% load i18n %}
+ 
+{% block head %}Contacta{% endblock %}
+ 
+{% block title %} Contacta {% endblock %}
+ 
+{% block content %}
+    <div class="form-div">
+        <form action="/contact/" method='POST'>
+        {% csrf_token %}
+            {% for field in form %}
+                {% ifequal field.name "subject" %}
+                    <input id="id_subject" type="text" name="subject" placeholder="{% trans 'Subject' %}"/>
+                {% else %}{% ifequal field.name "message" %}
+                    <textarea id="id_message" rows="5" cols="40" placeholder="{% trans 'Message' %}"></textarea>
+                {% else %}{% ifequal field.name "sender" %}
+                    <input id ="id_sender" type="email" name="sender" placeholder="{% trans 'Email' %}"/>
+                {% else %}{% ifequal field.name "cc_myself" %}
+                    <div class="checkbox">
+                        <input id="id_cc_myself" type="checkbox" name="cc_myself" />
+                        <label for="id_cc_myself">{% trans 'CC Myself' %}</label>
+                    </div>
+                {% else %}{{ field }}
+                {% endifequal %}{% endifequal %}{% endifequal %}{% endifequal %}
+            {% endfor %}
+            <p class="submit">
+                <input type="submit" name="mail" class="button" value="{% trans 'Send' %}" />
+            </p>
+        </form>
+    </div>
+{% endblock %}

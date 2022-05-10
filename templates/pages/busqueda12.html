@@ -1,0 +1,43 @@
+{% extends 'base/base34.html' %}
+{% block content %}
+<head>
+  
+</head>
+
+<body>
+  
+  
+  <form action="/buscar1" method="GET">
+    
+    <input type="text" name="prd">
+    <input type="submit" value="buscar">
+    
+  </form>
+  
+  
+  
+   <form  class="row" action="https://formspree.io/f/xwkwdoea" method="POST">
+        <div class="control-group form-group col-sm-6">
+          <input placeholder="Nombre" type="text" class="form-control" id="name" required data-validation-required-message="required.">
+        </div>
+        <div class="control-group form-group col-sm-6">
+          <input  placeholder="Apellido" type="text" class="form-control" id="name2" required data-validation-required-message="required.">
+        </div>
+        <div class="control-group form-group col-sm-6">
+          <input placeholder="Correo" type="Email" class="form-control" id="email" required data-validation-required-message="required.">
+        </div>
+        <div class="control-group form-group col-sm-6">
+          <input placeholder="Télefono" type="tel" class="form-control" id="phone" required data-validation-required-message="required.">
+        </div>
+        <div class="control-group form-group col-xs-12 " >
+              <textarea placeholder="¿Cómo puede ayudarle?" rows="10" cols="100" class="form-control" id="message" required data-validation-required-message="Please enter your message" maxlength="999" style="resize:none"></textarea>
+        </div>
+        <div class ="cen">
+          <button type="submit" class="btn btn-primary">Enviar</button>
+        </div>
+      </form>
+  
+  
+</body>
+
+{% endblock%}

@@ -1,0 +1,52 @@
+{% extends 'base/basecasa_edit.html' %}
+{% block content %}
+        <div class="login">
+    <!--Script menu -->
+    {% if is_dealer %}
+    <script>
+      setTimeout(function(){menu("#dealer_sign_in")},500);
+    </script>
+    {%else%}
+    <script>
+      setTimeout(function(){menu("#my_Account")},500);
+    </script>
+    {% endif %}
+        <div class="row login">
+         
+            <div class="col-sm-12">
+               <br>
+                <div class="form-top">
+                  <center>
+                  
+                    <div class="form-top-left">
+                      <br><br>
+                        <h3>REGISTRO</h3>
+                    </div>
+                    <div class="form-top-right">
+                        <p>Complete el siguiente formulario para obtener acceso instantáneo</p>
+                    </div>
+                </div>
+                <div class="form-bottom">
+                    <form enctype="multipart/form-data" role="form" action="/create/" method="post" class="login-form">
+                      <input type="hidden" name="type" value="sign">
+                      <center>
+                      <table>
+                        <center>
+                        {% csrf_token %}
+                        {{error}}
+                        {{form2.as_table}}
+                        </center>
+                      </table>
+                        </center>
+                        <div class="boton">
+                          <center>
+                            <button type="submit" class="btn btn-dark">INSCRIBEME</button>
+                            </center>
+                        </div>
+                    </form>
+                </div>
+                  </center>
+            </div>
+        </div>
+    </div>
+{% endblock %}

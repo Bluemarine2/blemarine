@@ -1,0 +1,536 @@
+{% extends 'base/basecasa_edit.html' %}
+{% block content %}
+{% load static %}
+{% load multiply %}
+{% load humanize %}
+
+
+<main id="content">
+      <section class="bg-secondary">
+        <div class="container">
+          <div style="background: RGBA(0,23,87,0.81);">
+                
+           
+            <form class="property-search d-none d-lg-block" enctype="multipart/form-data" role="form" action="/search" method="post">
+            {% csrf_token %}
+              
+              
+           
+          
+              
+              
+              
+            <div class="row align-items-lg-center" id="accordion-2">
+              <div class="col-xl-3 col-lg-4 col-md-5">
+                <div class="property-search-status-tab d-flex flex-row">
+                  	
+                 
+                  <button type="button" name="condition" id="alquiler" value="alquiler"
+						        class="btn shadow-none btn-active-primary text-white rounded-0 hover-white text-uppercase h-lg-80 border-right-0 border-top-0 border-bottom-0 border-left border-white-opacity-03 active flex-md-1">
+                    Alquiler
+                  </button>
+                  <button type="button" name="condition" id="condition" value="renta"
+						        class="btn shadow-none btn-active-primary text-white rounded-0 hover-white text-uppercase h-lg-80 border-left-0 border-top-0 border-bottom-0 border-right border-white-opacity-03 flex-md-1">
+                    Venta
+                  </button>
+                  <button type="button" name="condition" id="condition" value="All"
+						        class="btn shadow-none btn-active-primary text-white rounded-0 hover-white text-uppercase h-lg-80 border-left-0 border-top-0 border-bottom-0 border-right border-white-opacity-03 flex-md-1">
+                    All
+                  </button>
+                </div>
+              </div>
+              <div class="col-xl-7 col-lg-6 d-md-flex">
+                   {{ form.city.errors }}
+							{{ form.city }}
+                <div class="form-group mb-0 position-relative flex-md-3 mt-3 mt-md-0">
+                  
+                  <button type="submit"
+						        class="btn position-absolute pos-fixed-right-center p-0 text-heading fs-20 mr-4 shadow-none">
+                    <i class="far fa-search"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="col-lg-2">
+                <a href="#advanced-search-filters-2"
+					   class="icon-primary btn advanced-search w-100 shadow-none text-white text-left rounded-0 fs-14 font-weight-600 position-relative collapsed px-0 d-flex align-items-center"
+					   data-toggle="collapse" data-target="#advanced-search-filters-2" aria-expanded="true"
+					   aria-controls="advanced-search-filters-2">
+                  Busqueda Avanzada
+                </a>
+              </div>
+              <div id="advanced-search-filters-2" class="col-12 pb-6 pt-lg-2 collapse" data-parent="#accordion-2">
+                <div class="row mx-n2">
+                  <div class="col-sm-6 col-md-4 col-lg-3 pt-4 px-2">
+                   <label for="price-2" class="mb-4 text-white">Precio Minimo</label>
+                    <input class="form-control border-0 shadow-none form-control-lg selectpicker bg-white" id="bprice" name="bprice" data-style="btn-lg py-2 h-52 bg-white" value="1">
+                    	
+                   
+                  </div>
+                  <div class="col-sm-6 col-md-4 col-lg-3 pt-4 px-2">
+                     <label for="price-2" class="mb-4 text-white">Precio Maximo</label>
+                    <input class="form-control border-0 shadow-none form-control-lg selectpicker bg-white" id="fprice" name="fprice" data-style="btn-lg py-2 h-52 bg-white" value="1000000">
+                    	
+                  </div>
+                  <div class="col-sm-6 col-md-4 col-lg-3 pt-4 px-2">
+                    <label for="price-2" class="mb-4 text-white"> {{ form.makefield.label}}</label>
+                   {{ form.makefield.errors }}
+							{{ form.makefield }}
+                  </div>
+                 
+                 
+              <input type="hidden" name="type" value="simple">
+					<div class="col-xs-12 tira" id="condition">
+						
+								<input type="radio" checked name="condition" id="All" value="All">
+					</div>
+                </div>
+                
+              </div>
+            </div>
+          </form>
+              
+               </div> 
+          <form class="property-search property-search-mobile d-lg-none py-6" enctype="multipart/form-data" role="form" action="/search" method="post">
+            {% csrf_token %}
+            <div class="row align-items-lg-center" id="accordion-2-mobile">
+              <div class="col-12">
+                <div class="form-group mb-0 position-relative">
+                  <a href="#advanced-search-filters-4-mobile"
+							   class="text-secondary btn advanced-search shadow-none pr-3 pl-0 d-flex align-items-center position-absolute pos-fixed-left-center py-0 h-100 border-right collapsed"
+							   data-toggle="collapse" data-target="#advanced-search-filters-4-mobile"
+							   aria-expanded="true"
+							   aria-controls="advanced-search-filters-4-mobile">
+                    </a>
+                  {{ form.city.errors }}
+							{{ form.city }}
+                  <button type="submit"
+						        class="btn position-absolute pos-fixed-right-center p-0 text-heading fs-20 px-3 shadow-none h-100 border-left bg-white">
+                    <i class="far fa-search"></i>
+                  </button>
+                </div>
+              </div>
+              <div id="advanced-search-filters-2-mobile" class="col-12 pt-2 collapse"
+				     data-parent="#accordion-2-mobile">
+                <div class="row mx-n2">
+                  <div class="col-sm-6 pt-4 px-2">
+                     {{ form.makefield.errors }}
+							{{ form.makefield }}
+                  </div>
+                
+                  
+                  
+                  
+                </div>
+                <div class="row">
+                  <div class="col-md-6 pt-6 slider-range slider-range-primary">
+                    <label for="price-4-mobile" class="mb-4 text-white">Price Range</label>
+                      
+                        <input  type="text" readonly
+									       class="border-0 amount text-center bg-transparent font-weight-500"
+									      id="bprice" name="bprice" data-style="btn-lg py-2 h-52 bg-white" value="1">
+                    </div>
+                  </div>
+                  <div class="col-md-6 pt-6 slider-range slider-range-primary">
+                    <label for="area-size-4-mobile" class="mb-4">Precio Maximo</label>
+                     
+                      <div class="text-center mt-2">
+                        <input  type="text" readonly
+									       class="border-0 amount text-center bg-transparent font-weight-500"
+									      id="fprice" name="fprice" data-style="btn-lg py-2 h-52 bg-white" value="1000000">
+                      </div>
+                  </div>
+                  <div class="col-12 pt-4 pb-2">
+                    <a class="lh-17 d-inline-block other-feature collapsed" data-toggle="collapse"
+							   href="#12other-feature-2-mobile"
+							   role="button"
+							   aria-expanded="false" aria-controls="other-feature-2-mobile">
+                      <span class="fs-15 text-white font-weight-500 hover-primary"></span>
+                    </a>
+                  </div>
+                  <div class="collapse row mx-0 w-100" id="other-feature-2-mobile">
+                    <div class="col-sm-6 py-2">
+                         <input type="hidden" name="type" value="simple">
+					<div class="col-xs-12 tira" id="condition">
+						
+								<input type="radio" checked name="condition" id="All" value="All">
+					</div>
+                    </div>
+         
+        
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </section>
+      <section>
+	  
+<div id="map"></div>
+
+<script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.min.js"></script>
+<link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.css" type="text/css">
+ 
+<!-- Promise polyfill script is required -->
+<!-- to use Mapbox GL Geocoder in IE 11. -->
+<script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.auto.min.js"></script>
+
+<script>
+	mapboxgl.accessToken = 'pk.eyJ1IjoicHJvbnRvY2FzYSIsImEiOiJja29pcmRwZ3AwejVjMnBwbmM1NGsycDJ6In0.mjPYv6x0jxWkxxt8oMiwrg';
+var map = new mapboxgl.Map({ 
+    container: 'map', 
+    style: 'mapbox://styles/mapbox/streets-v9',  
+    center: [-70.85605216738287, 18.822626961222173],  
+    zoom: 7 
+});
+map.addControl(
+new MapboxGeocoder({
+accessToken: mapboxgl.accessToken,
+mapboxgl: mapboxgl
+})
+);
+map.addControl(new mapboxgl.NavigationControl());
+map.addControl(new mapboxgl.FullscreenControl());
+map.addControl(new mapboxgl.GeolocateControl({
+    positionOptions: {
+        enableHighAccuracy: true
+    },
+    trackUserLocation: true
+})); 
+map.on('load', function () {
+map.addSource('places', {
+// This GeoJSON contains features that include an "icon"
+// property. The value of the "icon" property corresponds
+// to an image in the Mapbox Streets style's sprite.
+'type': 'geojson',
+'data': {
+'type': 'FeatureCollection',
+'features': [
+  
+{% for obj in anuncio %}
+{
+'type': 'Feature',
+'properties': {
+'description':
+'<strong>{{obj.titulo}}</strong> {% for id, im in all_photos.items %}{% if id == obj.id%}{% for i in im %}{% if forloop.counter < 2%}<div> --><img src="{{i.image.url}}" alt="Home in Metric Way">	<!-- <div class="item"> -->{% endif %}<!-- </div> -->{% endfor %}{% endif %}{% endfor %}{{obj.pais}}/{{obj.estado_pais}}/{{obj.ciudad}}<a class="nav-link pl-3 pr-2"  href="/detail/{{obj.id}}">Visualizar</a>',
+'icon': 'place-of-worship-15'
+},
+'geometry': {
+'type': 'Point',
+'coordinates': [{{obj.lon}}, {{obj.lat}}]
+}
+}, 
+{% endfor %}
+
+{
+'type': 'Feature',
+'properties': {
+'description':
+'<strong>Sitio de Pronto casa</strong><div data-toggle="modal" id="#login-register-modal2"><a class="nav-link pl-3 pr-2" data-toggle="modal" href="#login-register-modal2">Visualizar</a>',
+'icon': 'place-of-worship-15'
+},
+'geometry': {
+'type': 'Point',
+'coordinates': [-77.007481, 38.876516]
+}
+}
+]
+}
+});
+
+
+
+// Add a layer showing the places.
+map.addLayer({
+'id': 'places',
+'type': 'symbol',
+'source': 'places',
+'layout': {
+'icon-image': '{icon}',
+'icon-allow-overlap': true
+}
+});
+ 
+// When a click event occurs on a feature in the places layer, open a popup at the
+// location of the feature, with description HTML from its properties.
+map.on('click', 'places', function (e) {
+var coordinates = e.features[0].geometry.coordinates.slice();
+var description = e.features[0].properties.description;
+ 
+// Ensure that if the map is zoomed out such that multiple
+// copies of the feature are visible, the popup appears
+// over the copy being pointed to.
+while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+}
+ 
+new mapboxgl.Popup()
+.setLngLat(coordinates)
+.setHTML(description)
+.addTo(map);
+});
+ 
+// Change the cursor to a pointer when the mouse is over the places layer.
+map.on('mouseenter', 'places', function () {
+map.getCanvas().style.cursor = 'pointer';
+});
+ 
+// Change it back to a pointer when it leaves.
+map.on('mouseleave', 'places', function () {
+map.getCanvas().style.cursor = '';
+});
+});
+</script>
+		
+		
+		
+		
+		
+      </section>
+      
+      <section class="pt-7 pb-11">
+        <div class="container container-xxl">
+          <div class="row align-items-sm-center">
+            <div class="col-md-6">
+              <h2 class="fs-15 text-dark mb-0">We found <span class="text-primary">45</span> properties
+                available for
+                you
+              </h2>
+            </div>
+            <div class="col-md-6 mt-4 mt-md-0">
+              <div class="d-flex justify-content-md-end align-items-center">
+                <div class="input-group border rounded input-group-lg w-auto bg-white mr-3">
+                  <label class="input-group-text bg-transparent border-0 text-uppercase letter-spacing-093 pr-1 pl-3"
+						       for="inputGroupSelect01"><i
+								class="fas fa-align-left fs-16 pr-2"></i>Sortby:</label>
+                  <select class="form-control border-0 bg-transparent shadow-none p-0 selectpicker sortby"
+						        data-style="bg-transparent border-0 font-weight-600 btn-lg pl-0 pr-3"
+						        id="inputGroupSelect01" name="sortby">
+                    <option selected>Top Selling</option>
+                    <option value="1">Most Viewed</option>
+                    <option value="2">Price(low to high)</option>
+                    <option value="3">Price(high to low)</option>
+                  </select>
+                </div>
+                <div class="d-none d-md-block">
+                  <a class="fs-sm-18 text-dark opacity-2" href="listing-full-width-list.html">
+                    <i class="fas fa-list"></i>
+                  </a>
+                  <a class="fs-sm-18 text-dark ml-5" href="#">
+                    <i class="fa fa-th-large"></i>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row pt-4 mx-n2">
+            
+             {% for obj in anuncio %}
+						
+            
+            
+            
+            <div class="col-lg-4 col-md-6 mb-4 px-2" data-animate="fadeInUp">
+              <div class="card border-0 bg-overlay-gradient-3 rounded-lg">
+                
+                 {% for id, im in all_photos.items %}
+									{% if id == obj.id%}
+									{% for i in im %}
+									{% if forloop.counter < 2%}
+										<!-- <div> -->
+                  <img src="{{i.image.url}}"  style="height:350px; width:100%; "  class="card-img" alt="Home in Metric Way">
+										
+										<!-- <div class="item"> -->
+									{% endif %}
+									<!-- </div> -->
+									{% endfor %}
+									{% endif %}
+									{% endfor %}
+                
+             
+                <div class="card-img-overlay d-flex flex-column position-relative-sm">
+                  <div class="d-flex">
+                    <div class="mr-auto h-24 d-flex">
+                      <span class="badge badge-primary">{{obj.estado_propiedad}}</span>
+                    </div>
+                    <ul class="list-inline mb-0 d-flex justify-content-center align-items-center h-100">
+                      <li class="list-inline-item">
+                        <a href="#"
+									   class="w-40px h-40 rounded-circle d-inline-flex align-items-center justify-content-center text-white bg-dark-opacity-03 bg-hover-primary hover-white"
+									   data-toggle="tooltip" title="Wishlist">
+                          <i class="far fa-heart"></i>
+                        </a>
+                      </li>
+                      <li class="list-inline-item">
+                        <a href="#"
+									   class="w-40px h-40 rounded-circle d-inline-flex align-items-center justify-content-center text-white bg-dark-opacity-03 bg-hover-primary hover-white"
+									   data-toggle="tooltip" title="Compare">
+                          <i class="fas fa-exchange-alt"></i>
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                  <div class="mt-auto px-2">
+                    <p class="fs-22 font-weight-bold text-white mb-1 lh-13">
+                      {{obj.moneda}}{{obj.precio}}
+                    </p>
+                    <h4 class="mt-0 mb-0 lh-1">
+                      <a href="/detail/{{obj.id}}" class="fs-16 text-white">{{obj.titulo}}</a>
+                    </h4>
+                    <p class="mb-1 text-gray-light font-weight-500 lh-2">{{obj.pais}}{{obj.estado_pais}}{{obj.ciudad}}</p>
+                    <div class="border-top border-white-opacity-03 pt-2">
+                      <ul class="list-inline d-flex mb-0 flex-wrap mt-2 mt-lg-0 mr-xl-n7 mr-n5 mb-2">
+                       
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            
+           
+            
+             {% endfor %}
+            
+      
+          </div>
+         
+        </div>
+      </section>
+      <div id="compare" class="compare">
+        <button class="btn shadow btn-open bg-white bg-hover-accent text-secondary rounded-right-0 d-flex justify-content-center align-items-center w-30px h-140 p-0">
+        </button>
+        <div class="list-group list-group-no-border bg-dark py-3">
+          <a href="#" class="list-group-item bg-transparent text-white fs-22 text-center py-0">
+            <i class="far fa-bars"></i>
+          </a>
+          
+           {% for obj in anuncio %}
+          <div class="list-group-item card bg-transparent">
+            <div class="position-relative hover-change-image bg-hover-overlay">
+              {% for id, im in all_photos.items %}
+									{% if id == obj.id%}
+									{% for i in im %}
+									{% if forloop.counter < 2%}
+										<!-- <div> -->
+                  <img src="{{i.image.url}}" class="card-img" alt="Home in Metric Way">
+										
+										<!-- <div class="item"> -->
+									{% endif %}
+									<!-- </div> -->
+									{% endfor %}
+									{% endif %}
+									{% endfor %}
+              <div class="card-img-overlay">
+                <a href="#" class="text-white hover-image fs-16 lh-1 pos-fixed-top-right position-absolute m-2"><i class="fal fa-minus-circle"></i></a>
+              </div>
+            </div>
+          </div>
+            {% endfor %}
+         
+          <div class="list-group-item bg-transparent">
+            <a href="compare-details.html" class="btn btn-lg btn-primary w-100 px-0 d-flex justify-content-center">
+              Compare
+            </a>
+          </div>
+        </div>
+      </div>
+      
+                                </main>
+
+
+
+
+   <footer class="bg-dark pt-8 pb-6 footer text-muted">
+      <div class="container container-xxl">
+        <div class="row">
+          <div class="col-md-6 col-lg-4 mb-6 mb-md-0">
+            <a class="d-block mb-2" href="#">
+              <img src="/static/casa/images/wh.png" alt="HomeID">
+            </a>
+            <div class="lh-26 font-weight-500">
+              <p class="mb-0">Dirrecion de su ubicacion</p>
+              <a class="d-block text-muted hover-white" href="mailto:prontocasa@gmail.com">prontocasa@gmail.com</a>
+              <a class="d-block text-lighter font-weight-bold fs-15 hover-white"
+                       href="tel:(+68)000-000-0000">(+68)000-0000</a>
+              <a class="d-block text-muted hover-white" href=".">www.Prontocasa.com</a>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-2 mb-6 mb-md-0">
+            <h4 class="text-white fs-16 my-4 font-weight-500">Búsquedas populares</h4>
+            <ul class="list-group list-group-flush list-group-no-border">
+              <li class="list-group-item bg-transparent p-0">
+                <a href="#" class="text-muted lh-26 font-weight-500 hover-white">Se renta apartamento</a>
+              </li>
+              
+              <li class="list-group-item bg-transparent p-0">
+                <a href="#" class="text-muted lh-26 font-weight-500 hover-white">Oficinas para Compra</a>
+              </li>
+              
+            </ul>
+          </div>
+          <div class="col-md-6 col-lg-2 mb-6 mb-md-0">
+            <h4 class="text-white fs-16 my-4 font-weight-500">Enlaces rápidos</h4>
+            <ul class="list-group list-group-flush list-group-no-border">
+              <li class="list-group-item bg-transparent p-0">
+                <a href="#" class="text-muted lh-26 font-weight-500 hover-white">Condiciones de uso</a>
+              </li>
+              <li class="list-group-item bg-transparent p-0">
+                <a href="#" class="text-muted lh-26 font-weight-500 hover-white">Política de privacidad</a>
+              </li>
+              <li class="list-group-item bg-transparent p-0">
+                <a href="#" class="text-muted lh-26 font-weight-500 hover-white">Conctato</a>
+              </li>
+             
+            </ul>
+          </div>
+          <div class="col-md-6 col-lg-4 mb-6 mb-md-0">
+            <h4 class="text-white fs-16 my-4 font-weight-500">Suscríbase a nuestro boletín</h4>
+            <p class="font-weight-500 text-muted lh-184">sucribarse para que le llegue las notificaciones de los nuevos anuncio </p>
+            <form>
+              <div class="input-group input-group-lg mb-6">
+                <input type="email" name="email" class="form-control bg-white shadow-none border-0 z-index-1" placeholder="Tu correo Electronico">
+                <div class="input-group-append">
+                  <button class="btn btn-primary" type="submit">Subscribe</button>
+                </div>
+              </div>
+            </form>
+            <ul class="list-inline mb-0">
+              <li class="list-inline-item mr-0">
+                <a href="#" class="text-white opacity-3 fs-25 px-4 opacity-hover-10"><i
+                                class="fab fa-twitter"></i></a>
+              </li>
+              <li class="list-inline-item mr-0">
+                <a href="#" class="text-white opacity-3 fs-25 px-4 opacity-hover-10"><i
+                                class="fab fa-facebook-f"></i></a>
+              </li>
+              
+            </ul>
+          </div>
+        </div>
+        <div class="mt-0 mt-md-10 row">
+          <ul class="list-inline mb-0 col-md-6 mr-auto">
+            <li class="list-inline-item mr-6">
+              <a href="#" class="text-muted lh-26 font-weight-500 hover-white">Terminos y Usos</a>
+            </li>
+            <li class="list-inline-item">
+              <a href="#" class="text-muted lh-26 font-weight-500 hover-white">Politicas y Seguridad</a>
+            </li>
+          </ul>
+          <p class="col-md-auto mb-0 text-muted">
+            © 2021 Pronto casa. Reservados todos los derechos
+
+
+          </p>
+        </div>
+      </div>
+    </footer>
+
+
+
+
+
+
+{% endblock%}

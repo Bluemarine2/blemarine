@@ -1,0 +1,94 @@
+{% extends 'base/backend-prontocasa.html' %}
+{% load static %}
+{% block content %}
+<link href="{% static 'css/list.css' %}" rel='stylesheet' type='text/css'>
+{%if message%}
+<script>
+  swal(
+    'Mensaje',
+    '{{message}}',
+    'info'
+  )
+</script>
+{%endif%}
+
+
+
+
+
+
+ <main id="content" class="bg-gray-01">
+            <div class="px-3 px-lg-6 px-xxl-13 py-5 py-lg-10">
+              <div class="d-flex flex-wrap flex-md-nowrap mb-6">
+                <div class="mr-0 mr-md-auto">
+                  <h2 class="mb-0 text-heading fs-22 lh-15">Planes de Pronto Casa<span
+                    class="badge badge-white badge-pill text-primary fs-18 font-weight-bold ml-2">5</span>
+                  </h2>
+                  <p>Aqui puede agregar los planes que tendra la pagina para su clientes</p>
+                </div>
+               
+              </div>
+              <div class="table-responsive">
+                <table class="table table-hover border rounded-lg mb-6 bg-white">
+                  <thead class="thead-sm thead-black">
+                    <tr>
+                      <th scope="col" class="border-top-0 px-6 pt-5 pb-4">Imagen</th>
+                      <th scope="col" class="border-top-0 pt-5 pb-4">Nombre de Plan</th>
+                      <th scope="col" class="border-top-0 pt-5 pb-4">Cantidad de Anuncio</th>
+                      <th scope="col" class="border-top-0 pt-5 pb-4">Precio</th>
+                      <th scope="col" class="border-top-0 pt-5 pb-4">Funciones</th>
+                      <th scope="col" class="border-top-0 pt-5 pb-4">Funciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                     {% for plan in plans %}
+                    <tr class="shadow-hover-xs-2 bg-hover-white">
+                      <td class="align-middle p-6">
+                         {%if plan.image%}
+            <img class="circimg" src="{{plan.image.url}}">
+          {% endif %}
+                      </td>
+                        </div>
+          <form action="" method="post">
+            {% csrf_token %}
+                      <td class="align-middle">{{plan.name}}</td>
+                      <td class="align-middle"> {{plan.number_of_cars}}
+                      </td>
+                      <td class="align-middle">{{plan.price}} $</td>
+                      <td class="align-middle">
+                        <button type="submit" id="delete" name="delete" value="{{plan.id}}" class="btn btn-danger" > Eliminar </button>
+                      </td>
+                      <td class="align-middle">
+                      <button type="submit" id="edit" name="edit" value="{{plan.id}}" class="btn btn-warning" > Editar </button>
+                      </td>
+                    </tr>
+                  
+
+
+                    </form>
+                    {% endfor %}
+                
+                {% include 'pages/new_plan_modal.html' %}
+{%if check%}
+  <script>
+    $("#plan_modal").modal('show');
+  </script>
+{%endif%}
+                  </tbody>
+                </table>
+              </div>
+              <div class="text-right">
+    <button type="button" id="new" name="new" data-toggle="modal" data-target="#plan_modal" class="btn btn-success" > Abril despues de darle editar </button>
+
+               <button type="button" id="new" name="new" data-toggle="modal" data-target="#plan_modal" class="btn btn-success" > Crear plan nuevo </button>
+              </div>
+            </div>
+          </main>
+
+
+
+
+
+
+{% load replace %}
+{% endblock %}

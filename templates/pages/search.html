@@ -1,0 +1,440 @@
+	{% extends 'base/basecasa_edit.html' %}
+{% block content %}
+{% load multiply %}
+{% load static %}
+		<div class="pages">
+	<!--Script menu -->
+	<script>
+	setTimeout(function(){menu("none")},500);
+	</script>
+	<script type="text/javascript">
+	function changeModels(){
+		var maker = $( "#make option:selected" ).val();
+		$('.opts').hide()
+		$(".no").text(maker?"Select Model":"Select Make")
+		$('._' + maker).show()
+		$("#model").val('');
+	}
+
+	function changeYT(){
+		var maker = $( "#make option:selected" ).val();
+		var model = $( "#model option:selected" ).val();
+		$('.minfo').hide()
+		if(!(model === -1 || maker === -1)){
+			$('.' + model).show()
+		}
+	}
+	</script>
+
+   
+
+    
+
+
+   
+   <head>
+    
+   </head>
+   <body>
+   <main id="content">
+      <section class="pb-8 page-title shadow">
+        <div class="container">
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb pt-6 pt-lg-2 lh-15 pb-5">
+              <li class="breadcrumb-item"><a href="/">inicio</a></li>
+              <li class="breadcrumb-item active" aria-current="page">lista</li>
+            </ol>
+            <h1 class="fs-30 lh-1 mb-0 text-heading font-weight-600">busqueda de resultado</h1>
+          </nav>
+        </div>
+      </section>
+      <section class="pt-8 pb-11">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-4 order-2 order-lg-1 primary-sidebar sidebar-sticky" id="sidebar">
+              <div class="primary-sidebar-inner">
+                <div class="card mb-4">
+                  <div class="card-body px-6 py-4">
+                    <h4 class="card-title fs-16 lh-2 text-dark mb-3">Busqueda</h4>
+                    <form enctype="multipart/form-data" role="form" action="/search" method="post">
+                       {% csrf_token %}
+                       <input type="hidden" name="type" value="simple">
+					<div class="col-xs-12 tira" id="condition">
+						
+								<input type="radio" checked name="condition" id="All" value="All">
+					</div>
+                      
+                      <div class="form-group">
+                        <label for="location" class="sr-only">Pais</label>
+                         {{ form.city.errors }}
+							{{ form.city }}
+                      </div>
+                      <div class="form-group">
+                        <label for="type" class="sr-only">{{ form.makefield.label}}</label>
+                        {{ form.makefield.errors }}
+							{{ form.makefield }}
+                      </div>
+                    
+                     
+                      <div class="form-group slider-range slider-range-secondary">
+                        <label for="price" class="mb-4 text-gray-light">Precio minimo</label>
+   <input class="form-control border-0 shadow-none form-control-lg selectpicker bg-white" id="bprice" name="bprice" data-style="btn-lg py-2 h-52 bg-white" value="1">
+
+                      </div>
+                      <div class="form-group slider-range slider-range-secondary">
+                        <label for="area-size" class="mb-4 text-gray-light">Precio Maximo</label>
+                         <input class="form-control border-0 shadow-none form-control-lg selectpicker bg-white" id="fprice" name="fprice" data-style="btn-lg py-2 h-52 bg-white" value="1000000">
+                    	
+                      </div>
+                     
+                    
+                      <button type="submit" class="btn btn-primary btn-lg btn-block shadow-none mt-4">Search
+                      </button>
+                    </form>
+                  </div>
+                </div>
+                <div class="card property-widget mb-4">
+                  <div class="card-body px-6 pt-5 pb-6">
+                    <h4 class="card-title fs-16 lh-2 text-dark mb-3">Propiedades Recientes</h4>
+                    <div class="slick-slider mx-0"
+							     data-slick-options='{"slidesToShow": 1, "autoplay":true}'>
+                      
+                       {% for obj in cars %}
+							{% if forloop.counter == 1 %}
+							
+							{% endif %}
+                      
+                      <div class="box px-0">
+                        <div class="card border-0">
+                          
+                               {% for id, im in all_photos.items %}
+									{% if id == obj.id%}
+									{% for i in im %}
+									{% if forloop.counter < 2%}
+										<!-- <div> -->
+                                         
+                          <img src="{{i.image.url}}" class="card-img" alt="Villa on Hollywood
+													Boulevard">
+										<!-- <div class="item"> -->
+									{% endif %}
+									<!-- </div> -->
+									{% endfor %}
+									{% endif %}
+									{% endfor %}
+									{%if authenticated%}
+									
+									{%endif%}
+                         
+                          <div class="card-img-overlay d-flex flex-column bg-gradient-3 rounded-lg">
+                            <div class="d-flex mb-auto">
+                              <a href="#" class="mr-1 badge badge-orange">{{ obj.estado_propiedad}}</a>
+                              
+                            </div>
+                            <div class="px-2 pb-2">
+                              <a href="single-property-1.html" class="text-white"><h5
+														class="card-title fs-16 lh-2 mb-0">{{ obj.titulo}}</h5>
+                              </a>
+                              <p class="card-text text-gray-light mb-0 font-weight-500">{{ obj.pais}}/{{ obj.estado_pais}}{{ obj.price}}/{{ obj.ciudad}}</p>
+                              <p class="text-white mb-0"><span
+														class="fs-17 font-weight-bold">{{ obj.moneda}}{{ obj.precio}} </span>
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      {% endfor %}
+                      
+                    </div>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="card-body px-6 py-4">
+                    <h4 class="card-title fs-16 lh-2 text-dark mb-3">Latest Posts</h4>
+                    <ul class="list-group list-group-flush">
+                      <li class="list-group-item px-0 pt-0 pb-3">
+                        <div class="media">
+                          <div class="position-relative mr-3">
+                            <a href="blog-details-1.html"
+											   class="d-block w-100px rounded pt-11 bg-img-cover-center"
+											   style="background-image: url('images/post-02.jpg')">
+                            </a>
+                            <a href="blog-grid-with-sidebar.html"
+											   class="badge text-white bg-dark-opacity-04 m-1 fs-13 font-weight-500 bg-hover-primary hover-white position-absolute pos-fixed-top">
+                              creative
+                            </a>
+                          </div>
+                          <div class="media-body">
+                            <h4 class="fs-14 lh-186 mb-1">
+                              <a href="blog-details-1.html"
+												   class="text-dark hover-primary">
+                                Retail banks wake up to digital lending this year
+                              </a>
+                            </h4>
+                            <div class="text-gray-light">
+                              Dec 16, 2018
+                            </div>
+                          </div>
+                        </div>
+                      </li>
+                      <li class="list-group-item px-0 pt-2 pb-3">
+                        <div class="media">
+                          <div class="position-relative mr-3">
+                            <a href="blog-details-1.html"
+											   class="d-block w-100px rounded pt-11 bg-img-cover-center"
+											   style="background-image: url('images/post-04.jpg')">
+                            </a>
+                            <a href="blog-grid-with-sidebar.html"
+											   class="badge text-white bg-dark-opacity-04 m-1 fs-13 font-weight-500 bg-hover-primary hover-white position-absolute pos-fixed-top">
+                              rental
+                            </a>
+                          </div>
+                          <div class="media-body">
+                            <h4 class="fs-14 lh-186 mb-1">
+                              <a href="blog-details-1.html"
+												   class="text-dark hover-primary">
+                                Within the construction industry as their overdraft
+                              </a>
+                            </h4>
+                            <div class="text-gray-light">
+                              Dec 16, 2018
+                            </div>
+                          </div>
+                        </div>
+                      </li>
+                      <li class="list-group-item px-0 pt-2">
+                        <div class="media">
+                          <div class="position-relative mr-3">
+                            <a href="blog-details-1.html"
+											   class="d-block w-100px rounded pt-11 bg-img-cover-center"
+											   style="background-image: url('images/post-07.jpg')">
+                            </a>
+                            <a href="blog-grid-with-sidebar.html"
+											   class="badge text-white bg-dark-opacity-04 m-1 fs-13 font-weight-500 bg-hover-primary hover-white position-absolute pos-fixed-top">
+                              rental
+                            </a>
+                          </div>
+                          <div class="media-body">
+                            <h4 class="fs-14 lh-186 mb-1">
+                              <a href="blog-details-1.html"
+												   class="text-dark hover-primary">
+                                Future Office Buildings: Intelligent by Design
+                              </a>
+                            </h4>
+                            <div class="text-gray-light">
+                              Dec 16, 2018
+                            </div>
+                          </div>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-8 mb-8 mb-lg-0 order-1 order-lg-2">
+              <div class="row align-items-sm-center mb-6">
+                <div class="col-md-6">
+                  <h2 class="fs-15 text-dark mb-0">Encontramos <span class="text-primary">{{cars|length}}</span> propiedades disponibles para ti
+                  </h2>
+                </div>
+                <div class="col-md-6 mt-6 mt-md-0">
+                  <div class="d-flex justify-content-md-end align-items-center">
+                    <div class="input-group border rounded input-group-lg w-auto bg-white mr-3">
+                      <label class="input-group-text bg-transparent border-0 text-uppercase letter-spacing-093 pr-1 pl-3"
+								       for="inputGroupSelect01"><i
+										class="fas fa-align-left fs-16 pr-2"></i></label>
+                      
+                    </div>
+                    <div class="d-none d-md-block">
+                     
+                      <a class="fs-sm-18 text-dark ml-5" href="#">
+                        <i class="fa fa-th-large"></i>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                
+                
+                
+                
+                {% for obj in cars %}
+							{% if forloop.counter == 1 %}
+							
+							{% endif %}
+                
+                <div class="col-md-6 mb-6">
+                  <div class="card border-0" data-animate="fadeInUp">
+                    <div class="position-relative hover-change-image bg-hover-overlay rounded-lg card-img">
+                             {% for id, im in all_photos.items %}
+									{% if id == obj.id%}
+									{% for i in im %}
+									{% if forloop.counter < 2%}
+										<!-- <div> -->
+                                           
+                          <img src="{{i.image.url}}">
+										<!-- <div class="item"> -->
+									{% endif %}
+									<!-- </div> -->
+									{% endfor %}
+									{% endif %}
+									{% endfor %}
+									{%if authenticated%}
+									
+									{%endif%}
+                      
+                      
+                
+              
+                      <div class="card-img-overlay d-flex flex-column">
+                        <div><span class="badge badge-primary">{{obj.estado_propiedad}}</span></div>
+                        <div class="mt-auto d-flex hover-image">
+                          <ul class="list-inline mb-0 d-flex align-items-end mr-auto">
+                            <li class="list-inline-item mr-2" data-toggle="tooltip" title="9 Images">
+                              <a href="#" class="text-white hover-primary">
+                                <i class="far fa-images"></i><span class="pl-1">{{i|length}}</span>
+                              </a>
+                            </li>
+                            <li class="list-inline-item" data-toggle="tooltip" title="2 Video">
+                              
+                            </li>
+                          </ul>
+                          <ul class="list-inline mb-0 d-flex align-items-end mr-n3">
+                            <li class="list-inline-item mr-3 h-32" data-toggle="tooltip"
+											    title="Wishlist">
+                              <a href="#" class="text-white fs-20 hover-primary">
+                                <i class="far fa-heart"></i>
+                              </a>
+                            </li>
+                            <li class="list-inline-item mr-3 h-32" data-toggle="tooltip"
+											    title="Compare">
+                              <a href="#" class="text-white fs-20 hover-primary">
+                                <i class="fas fa-exchange-alt"></i>
+                              </a>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="card-body pt-3 px-0 pb-1">
+                      <h2 class="fs-16 mb-1"><a href="single-property-1.html"
+								                          class="text-dark hover-primary">{{obj.titulo}} </a>
+                      </h2>
+                      <p class="font-weight-500 text-gray-light mb-0">{{obj.pais}} {{obj.estado_pais}} {{obj.ciudad}}</p>
+                      <p class="fs-17 font-weight-bold text-heading mb-0 lh-16">
+                        {{obj.moneda}} {{obj.precio}} 
+                      </p>
+                    </div>
+                    <div class="card-footer bg-transparent px-0 pb-0 pt-2">
+                      <ul class="list-inline mb-0">
+                      
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                
+                
+                {% endfor %}
+                
+                
+               
+              </div>
+             
+            </div>
+          </div>
+        </div>
+      </section>
+      
+    </main>
+      <footer class="bg-dark pt-8 pb-6 footer text-muted">
+      <div class="container container-xxl">
+        <div class="row">
+          <div class="col-md-6 col-lg-4 mb-6 mb-md-0">
+            <a class="d-block mb-2" href="#">
+              <img src="/static/casa/images/logo.png" alt="HomeID">
+            </a>
+            <div class="lh-26 font-weight-500">
+              <p class="mb-0">Dirrecion de su ubicacion</p>
+              <a class="d-block text-muted hover-white" href="mailto:prontocasa@gmail.com">prontocasa@gmail.com</a>
+              <a class="d-block text-lighter font-weight-bold fs-15 hover-white"
+                       href="tel:(+68)000-000-0000">(+68)000-0000</a>
+              <a class="d-block text-muted hover-white" href=".">www.Prontocasa.com</a>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-2 mb-6 mb-md-0">
+            <h4 class="text-white fs-16 my-4 font-weight-500">Búsquedas populares</h4>
+            <ul class="list-group list-group-flush list-group-no-border">
+              <li class="list-group-item bg-transparent p-0">
+                <a href="#" class="text-muted lh-26 font-weight-500 hover-white">Se renta apartamento</a>
+              </li>
+              
+              <li class="list-group-item bg-transparent p-0">
+                <a href="#" class="text-muted lh-26 font-weight-500 hover-white">Oficinas para Compra</a>
+              </li>
+              
+            </ul>
+          </div>
+          <div class="col-md-6 col-lg-2 mb-6 mb-md-0">
+            <h4 class="text-white fs-16 my-4 font-weight-500">Enlaces rápidos</h4>
+            <ul class="list-group list-group-flush list-group-no-border">
+              <li class="list-group-item bg-transparent p-0">
+                <a href="#" class="text-muted lh-26 font-weight-500 hover-white">Condiciones de uso</a>
+              </li>
+              <li class="list-group-item bg-transparent p-0">
+                <a href="#" class="text-muted lh-26 font-weight-500 hover-white">Política de privacidad</a>
+              </li>
+              <li class="list-group-item bg-transparent p-0">
+                <a href="#" class="text-muted lh-26 font-weight-500 hover-white">Conctato</a>
+              </li>
+             
+            </ul>
+          </div>
+          <div class="col-md-6 col-lg-4 mb-6 mb-md-0">
+            <h4 class="text-white fs-16 my-4 font-weight-500">Suscríbase a nuestro boletín</h4>
+            <p class="font-weight-500 text-muted lh-184">sucribarse para que le llegue las notificaciones de los nuevos anuncio </p>
+            <form>
+              <div class="input-group input-group-lg mb-6">
+                <input type="email" name="email" class="form-control bg-white shadow-none border-0 z-index-1" placeholder="Tu correo Electronico">
+                <div class="input-group-append">
+                  <button class="btn btn-primary" type="submit">Subscribe</button>
+                </div>
+              </div>
+            </form>
+            <ul class="list-inline mb-0">
+              <li class="list-inline-item mr-0">
+                <a href="#" class="text-white opacity-3 fs-25 px-4 opacity-hover-10"><i
+                                class="fab fa-twitter"></i></a>
+              </li>
+              <li class="list-inline-item mr-0">
+                <a href="#" class="text-white opacity-3 fs-25 px-4 opacity-hover-10"><i
+                                class="fab fa-facebook-f"></i></a>
+              </li>
+              
+            </ul>
+          </div>
+        </div>
+        <div class="mt-0 mt-md-10 row">
+          <ul class="list-inline mb-0 col-md-6 mr-auto">
+            <li class="list-inline-item mr-6">
+              <a href="#" class="text-muted lh-26 font-weight-500 hover-white">Terminos y Usos</a>
+            </li>
+            <li class="list-inline-item">
+              <a href="#" class="text-muted lh-26 font-weight-500 hover-white">Politicas y Seguridad</a>
+            </li>
+          </ul>
+          <p class="col-md-auto mb-0 text-muted">
+            © 2021 Pronto casa. Reservados todos los derechos
+
+
+          </p>
+        </div>
+      </div>
+    </footer>
+   </body>
+
+
+
+	
+
+{% endblock %}

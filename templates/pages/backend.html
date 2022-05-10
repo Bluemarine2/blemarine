@@ -1,0 +1,495 @@
+{% extends 'base/backend-prontocasa.html' %}
+{% block content %}
+{% load humanize %}
+{% load static %}
+
+<main id="content" class="bg-gray-01">
+            <div class="px-3 px-lg-6 px-xxl-13 py-5 py-lg-10">
+              <div class="d-flex flex-wrap flex-md-nowrap mb-6">
+                <div class="mr-0 mr-md-auto">
+                  <h2 class="mb-0 text-heading fs-22 lh-15">¡Bienvenido de nuevo, {{ username }}!</h2>
+                  <p>Este es su panel de control de sistema de pronto casa</p>
+                </div>
+                <div>
+                  <a href="../create_listing2" class="btn btn-primary btn-lg">
+                    <span>Agregar Nueva Propiedad</span>
+                    <span class="d-inline-block ml-1 fs-20 lh-1"><svg class="icon icon-add-new"><use
+                        xlink:href="#icon-add-new"></use></svg></span>
+                  </a>
+                </div>
+              </div>
+              
+              
+               {%if is_admin%}
+              
+              
+              
+              <div class="row">
+                <div class="col-sm-6 col-xxl-3 mb-6">
+                  <div class="card">
+                    <div class="card-body row align-items-center px-6 py-7">
+                      <div class="col-5">
+                        <span class="w-83px h-83 d-flex align-items-center justify-content-center fs-36 badge badge-blue badge-circle">
+                          <svg class="icon icon-1">
+                            <use xlink:href="#icon-1"></use>
+                          </svg>
+                        </span>
+                      </div>
+                      <div class="col-7 text-center">
+                        <p class="fs-42 lh-12 mb-0 counterup" data-start="0"
+                           data-end="{{cars|length}}" data-decimals="0"
+                           data-duration="0" data-separator="">{{cars|length}}</p>
+                        <p>Propiedades que a publicado</p><br>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+               
+                <div class="col-sm-6 col-xxl-3 mb-6">
+                  <div class="card">
+                    <div class="card-body row align-items-center px-6 py-7">
+                      <div class="col-5">
+                        <span class="w-83px h-83 d-flex align-items-center justify-content-center fs-36 badge badge-green badge-circle">
+                          <svg class="icon icon-1"><use xlink:href="#icon-1"></use></svg>
+                        </span>
+                      </div>
+                      <div class="col-7 text-center">
+                        <p class="fs-42 lh-12 mb-0 counterup" data-start="0"
+                           data-end="{{userobj.cars_to_sell}}" data-decimals="0"
+                           data-duration="0" data-separator="">{{userobj.cars_to_sell}}</p>
+                        <p>Su cantidad de Propiedades que puede Publicar</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-6 col-xxl-3 mb-6">
+                  <div class="card">
+                    <div class="card-body row align-items-center px-6 py-7">
+                      <div class="col-4">
+                        <span class="w-83px h-83 d-flex align-items-center justify-content-center fs-36 badge badge-yellow badge-circle">
+                          <svg class="icon icon-review"><use xlink:href="#icon-review"></use></svg>
+                        </span>
+                      </div>
+                      <div class="col-8 text-center">
+                        <p class="fs-42 lh-12 mb-0 counterup" data-start="0"
+                           data-end="329" data-decimals="0"
+                           data-duration="0" data-separator="">329</p>
+                        <p>Total Visitor Reviews</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-6 col-xxl-3 mb-6">
+                  <div class="card">
+                    <div class="card-body row align-items-center px-6 py-7">
+                      <div class="col-5">
+                        <span class="w-83px h-83 d-flex align-items-center justify-content-center fs-36 badge badge-pink badge-circle">
+                          <svg class="icon icon-heart"><use xlink:href="#icon-heart"></use></svg>
+                        </span>
+                      </div>
+                      <div class="col-7 text-center">
+                        <p class="fs-42 lh-12 mb-0 counterup" data-start="0"
+                           data-end="{{favo|length}}" data-decimals="0"
+                           data-duration="0" data-separator="">{{cars2|length}}</p>
+                        <p>Total Favorites</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+                                             <script type="text/javascript">
+function handleFileSelect(evt) {
+var files = evt.target.files; // FileList object
+document.getElementById('list').innerHTML="";
+// Loop through the FileList and render image files as thumbnails.
+for (var i = 0, f; f = files[i]; i++) {
+
+// Only process image files.
+if (!f.type.match('image.*')) {
+continue;
+}
+
+var reader = new FileReader();
+
+// Closure to capture the file information.
+reader.onload = (function(theFile) {
+return function(e) {
+	// Render thumbnail.
+	var span = document.createElement('span');
+	span.innerHTML = ['<img class="thumb" src="', e.target.result,
+										'" title="', escape(theFile.name), '"/>'].join('');
+  document.getElementById('list').insertBefore(span, null);
+};
+})(f);
+
+// Read in the image file as a data URL.
+reader.readAsDataURL(f);
+}
+}
+
+document.getElementById('img').addEventListener('change', handleFileSelect, false);
+
+function limpiar() {
+
+				$(".imagen_list").remove();
+        var input = $('#img');
+        var clon = input.clone();  // Creamos un clon del elemento original
+        input.replaceWith(clon);   // Y sustituimos el original por el clon
+
+				function handleFileSelect(evt) {
+				var files = evt.target.files; // FileList object
+
+				// Loop through the FileList and render image files as thumbnails.
+				for (var i = 0, f; f = files[i]; i++) {
+
+				// Only process image files.
+				if (!f.type.match('image.*')) {
+				continue;
+				}
+
+				var reader = new FileReader();
+
+				// Closure to capture the file information.
+				reader.onload = (function(theFile) {
+				return function(e) {
+					// Render thumbnail.
+					var span = document.createElement('span');
+					span.classList.toggle("imagen_list");
+					span.innerHTML = ['<img class="thumb" src="', e.target.result,
+														'" title="', escape(theFile.name), '"/>'].join('');
+					document.getElementById('list').insertBefore(span, null);
+				};
+				})(f);
+
+				// Read in the image file as a data URL.
+				reader.readAsDataURL(f);
+				}
+				}
+
+				document.getElementById('img').addEventListener('change', handleFileSelect, false);
+    }
+
+
+</script>
+              
+              {%else %}
+  {%if is_dealer%}
+              
+              
+                <div class="row">
+                <div class="col-sm-6 col-xxl-3 mb-6">
+                  <div class="card">
+                    <div class="card-body row align-items-center px-6 py-7">
+                      <div class="col-5">
+                        <span class="w-83px h-83 d-flex align-items-center justify-content-center fs-36 badge badge-blue badge-circle">
+                          <svg class="icon icon-1">
+                            <use xlink:href="#icon-1"></use>
+                          </svg>
+                        </span>
+                      </div>
+                      <div class="col-7 text-center">
+                        <p class="fs-42 lh-12 mb-0 counterup" data-start="0"
+                           data-end="{{cars|length}}" data-decimals="0"
+                           data-duration="0" data-separator="">{{cars|length}}</p>
+                        <p>Propiedades que a publicado</p><br>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+               
+                <div class="col-sm-6 col-xxl-3 mb-6">
+                  <div class="card">
+                    <div class="card-body row align-items-center px-6 py-7">
+                      <div class="col-5">
+                        <span class="w-83px h-83 d-flex align-items-center justify-content-center fs-36 badge badge-green badge-circle">
+                          <svg class="icon icon-1"><use xlink:href="#icon-1"></use></svg>
+                        </span>
+                      </div>
+                      <div class="col-7 text-center">
+                        <p class="fs-42 lh-12 mb-0 counterup" data-start="0"
+                           data-end="{{userobj.cars_to_sell}}" data-decimals="0"
+                           data-duration="0" data-separator="">{{userobj.cars_to_sell}}</p>
+                        <p>Su cantidad de Propiedades que puede Publicar</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-6 col-xxl-3 mb-6">
+                  <div class="card">
+                    <div class="card-body row align-items-center px-6 py-7">
+                      <div class="col-4">
+                        <span class="w-83px h-83 d-flex align-items-center justify-content-center fs-36 badge badge-yellow badge-circle">
+                          <svg class="icon icon-review"><use xlink:href="#icon-review"></use></svg>
+                        </span>
+                      </div>
+                      <div class="col-8 text-center">
+                        <p class="fs-42 lh-12 mb-0 counterup" data-start="0"
+                           data-end="329" data-decimals="0"
+                           data-duration="0" data-separator="">329</p>
+                        <p>Total Visitor Reviews</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-6 col-xxl-3 mb-6">
+                  <div class="card">
+                    <div class="card-body row align-items-center px-6 py-7">
+                      <div class="col-5">
+                        <span class="w-83px h-83 d-flex align-items-center justify-content-center fs-36 badge badge-pink badge-circle">
+                          <svg class="icon icon-heart"><use xlink:href="#icon-heart"></use></svg>
+                        </span>
+                      </div>
+                      <div class="col-7 text-center">
+                        <p class="fs-42 lh-12 mb-0 counterup" data-start="0"
+                           data-end="914" data-decimals="0"
+                           data-duration="0" data-separator="">{{cars|length}}</p>
+                        <p>Total Favorites</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+                                             <script type="text/javascript">
+function handleFileSelect(evt) {
+var files = evt.target.files; // FileList object
+document.getElementById('list').innerHTML="";
+// Loop through the FileList and render image files as thumbnails.
+for (var i = 0, f; f = files[i]; i++) {
+
+// Only process image files.
+if (!f.type.match('image.*')) {
+continue;
+}
+
+var reader = new FileReader();
+
+// Closure to capture the file information.
+reader.onload = (function(theFile) {
+return function(e) {
+	// Render thumbnail.
+	var span = document.createElement('span');
+	span.innerHTML = ['<img class="thumb" src="', e.target.result,
+										'" title="', escape(theFile.name), '"/>'].join('');
+  document.getElementById('list').insertBefore(span, null);
+};
+})(f);
+
+// Read in the image file as a data URL.
+reader.readAsDataURL(f);
+}
+}
+
+document.getElementById('img').addEventListener('change', handleFileSelect, false);
+
+function limpiar() {
+
+				$(".imagen_list").remove();
+        var input = $('#img');
+        var clon = input.clone();  // Creamos un clon del elemento original
+        input.replaceWith(clon);   // Y sustituimos el original por el clon
+
+				function handleFileSelect(evt) {
+				var files = evt.target.files; // FileList object
+
+				// Loop through the FileList and render image files as thumbnails.
+				for (var i = 0, f; f = files[i]; i++) {
+
+				// Only process image files.
+				if (!f.type.match('image.*')) {
+				continue;
+				}
+
+				var reader = new FileReader();
+
+				// Closure to capture the file information.
+				reader.onload = (function(theFile) {
+				return function(e) {
+					// Render thumbnail.
+					var span = document.createElement('span');
+					span.classList.toggle("imagen_list");
+					span.innerHTML = ['<img class="thumb" src="', e.target.result,
+														'" title="', escape(theFile.name), '"/>'].join('');
+					document.getElementById('list').insertBefore(span, null);
+				};
+				})(f);
+
+				// Read in the image file as a data URL.
+				reader.readAsDataURL(f);
+				}
+				}
+
+				document.getElementById('img').addEventListener('change', handleFileSelect, false);
+    }
+
+
+</script>
+              
+               {%else%}
+              <!-- -------------------------------------Home private seller------------------------------ -->
+              
+              
+              
+               <div class="row">
+                <div class="col-sm-6 col-xxl-3 mb-6">
+                  <div class="card">
+                    <div class="card-body row align-items-center px-6 py-7">
+                      <div class="col-5">
+                        <span class="w-83px h-83 d-flex align-items-center justify-content-center fs-36 badge badge-blue badge-circle">
+                          <svg class="icon icon-1">
+                            <use xlink:href="#icon-1"></use>
+                          </svg>
+                        </span>
+                      </div>
+                      <div class="col-7 text-center">
+                        <p class="fs-42 lh-12 mb-0 counterup" data-start="0"
+                           data-end="{{cars|length}}" data-decimals="0"
+                           data-duration="0" data-separator="">{{cars|length}}</p>
+                        <p>Propiedades que a publicado</p><br>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+               
+                <div class="col-sm-6 col-xxl-3 mb-6">
+                  <div class="card">
+                    <div class="card-body row align-items-center px-6 py-7">
+                      <div class="col-5">
+                        <span class="w-83px h-83 d-flex align-items-center justify-content-center fs-36 badge badge-green badge-circle">
+                          <svg class="icon icon-1"><use xlink:href="#icon-1"></use></svg>
+                        </span>
+                      </div>
+                      <div class="col-7 text-center">
+                        <p class="fs-42 lh-12 mb-0 counterup" data-start="0"
+                           data-end="{{userobj.cars_to_sell}}" data-decimals="0"
+                           data-duration="0" data-separator="">{{userobj.cars_to_sell}}</p>
+                        <p>Su cantidad de Propiedades que puede Publicar</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-6 col-xxl-3 mb-6">
+                  <div class="card">
+                    <div class="card-body row align-items-center px-6 py-7">
+                      <div class="col-4">
+                        <span class="w-83px h-83 d-flex align-items-center justify-content-center fs-36 badge badge-yellow badge-circle">
+                          <svg class="icon icon-review"><use xlink:href="#icon-review"></use></svg>
+                        </span>
+                      </div>
+                      <div class="col-8 text-center">
+                        <p class="fs-42 lh-12 mb-0 counterup" data-start="0"
+                           data-end="329" data-decimals="0"
+                           data-duration="0" data-separator="">329</p>
+                        <p>Total Visitor Reviews</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-6 col-xxl-3 mb-6">
+                  <div class="card">
+                    <div class="card-body row align-items-center px-6 py-7">
+                      <div class="col-5">
+                        <span class="w-83px h-83 d-flex align-items-center justify-content-center fs-36 badge badge-pink badge-circle">
+                          <svg class="icon icon-heart"><use xlink:href="#icon-heart"></use></svg>
+                        </span>
+                      </div>
+                      <div class="col-7 text-center">
+                        <p class="fs-42 lh-12 mb-0 counterup" data-start="0"
+                           data-end="{{userobj|length}}" data-decimals="0"
+                           data-duration="0" data-separator="">{{cars2|length}}</p>
+                        <p>Total Favorites</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+                                             <script type="text/javascript">
+function handleFileSelect(evt) {
+var files = evt.target.files; // FileList object
+document.getElementById('list').innerHTML="";
+// Loop through the FileList and render image files as thumbnails.
+for (var i = 0, f; f = files[i]; i++) {
+
+// Only process image files.
+if (!f.type.match('image.*')) {
+continue;
+}
+
+var reader = new FileReader();
+
+// Closure to capture the file information.
+reader.onload = (function(theFile) {
+return function(e) {
+	// Render thumbnail.
+	var span = document.createElement('span');
+	span.innerHTML = ['<img class="thumb" src="', e.target.result,
+										'" title="', escape(theFile.name), '"/>'].join('');
+  document.getElementById('list').insertBefore(span, null);
+};
+})(f);
+
+// Read in the image file as a data URL.
+reader.readAsDataURL(f);
+}
+}
+
+document.getElementById('img').addEventListener('change', handleFileSelect, false);
+
+function limpiar() {
+
+				$(".imagen_list").remove();
+        var input = $('#img');
+        var clon = input.clone();  // Creamos un clon del elemento original
+        input.replaceWith(clon);   // Y sustituimos el original por el clon
+
+				function handleFileSelect(evt) {
+				var files = evt.target.files; // FileList object
+
+				// Loop through the FileList and render image files as thumbnails.
+				for (var i = 0, f; f = files[i]; i++) {
+
+				// Only process image files.
+				if (!f.type.match('image.*')) {
+				continue;
+				}
+
+				var reader = new FileReader();
+
+				// Closure to capture the file information.
+				reader.onload = (function(theFile) {
+				return function(e) {
+					// Render thumbnail.
+					var span = document.createElement('span');
+					span.classList.toggle("imagen_list");
+					span.innerHTML = ['<img class="thumb" src="', e.target.result,
+														'" title="', escape(theFile.name), '"/>'].join('');
+					document.getElementById('list').insertBefore(span, null);
+				};
+				})(f);
+
+				// Read in the image file as a data URL.
+				reader.readAsDataURL(f);
+				}
+				}
+
+				document.getElementById('img').addEventListener('change', handleFileSelect, false);
+    }
+
+
+</script>
+              
+              
+              
+              
+              
+               {%endif %}
+              {%endif %}
+              
+            </div>
+          </main>
+
+
+
+{% endblock %}

@@ -1,0 +1,272 @@
+{% extends 'base/basecasa_edit.html' %}
+{% block content %}
+{% load static %}
+        <div class="pages">
+    <!--Script menu -->
+
+    <script>
+      setTimeout(function(){menu("#sell_my_car")},500);
+    </script>
+
+    <!-- content of the page-->
+          
+         
+     
+<main id="content">
+    
+      <section class="py-14 py-lg-17 page-title bg-overlay-opacity-02"
+         style="background-image: url('/static/casa/images/BG4.jpg');background-size: cover;background-position: center">
+        <div class="container">
+          <h1 class="fs-22 fs-md-42 lh-15 mb-8 mb-lg-13 font-weight-normal text-center mxw-774 pt-2 text-white position-relative z-index-3" data-animate="fadeInDown">
+            Para obtener más información sobre nuestros servicios, póngase en contacto con nuestros consultores expertos</h1>
+        </div>
+      </section>
+      <section>
+        <div class="container">
+          <div class="card border-0 mt-n13 z-index-3 pb-8 pt-10">
+            <div class="card-body p-0">
+              <h2 class="text-heading mb-2 fs-22 fs-md-32 text-center lh-16">¡Siempre estamos ansiosos por saber de usted!</h2>
+              <p class="text-center mxw-670 mb-8">
+               Pregunte con confianza que estamos para anteder a todas su dudas
+              </p>
+             
+              <form class="mxw-751 px-md-10" method="post" action="">
+              
+                      
+                        {% csrf_token %}
+                        {{error}}
+                        {{ form2 }}
+                    
+                
+                <div class="text-center">
+                  <button type="submit" class="btn btn-lg btn-primary px-9">Submit</button>
+                </div>
+              </form>
+              
+               <div class="form-group">   
+                       
+                        {{ mensaje }}
+                    
+                </div>
+              
+              
+             <div class="login">
+        <div class="row login">
+         
+            <div class="col-sm-12">
+               <br>
+                <div class="form-top">
+                  
+                    <div class="form-top-left">
+                      <br><br>
+                        <h3>REGISTRO</h3>
+                    </div>
+                    <div class="form-top-right">
+                        <p>Complete el siguiente formulario para obtener acceso instantáneo</p>
+                    </div>
+                </div>
+                <div class="form-bottom">
+                    <form enctype="multipart/form-data" role="form" action="/create/" method="post" class="login-form">
+                      <input type="hidden" name="type" value="sign">
+                     <center>
+                     
+                      </center>
+                        <div class="boton">
+                            <button type="submit" class="btn">INSCRIBEME</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+            </div>
+          </div>
+          <div class="row mb-12">
+            <div class="col-md-4 mb-6">
+              <div class="card border-0">
+                <div class="media align-items-end">
+                  <span class="text-primary fs-40 lh-1 d-inline-block mr-3">
+                    <svg class="icon icon-f1"><use xlink:href="#icon-f1"></use></svg>
+                  </span>
+                  <div class="media-body">
+                    <h4 class="fs-22 lh-15 mb-0 text-heading">Punta Cana</h4>
+                  </div>
+                </div>
+                <div class="card-body px-0 pt-3 pb-0">
+                  <p class="card-text mb-0">
+                    Republica dominicana
+                  </p>
+                  <a href="tel:12390068668"
+                           class="d-block text-heading lh-2 hover-primary text-decoration-none">123 900
+                    68668</a>
+                  <a href="mailto:contact.sanfrancisco@homeid.com"
+                           class="d-block text-body hover-primary text-decoration-none">contact.sanfrancisco@homeid.com</a>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4 mb-6">
+              <div class="card border-0">
+                <div class="media align-items-end">
+                  <span class="text-primary fs-40 lh-1 d-inline-block mr-3">
+                    <svg class="icon icon-f2"><use xlink:href="#icon-f2"></use></svg>
+                  </span>
+                  <div class="media-body">
+                    <h4 class="fs-22 lh-15 mb-0 text-heading">Republica dominicana</h4>
+                  </div>
+                </div>
+                <div class="card-body px-0 pt-3 pb-0">
+                  <p class="card-text mb-0">
+                    punta cana
+                  </p>
+                  <a href="tel:123-900-68668"
+                           class="d-block text-heading lh-2 hover-primary text-decoration-none">123 900
+                    68668</a>
+                  <a href="mailto:contact.newyork@homeid.com"
+                           class="d-block text-body hover-primary text-decoration-none">contact.newyork@homeid.com</a>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4 mb-6">
+              <div class="card border-0">
+                <div class="media align-items-end">
+                  <span class="text-primary fs-40 lh-1 d-inline-block mr-3">
+                    <svg class="icon icon-f3"><use xlink:href="#icon-f3"></use></svg>
+                  </span>
+                  <div class="media-body">
+                    <h4 class="fs-22 lh-15 mb-0 text-heading">Puerto vallarta</h4>
+                  </div>
+                </div>
+                <div class="card-body px-0 pt-3 pb-0">
+                  <p class="card-text mb-0">
+                    Punta cana
+                  </p>
+                  <a href="tel:123-900-68668"
+                           class="d-block text-heading lh-2 hover-primary text-decoration-none">123 900
+                    68668</a>
+                  <a href="mailto:contact.russia@homeid.com"
+                           class="d-block text-body hover-primary text-decoration-none">contact.russia@homeid.com</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section>
+        <div id="map" class="mapbox-gl map-point-animate"
+         style="height: 550px"
+         data-mapbox-access-token="pk.eyJ1IjoiZHVvbmdsaCIsImEiOiJjanJnNHQ4czExMzhyNDVwdWo5bW13ZmtnIn0.f1bmXQsS6o4bzFFJc8RCcQ"
+         data-mapbox-options='{"center":[-73.981566, 40.739011],"setLngLat":[-73.981566, 40.739011]}'
+         data-mapbox-marker='[{"position":[-73.981566, 40.739011],"className":"marker","backgroundImage":"/static/casa/images/googlle-market-01.png","backgroundRepeat":"no-repeat","width":"32px","height":"40px"}]'
+    ></div>
+      </section>
+    </main>          
+      
+          
+   <footer class="bg-dark pt-8 pb-6 footer text-muted">
+      <div class="container container-xxl">
+        <div class="row">
+          <div class="col-md-6 col-lg-4 mb-6 mb-md-0">
+            <a class="d-block mb-2" href="#">
+              <img src="/static/casa/images/wh.png" alt="HomeID">
+            </a>
+            <div class="lh-26 font-weight-500">
+              <p class="mb-0">Dirrecion de su ubicacion</p>
+              <a class="d-block text-muted hover-white" href="mailto:prontocasa@gmail.com">prontocasa@gmail.com</a>
+              <a class="d-block text-lighter font-weight-bold fs-15 hover-white"
+                       href="tel:(+68)000-000-0000">(+68)000-0000</a>
+              <a class="d-block text-muted hover-white" href=".">www.Prontocasa.com</a>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-2 mb-6 mb-md-0">
+            <h4 class="text-white fs-16 my-4 font-weight-500">Búsquedas populares</h4>
+            <ul class="list-group list-group-flush list-group-no-border">
+              <li class="list-group-item bg-transparent p-0">
+                <a href="#" class="text-muted lh-26 font-weight-500 hover-white">Se renta apartamento</a>
+              </li>
+              
+              <li class="list-group-item bg-transparent p-0">
+                <a href="#" class="text-muted lh-26 font-weight-500 hover-white">Oficinas para Compra</a>
+              </li>
+              
+            </ul>
+          </div>
+          <div class="col-md-6 col-lg-2 mb-6 mb-md-0">
+            <h4 class="text-white fs-16 my-4 font-weight-500">Enlaces rápidos</h4>
+            <ul class="list-group list-group-flush list-group-no-border">
+              <li class="list-group-item bg-transparent p-0">
+                <a href="#" class="text-muted lh-26 font-weight-500 hover-white">Condiciones de uso</a>
+              </li>
+              <li class="list-group-item bg-transparent p-0">
+                <a href="#" class="text-muted lh-26 font-weight-500 hover-white">Política de privacidad</a>
+              </li>
+              <li class="list-group-item bg-transparent p-0">
+                <a href="#" class="text-muted lh-26 font-weight-500 hover-white">Conctato</a>
+              </li>
+             
+            </ul>
+          </div>
+          <div class="col-md-6 col-lg-4 mb-6 mb-md-0">
+            <h4 class="text-white fs-16 my-4 font-weight-500">Suscríbase a nuestro boletín</h4>
+            <p class="font-weight-500 text-muted lh-184">sucribarse para que le llegue las notificaciones de los nuevos anuncio </p>
+            <form>
+              <div class="input-group input-group-lg mb-6">
+                <input type="email" name="email" class="form-control bg-white shadow-none border-0 z-index-1" placeholder="Tu correo Electronico">
+                <div class="input-group-append">
+                  <button class="btn btn-primary" type="submit">Subscribe</button>
+                </div>
+              </div>
+            </form>
+            <ul class="list-inline mb-0">
+              <li class="list-inline-item mr-0">
+                <a href="#" class="text-white opacity-3 fs-25 px-4 opacity-hover-10"><i
+                                class="fab fa-twitter"></i></a>
+              </li>
+              <li class="list-inline-item mr-0">
+                <a href="#" class="text-white opacity-3 fs-25 px-4 opacity-hover-10"><i
+                                class="fab fa-facebook-f"></i></a>
+              </li>
+              
+            </ul>
+          </div>
+        </div>
+        <div class="mt-0 mt-md-10 row">
+          <ul class="list-inline mb-0 col-md-6 mr-auto">
+            <li class="list-inline-item mr-6">
+              <a href="#" class="text-muted lh-26 font-weight-500 hover-white">Terminos y Usos</a>
+            </li>
+            <li class="list-inline-item">
+              <a href="#" class="text-muted lh-26 font-weight-500 hover-white">Politicas y Seguridad</a>
+            </li>
+          </ul>
+          <p class="col-md-auto mb-0 text-muted">
+            © 2021 Pronto casa. Reservados todos los derechos
+
+
+          </p>
+        </div>
+      </div>
+    </footer>
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+   
+{% endblock %}

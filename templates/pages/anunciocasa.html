@@ -1,0 +1,41 @@
+{% extends 'base/basecasa_edit.html' %}
+{% load replace %}
+{% block content %}
+	
+<script>
+	setTimeout(function(){menu("#sell_my_car")},500);
+	</script>
+	<div class="page-outer">
+		<div class="create_listing">
+			<h2>¿Que estás vendiendo?</h2>
+			<div class="images">
+				{% for obj in body_styles%}
+					<a href="/crear_anuncio/{{obj.nombre|replace}}"><label class="checkbox" for="Style{{ forloop.counter }}"><img src="{{obj.image.url}}" alt="">{{obj.nombre}}</label></a>
+					{%empty%}
+					<h3>Lo sentimos, has alcanzado el número máximo de autos que puedes vender. <a href="/become">Regresar A Menu anterior</a><a href="https://wa.me/18099144873?text=Hola%20me%20gustaria%20cambiar%20el%20plan%20de%20venta%20de%20mi%20cuenta%20de%20Don%20Carros">Actualizar su plan Ahora</a></h3>
+				{% endfor %}
+			</div>
+		</div>
+	</div>
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

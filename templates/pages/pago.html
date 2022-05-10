@@ -1,0 +1,201 @@
+{% extends 'base/base.html' %}
+{% block content %}
+{% load static %}
+        <div class="pages">
+    <!--Script menu -->
+
+    <script>
+      setTimeout(function(){menu("#sell_my_car")},500);
+    </script>
+
+    <!-- content of the page-->
+    <section class="sell">
+        <div class="head">
+            
+            <div class="text row">
+                <div class="col col-md-6">
+                  <br>
+                  <br>
+                    <h2 class="tituloconta"><FONT COLOR="#fa3737">selección</FONT></h2>
+                    <h1 class="tituloconta"><FONT COLOR="#fa3737">Planes de Don Carros</FONT></h1> 
+                </div>
+                <div class="col col-sm-6 visible-lg visible-mg">
+                  <p><FONT COLOR="#1f1d1d">COMUNICARSE</FONT></p>
+                  <p><FONT COLOR="#1f1d1d">(809)-772-1175</FONT></p>
+                    <img src="../../media/themes/conta2.png">
+                  
+                </div>
+            </div>
+        </div>
+        <div class="body row">
+            <div class="col col-xs-12 row">
+                <div class="col col-sm-8 texto">
+                   <h2>Nuestra Oficina</h2>
+
+                    <ul class="directions">
+                      <h4>
+                        
+                     
+                        <li><strong>Don Carros</strong></li><br>
+                        <li><span class="number glyphicon glyphicon-phone-alt">
+								 (809)-772-1175
+							</span></li><br>
+                       </span></li>
+							<li><span class="number glyphicon glyphicon-envelope">
+						  		info@gmail.com
+							</span></li><br>
+							<li><span class="number glyphicon glyphicon-map-marker">
+												  		Punta Cana, Republica Dominicana
+							</span></li><br>
+                        <li><span style="font-weight:bold;">Horario:</span> lunes a viernes, 9am - 6pm</li>
+                         </h4>
+                    </ul>
+          <centar><h2>Mapa</h2></centar>
+                </div>
+                 <!-- Row -->
+               <div class="row">
+                  <div class="clearfix"></div>
+                  <!-- Heading Area -->
+                  <div class="heading-panel">
+                     <div class="col-xs-12 col-md-12 col-sm-12 text-center">
+                        <!-- Main Title -->
+                        <h1>Featured <span class="heading-color"> Car</span> Deals</h1>
+                        <!-- Short Description -->
+                        <p class="heading-text">Eu delicata rationibus usu. Vix te putant utroque, ludus fabellas duo eu, his dico ut debet consectetuer.</p>
+                     </div>
+                  </div>
+                  <!-- Middle Content Box -->
+                  <div class="row">
+                     <div class="col-md-12 col-xs-12 col-sm-12">
+                        <div class="posts-masonry">
+                           <div class="col-md-4 col-xs-12 col-sm-6">
+                              <!-- Ad Box -->
+                             <form class="" action="/" method="get">
+                              <div class="category-grid-box">
+                                 <!-- Ad Img -->
+                                 <div class="category-grid-img">
+                                    <img class="img-responsive" alt="" src="../../media/themes/conta2.png">
+                                    <!-- Ad Status -->
+                                    <!-- User Review -->
+                                    <div class="user-preview">
+                                       <a href="/detail/{{obj.id}}"> <img src="../../media/themes/conta2.png" class="avatar avatar-small" alt=""> </a>
+                                    </div>
+                                    <!-- View Details --><a class="view-details"  href="/detail/{{obj.id}}"><FONT COLOR="black">{{obj.model.year}} {{obj.model.maker}} {{obj.model.description}}</FONT></a>
+									 <a onclick="collapse('#CarInfo{{forloop.counter}}','#Car{{forloop.counter}}')"><i id="Car{{forloop.counter}}"></i></a>
+                                   
+                               
+                                    <!-- Additional Info -->
+                                    <div class="additional-information">
+                                       <p>Transmission : Automatic</p>
+                                       <p>Engine Capacity : 1799 cc</p>
+                                       <p>Engine Type : Petrol</p>
+                                       <p>Mileage : 103,198 km</p>
+                                       <p>Registered City : London</p>
+                                    </div>
+                                    <!-- Additional Info End-->
+                                 </div>
+                                 <!-- Ad Img End -->
+                                 <div class="short-description">
+                                    <!-- Ad Category -->
+                                    <div class="category-title"> <span><a href="#">Car & Bikes</a></span> </div>
+                                    <!-- Ad Title -->
+                                    <h3><a title="" href="single-page-listing.html">Porsche 911 Carrera 2017 </a></h3>
+                                    <!-- Price -->
+                                    <div class="price">$96,100 <span class="negotiable">(Negotiable)</span></div>
+                                 </div>
+                                 <!-- Addition Info -->
+                                 <div class="ad-info">
+                                    <ul>
+                                       <li><i class="flaticon-fuel-1"></i>Diesel</li>
+                                       <li><i class="flaticon-dashboard"></i>35,000 km</li>
+                                       <li><i class="flaticon-engine-2"></i> 1800 cc</li>
+                                    </ul>
+                                 </div>
+                              </div>
+                             </form>
+                             
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+            </div>
+            <div class="col col-md-6 centar">
+                 <img  class="dfdfdfdf" width="300px" height="900px"src="../../media/themes/map3.png">
+            </div>
+            <div class="col-md-6 centrar">
+                <section>
+        <h3 class="col-xs-12 text-center title">Contáctenos</h3>
+         <h4 class="col-xs-12 text-justify">Planes y precios Llámenos al (809)-772-1175 y háganos saber cómo ayudarle a crear un sitio web efectivo y asombroso, o simplemente rellene el siguiente formulario y háganos saber cómo podemos ayudarlo.</h4>
+        <form  class="row" action="https://formspree.io/f/xwkwdoea" method="POST">
+            <div class="control-group form-group col-sm-6 col">
+                <div class="controls">
+                    <div class="input-group margin-bottom-sm">
+                        <span class="input-group-addon "><i class="fa fa-user fa-fw red" aria-hidden="true"></i></span>
+                        <input placeholder="Nombre" type="text" class="form-control" name="nombre" required/>
+                    </div>
+                    <p class="help-block"></p>
+                </div>
+            </div>
+            <div class="control-group form-group col-sm-6 col">
+                <div class="controls">
+                    <div class="input-group margin-bottom-sm">
+                        <span class="input-group-addon "><i class="fa fa-user fa-fw red" aria-hidden="true"></i></span>
+                        <input  placeholder="Apellido" type="text" name="apellido" class="form-control" required/>
+                    </div>
+                    <p class="help-block"></p>
+                </div>
+            </div>
+            <div class="control-group form-group col-sm-6 col">
+                <div class="controls">
+                    <div class="input-group margin-bottom-sm">
+                        <span class="input-group-addon"><i class="fa fa-envelope-o fa-fw red" aria-hidden="true"></i></span>
+                        <input placeholder="Correo" type="email"  name="correo" class="form-control" required/>
+                    </div>
+
+                </div>
+            </div>
+            <div class="control-group form-group col-sm-6 col">
+                <div class="controls">
+                    <div class="input-group margin-bottom-sm">
+                        <span class="input-group-addon"><i class="fa fa-phone fa-fw red" aria-hidden="true"></i></span>
+                        <input placeholder="Telefono" type="number"  name="telefono" class="form-control" required/>
+                    </div>
+                </div>
+            </div>
+            <div class="control-group form-group col-sm-6 col">
+                <div class="controls">
+                    <div class="input-group margin-bottom-sm">
+                        <span class="input-group-addon "><i class="fa fa-user fa-fw red" aria-hidden="true"></i></span>
+                        <input placeholder="Nombre del vendedor" class="form-control" name="vendedor" type="text">
+                    </div>
+                    <p class="help-block"></p>
+                </div>
+            </div>
+            <div class="control-group form-group col-sm-6 col">
+                <div class="controls">
+                    <div class="input-group margin-bottom-sm">
+                        <span style="font-size: 17px" class="input-group-addon "><i class="glyphicon glyphicon-globe red" aria-hidden="true"></i></span>
+                        <input placeholder="Sitio Web actual" name="sitio_web" type="text" class="form-control">
+                    </div>
+                    <p class="help-block"></p>
+                </div>
+            </div>
+            <div class="control-group form-group " style="padding: 0 1em;">
+                <div class="controls">
+                    <div class="input-group margin-bottom-sm">
+                        <span class="input-group-addon"><i class="fa fa-file-text-o fa-fw red" aria-hidden="true"></i></span>
+                        <textarea placeholder="¿Cómo podemos ayudarle?" name="contenido" rows="10" cols="100" class="form-control" required/></textarea>
+                    </div>
+                </div>
+            </div>
+            <div id="success"></div>
+            <div class ="cen">
+                <button type="submit" class="btn btn-primary">Enviar</button>
+            </div>
+        </form>
+    </section>
+            </div>
+        </div>
+    </section>
+  </div>
+{% endblock %}

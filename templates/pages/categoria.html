@@ -1,0 +1,505 @@
+
+{% extends 'base/basecasa_edit.html' %}
+
+{% load image_at %}
+{% load static %}
+{% block content %}
+
+  <style>
+.fab {
+
+text-align: center;
+text-decoration: none;
+
+}
+
+.fab:hover {
+opacity: 0.7;
+}
+
+.fa-whatsapp {
+background: #45bbff;
+color: white;
+}
+
+
+</style>
+   <body>
+     <main id="content">
+       
+           
+        {% if articulos %}
+         
+      <section class="pb-4 page-title shadow">
+        <div class="container">
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb pt-6 pt-lg-2 lh-15 pb-5">
+              <li class="breadcrumb-item"><a href="/">inicio</a></li>
+              <li class="breadcrumb-item active" aria-current="page">categoria</li>
+            </ol>
+            <h1 class="fs-30 lh-1 mb-0 text-heading font-weight-600">Listado de categoria </h1>
+          
+          </nav>
+        </div>
+      </section>
+      <section class="pt-8 pb-11">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-4 order-2 order-lg-1 primary-sidebar sidebar-sticky" id="sidebar">
+              <div class="primary-sidebar-inner">
+                <div class="card mb-4">
+                  <div class="card-body px-6 py-4">
+                    <h4 class="card-title fs-16 lh-2 text-dark mb-1">Newsletter Sign Up</h4>
+                    <p class="card-text mb-5">Subscribe to new letter to receive exclusive offer and the latest
+                      news</p>
+                    <form>
+                      <div class="form-group mb-3">
+                        <label for="name" class="sr-only">Email</label>
+                        <input type="text" class="form-control form-control-lg border-0 shadow-none"
+									       id="name"
+									       name="email"
+									       placeholder="Enter your email">
+                      </div>
+                      <button type="submit" class="btn btn-primary btn-lg btn-block shadow-none mb-2">
+                        Subscribe
+                      </button>
+                    </form>
+                  </div>
+                </div>
+                <div class="card property-widget mb-4">
+                  <div class="card-body px-6 pt-5 pb-6">
+                    <h4 class="card-title fs-16 lh-2 text-dark mb-3">Featured Properties</h4>
+                    <div class="slick-slider mx-0"
+							     data-slick-options='{"slidesToShow": 1, "autoplay":true}'>
+                      
+                      
+                      
+                
+                      
+                      
+                         
+                      {% for articulos in articulos %}
+                     
+							
+                      <div class="box px-0">
+                        <div class="card border-0">
+                          <img src="{{articulos.image.url}}" class="card-img" alt="Villa on Hollywood Boulevard">
+                          <div class="card-img-overlay d-flex flex-column bg-gradient-3 rounded-lg">
+                            <div class="d-flex mb-auto">
+                              <a href="#" class="mr-1 badge badge-orange">{{articulos.tipo_oferta}}</a>
+                              <a href="#" class="badge badge-indigo">{{articulos.estado_propiedad}}</a>
+                            </div>
+                            <div class="px-2 pb-2">
+                              <a href="/detail/{{articulos.id}}" class="text-white"><h5
+														class="card-title fs-16 lh-2 mb-0"> {{articulos.titulo}}</h5>
+                              </a>
+                              <p class="card-text text-gray-light mb-0 font-weight-500">{{articulos.pais}}/{{articulos.estado_pais}}/{{articulos.ciudad}}</p>
+                              <p class="text-white mb-0"><span
+														class="fs-17 font-weight-bold">{{articulos.moneda}}{{articulos.precio}}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                       {% endfor %} 
+                    
+              
+             
+                      
+                    </div>
+                  </div>
+                </div>
+                <div class="card city-widget mb-4">
+                  <div class="card-body px-6 py-4">
+                    <h4 class="card-title fs-16 lh-2 text-dark mb-3">Destinations</h4>
+                    <div class="row no-gutters m-n1">
+                      <div class="col-6 p-1">
+                        <a href="#" class="card hover-zoom-in">
+                          <div class="card-img bg-img"
+										     style="background-image: url('/static/casa/images/small-los-angeles.jpg');background-size: cover;background-position: center"></div>
+                          <div class="card-img-overlay bg-gradient-3 rounded-lg d-flex align-items-end">
+                            <p class="card-text font-weight-500 lh-1 text-white">Los Angeles</p>
+                          </div>
+                        </a>
+                      </div>
+                      <div class="col-6 p-1">
+                        <a href="#" class="card hover-zoom-in">
+                          <div class="card-img bg-img"
+										     style="background-image: url('/static/casa/images/small-south-florida.jpg');background-size: cover;background-position: center"></div>
+                          <div class="card-img-overlay bg-gradient-3 rounded-lg d-flex align-items-end">
+                            <p class="card-text font-weight-500 lh-1 text-white">South Florida</p>
+                          </div>
+                        </a>
+                      </div>
+                      <div class="col-6 p-1">
+                        <a href="#" class="card hover-zoom-in">
+                          <div class="card-img bg-img"
+										     style="background-image: url('/static/casa/images/small-the-hamptons.jpg');background-size: cover;background-position: center"></div>
+                          <div class="card-img-overlay bg-gradient-3 rounded-lg d-flex align-items-end">
+                            <p class="card-text font-weight-500 lh-1 text-white">The Hamptons</p>
+                          </div>
+                        </a>
+                      </div>
+                      <div class="col-6 p-1">
+                        <a href="#" class="card hover-zoom-in">
+                          <div class="card-img bg-img"
+										     style="background-image: url('/static/casa/images/small-greater-boston.jpg');background-size: cover;background-position: center"></div>
+                          <div class="card-img-overlay bg-gradient-3 rounded-lg d-flex align-items-end">
+                            <p class="card-text font-weight-500 lh-1 text-white">Greater Boston</p>
+                          </div>
+                        </a>
+                      </div>
+                      <div class="col-6 p-1">
+                        <a href="#" class="card hover-zoom-in">
+                          <div class="card-img bg-img"
+										     style="background-image: url('/static/casa/images/small-new-mexico.jpg');background-size: cover;background-position: center"></div>
+                          <div class="card-img-overlay bg-gradient-3 rounded-lg d-flex align-items-end">
+                            <p class="card-text font-weight-500 lh-1 text-white">New Mexico</p>
+                          </div>
+                        </a>
+                      </div>
+                      <div class="col-6 p-1">
+                        <a href="#" class="card hover-zoom-in">
+                          <div class="card-img bg-img"
+										     style="background-image: url('/static/casa/images/small-los-angeles.jpg');background-size: cover;background-position: center"></div>
+                          <div class="card-img-overlay bg-gradient-3 rounded-lg d-flex align-items-end">
+                            <p class="card-text font-weight-500 lh-1 text-white">Los Angeles</p>
+                          </div>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="card-body px-6 py-4">
+                    <h4 class="card-title fs-16 lh-2 text-dark mb-2">Agentes</h4>
+                    <ul class="list-group list-group-flush">
+                      
+                      
+                      
+                      {% for articulos in articulos %}
+                      <li class="list-group-item px-0 pb-3 pt-0">
+                        <div class="media align-items-center">
+                          <a href="#" class="d-block w-60px h-60 mr-3">
+                            <img src="/static/casa/images/agent-1.jpg"
+											     class="rounded-circle" alt="agent">
+                          </a>
+                          <div class="media-body">
+                            <a href="#"
+											   class="text-muted hover-dark font-weight-500 mb-0 lh-214">{{articulos.dueno}}</a>
+                            <p class="mb-0 fs-13 mb-0 lh-2">agente de esta region</p>
+                            <ul class="list-inline mb-0">
+                              <li class="list-inline-item fs-13 text-heading font-weight-500">4.8/5
+                              </li>
+                              <li class="list-inline-item fs-13 text-heading font-weight-500">
+                                <ul class="list-inline mb-0">
+                                  <li class="list-inline-item mr-0">
+                                    <span class="text-warning fs-12 lh-2"><i
+																class="fas fa-star"></i></span>
+                                  </li>
+                                  <li class="list-inline-item mr-0">
+                                    <span class="text-warning fs-12 lh-2"><i
+																class="fas fa-star"></i></span>
+                                  </li>
+                                  <li class="list-inline-item mr-0">
+                                    <span class="text-warning fs-12 lh-2"><i
+																class="fas fa-star"></i></span>
+                                  </li>
+                                  <li class="list-inline-item mr-0">
+                                    <span class="text-warning fs-12 lh-2"><i
+																class="fas fa-star"></i></span>
+                                  </li>
+                                  <li class="list-inline-item mr-0">
+                                    <span class="text-warning fs-12 lh-2"><i
+																class="fas fa-star"></i></span>
+                                  </li>
+                                </ul>
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                      </li>
+                      {% endfor %}
+                      
+                     
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-8 mb-8 mb-lg-0 order-1 order-lg-2">
+              <div class="row align-items-sm-center mb-6">
+                <div class="col-md-6">
+                  <h2 class="fs-15 text-dark mb-0">Encontramos<span class="text-primary">{{articulos|length}}</span> propiedades disponibles para ti
+                  </h2>
+                </div>
+                <div class="col-md-6 mt-6 mt-md-0">
+                  <div class="d-flex justify-content-md-end align-items-center">
+                    <div class="input-group border rounded input-group-lg w-auto bg-white mr-3">
+                      <label class="input-group-text bg-transparent border-0 text-uppercase letter-spacing-093 pr-1 pl-3"
+								       for="inputGroupSelect01"><i
+										class="fas fa-align-left fs-16 pr-2"></i>Sortby:</label>
+                      <select class="form-control border-0 bg-transparent shadow-none p-0 selectpicker sortby"
+								        data-style="bg-transparent border-0 font-weight-600 btn-lg pl-0 pr-3"
+								        id="inputGroupSelect01" name="sortby">
+                        <option selected>Top Selling</option>
+                        <option value="1">Most Viewed</option>
+                        <option value="2">Price(low to high)</option>
+                        <option value="3">Price(high to low)</option>
+                      </select>
+                    </div>
+                    <div class="d-none d-md-block">
+                      <a class="fs-sm-18 text-dark opacity-2" href="#">
+                        <i class="fas fa-list"></i>
+                      </a>
+                      <a class="fs-sm-18 text-dark ml-5" href="#">
+                        <i class="fa fa-th-large"></i>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                
+                
+                
+                 {% for articulos in articulos %}
+                <div class="col-md-6 mb-6">
+                  <div class="card border-0" data-animate="fadeInUp">
+                    <div class="position-relative hover-change-image bg-hover-overlay rounded-lg card-img">
+                      <img src="{{articulos.image.url}}"
+								     alt="Home in Metric Way">
+                      <div class="card-img-overlay d-flex flex-column">
+                        <div><span class="badge badge-primary">{{articulos.tipo_oferta}}</span></div>
+                        <div class="mt-auto d-flex hover-image">
+                          <ul class="list-inline mb-0 d-flex align-items-end mr-auto">
+                            <li class="list-inline-item mr-2" data-toggle="tooltip" title="9 Images">
+                              <a href="#" class="text-white hover-primary">
+                                <i class="far fa-images"></i><span class="pl-1">9</span>
+                              </a>
+                            </li>
+                            <li class="list-inline-item" data-toggle="tooltip" title="2 Video">
+                              <a href="#" class="text-white hover-primary">
+                                <i class="far fa-play-circle"></i><span class="pl-1">2</span>
+                              </a>
+                            </li>
+                          </ul>
+                          <ul class="list-inline mb-0 d-flex align-items-end mr-n3">
+                            <li class="list-inline-item mr-3 h-32" data-toggle="tooltip"
+											    title="Wishlist">
+                              <a href="#" class="text-white fs-20 hover-primary">
+                                <i class="far fa-heart"></i>
+                              </a>
+                            </li>
+                            <li class="list-inline-item mr-3 h-32" data-toggle="tooltip"
+											    title="Compare">
+                              <a href="#" class="text-white fs-20 hover-primary">
+                                <i class="fas fa-exchange-alt"></i>
+                              </a>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="card-body pt-3 px-0 pb-1">
+                      <h2 class="fs-16 mb-1"><a href="/detail/{{articulos.id}}"
+								                          class="text-dark hover-primary">{{articulos.titulo}}</a>
+                      </h2>
+                      <p class="font-weight-500 text-gray-light mb-0">{{articulos.pais}}/{{articulos.estado_pais}}/{{articulos.ciudad}}</p>
+                      <p class="fs-17 font-weight-bold text-heading mb-0 lh-16">
+                        {{articulos.moneda}}{{articulos.precio}}
+                      </p>
+                    </div>
+                    <div class="card-footer bg-transparent px-0 pb-0 pt-2">
+                      <ul class="list-inline mb-0">
+                        <li class="list-inline-item text-gray font-weight-500 fs-13 mr-sm-7" data-toggle="tooltip" title="3 Bedroom">
+                          <svg class="icon icon-bedroom fs-18 text-primary mr-1">
+                            <use xlink:href="#icon-bedroom"></use>
+                          </svg>
+                          3 Br
+                        </li>
+                        <li class="list-inline-item text-gray font-weight-500 fs-13 mr-sm-7" data-toggle="tooltip" title="3 Bathrooms">
+                          <svg class="icon icon-shower fs-18 text-primary mr-1">
+                            <use xlink:href="#icon-shower"></use>
+                          </svg>
+                          3 Ba
+                        </li>
+                        <li class="list-inline-item text-gray font-weight-500 fs-13" data-toggle="tooltip" title="Size">
+                          <svg class="icon icon-square fs-18 text-primary mr-1">
+                            <use xlink:href="#icon-square"></use>
+                          </svg>
+                          2300 Sq.Ft
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                
+                
+                {% endfor %}
+                
+                
+                
+             
+                
+              </div>
+              <nav class="pt-6">
+                <ul class="pagination rounded-active justify-content-center mb-0">
+                  <li class="page-item"><a class="page-link" href="#"><i class="far fa-angle-double-left"></i></a>
+                  </li>
+                  <li class="page-item"><a class="page-link" href="#">1</a></li>
+                  <li class="page-item active"><a class="page-link" href="#">2</a></li>
+                  <li class="page-item d-none d-sm-block"><a class="page-link" href="#">3</a></li>
+                  <li class="page-item">...</li>
+                  <li class="page-item"><a class="page-link" href="#">6</a></li>
+                  <li class="page-item"><a class="page-link" href="#"><i
+								class="far fa-angle-double-right"></i></a></li>
+                </ul>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </section>
+      <div id="compare" class="compare">
+        <button class="btn shadow btn-open bg-white bg-hover-accent text-secondary rounded-right-0 d-flex justify-content-center align-items-center w-30px h-140 p-0">
+        </button>
+        <div class="list-group list-group-no-border bg-dark py-3">
+          <a href="#" class="list-group-item bg-transparent text-white fs-22 text-center py-0">
+            <i class="far fa-bars"></i>
+          </a>
+          <div class="list-group-item card bg-transparent">
+            <div class="position-relative hover-change-image bg-hover-overlay">
+              <img src="images/compare-01.jpg" class="card-img" alt="properties">
+              <div class="card-img-overlay">
+                <a href="#" class="text-white hover-image fs-16 lh-1 pos-fixed-top-right position-absolute m-2"><i class="fal fa-minus-circle"></i></a>
+              </div>
+            </div>
+          </div>
+          <div class="list-group-item card bg-transparent">
+            <div class="position-relative hover-change-image bg-hover-overlay">
+              <img src="images/compare-02.jpg" class="card-img" alt="properties">
+              <div class="card-img-overlay">
+                <a href="#" class="text-white hover-image fs-16 lh-1 pos-fixed-top-right position-absolute m-2"><i class="fal fa-minus-circle"></i></a>
+              </div>
+            </div>
+          </div>
+          <div class="list-group-item card card bg-transparent">
+            <div class="position-relative hover-change-image bg-hover-overlay ">
+              <img src="images/compare-03.jpg" class="card-img" alt="properties">
+              <div class="card-img-overlay">
+                <a href="#" class="text-white hover-image fs-16 lh-1 pos-fixed-top-right position-absolute m-2"><i class="fal fa-minus-circle"></i></a>
+              </div>
+            </div>
+          </div>
+          <div class="list-group-item bg-transparent">
+            <a href="compare-details.html" class="btn btn-lg btn-primary w-100 px-0 d-flex justify-content-center">
+              Compare
+            </a>
+          </div>
+        </div>
+      </div>
+     {% else %}
+        
+   <div>
+     <center>
+     <h1>
+       Discupe en esto momento no hay ningu anuncio disponible por esta categoria
+       </h1>
+     </center>
+       </div>
+          
+
+           
+         {% endif %}
+
+     
+    </main>
+       
+
+   <footer class="bg-dark pt-8 pb-6 footer text-muted">
+      <div class="container container-xxl">
+        <div class="row">
+          <div class="col-md-6 col-lg-4 mb-6 mb-md-0">
+            <a class="d-block mb-2" href="#">
+              <img src="/static/casa/images/wh.png" alt="HomeID">
+            </a>
+            <div class="lh-26 font-weight-500">
+              <p class="mb-0">Dirrecion de su ubicacion</p>
+              <a class="d-block text-muted hover-white" href="mailto:prontocasa@gmail.com">prontocasa@gmail.com</a>
+              <a class="d-block text-lighter font-weight-bold fs-15 hover-white"
+                       href="tel:(+68)000-000-0000">(+68)000-0000</a>
+              <a class="d-block text-muted hover-white" href=".">www.Prontocasa.com</a>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-2 mb-6 mb-md-0">
+            <h4 class="text-white fs-16 my-4 font-weight-500">Búsquedas populares</h4>
+            <ul class="list-group list-group-flush list-group-no-border">
+              <li class="list-group-item bg-transparent p-0">
+                <a href="#" class="text-muted lh-26 font-weight-500 hover-white">Se renta apartamento</a>
+              </li>
+              
+              <li class="list-group-item bg-transparent p-0">
+                <a href="#" class="text-muted lh-26 font-weight-500 hover-white">Oficinas para Compra</a>
+              </li>
+              
+            </ul>
+          </div>
+          <div class="col-md-6 col-lg-2 mb-6 mb-md-0">
+            <h4 class="text-white fs-16 my-4 font-weight-500">Enlaces rápidos</h4>
+            <ul class="list-group list-group-flush list-group-no-border">
+              <li class="list-group-item bg-transparent p-0">
+                <a href="#" class="text-muted lh-26 font-weight-500 hover-white">Condiciones de uso</a>
+              </li>
+              <li class="list-group-item bg-transparent p-0">
+                <a href="#" class="text-muted lh-26 font-weight-500 hover-white">Política de privacidad</a>
+              </li>
+              <li class="list-group-item bg-transparent p-0">
+                <a href="#" class="text-muted lh-26 font-weight-500 hover-white">Conctato</a>
+              </li>
+             
+            </ul>
+          </div>
+          <div class="col-md-6 col-lg-4 mb-6 mb-md-0">
+            <h4 class="text-white fs-16 my-4 font-weight-500">Suscríbase a nuestro boletín</h4>
+            <p class="font-weight-500 text-muted lh-184">sucribarse para que le llegue las notificaciones de los nuevos anuncio </p>
+            <form>
+              <div class="input-group input-group-lg mb-6">
+                <input type="email" name="email" class="form-control bg-white shadow-none border-0 z-index-1" placeholder="Tu correo Electronico">
+                <div class="input-group-append">
+                  <button class="btn btn-primary" type="submit">Subscribe</button>
+                </div>
+              </div>
+            </form>
+            <ul class="list-inline mb-0">
+              <li class="list-inline-item mr-0">
+                <a href="#" class="text-white opacity-3 fs-25 px-4 opacity-hover-10"><i
+                                class="fab fa-twitter"></i></a>
+              </li>
+              <li class="list-inline-item mr-0">
+                <a href="#" class="text-white opacity-3 fs-25 px-4 opacity-hover-10"><i
+                                class="fab fa-facebook-f"></i></a>
+              </li>
+              
+            </ul>
+          </div>
+        </div>
+        <div class="mt-0 mt-md-10 row">
+          <ul class="list-inline mb-0 col-md-6 mr-auto">
+            <li class="list-inline-item mr-6">
+              <a href="#" class="text-muted lh-26 font-weight-500 hover-white">Terminos y Usos</a>
+            </li>
+            <li class="list-inline-item">
+              <a href="#" class="text-muted lh-26 font-weight-500 hover-white">Politicas y Seguridad</a>
+            </li>
+          </ul>
+          <p class="col-md-auto mb-0 text-muted">
+            © 2021 Pronto casa. Reservados todos los derechos
+
+
+          </p>
+        </div>
+      </div>
+    </footer>
+       
+   </body>
+{% endblock %}

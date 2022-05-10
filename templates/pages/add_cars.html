@@ -1,0 +1,1034 @@
+{% extends 'base/backend-prontocasa.html' %}
+{% block content %}
+{% load replace %}
+
+
+
+
+
+<header>
+<script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.49.0/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.49.0/mapbox-gl.css' rel='stylesheet' />
+	<script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v2.3.0/mapbox-gl-geocoder.min.js'></script>
+    <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v2.3.0/mapbox-gl-geocoder.css' type='text/css' />
+	<style>
+      
+     
+    
+	  #coordenadas {
+        display: block;
+        position: relative;
+        margin: 0px auto;
+        width: 80%;
+        padding: 5px;
+        border: none;
+        border-radius: 7px;
+        font-size: 15px;
+		font-family: Montserrat;
+        text-align: center;
+        color: #000;
+        background: #D6EAF8;
+    }
+    </style>
+</header>
+
+
+
+
+
+
+
+
+
+
+
+<script type="text/javascript">
+window.onload = function() {
+$("#make").select2();
+$("#model").select2();
+$("#trim").select2({
+	tags: true,
+});
+$("#year").select2({
+	tags: true,
+});
+$("#transmission_type").select2();
+$("#drive_train").select2();
+$("#fuel_type").select2();
+$("#engine").select2();
+$("#doors").select2();
+$("#ext_colors").select2();
+$("#int_colors").select2();
+$("#drive").select2();
+$("#int_f").select2();
+};
+
+function changeModels(){
+	var maker = $( "#make option:selected" ).val();
+	$('#year').empty();
+	$('#year').append($('<option>').text("Seleccione el tipo de propiedad").attr('value', -1));
+	$('#trim').empty();
+	$('#trim').append($('<option>').text("Seleccione el tipo de alquiler").attr('value', -1));
+	$.ajax({
+	url:'/model',
+	type:'GET',
+	data: 'maker=' + maker,
+	dataType: 'json',
+	success: function( json ) {
+		$('#model').empty();
+		$('#model').append($('<option>').text("Seleccione el tipo oferta").attr('value', -1));
+			$.each(json, function(id, value) {
+					$('#model').append($('<option>').text(value).attr('value', id));
+			});
+	}
+	});
+}
+function addInfo(){
+	var model = $( "#model option:selected" ).val();
+	$('#year').empty();
+	$('#year').append($('<option>').text("Seleccione el tipo de propiedad").attr('value', -1));
+	$.ajax({
+		url:'/gettrim',
+		type:'GET',
+		data: 'model=' + model,
+		dataType: 'json',
+		success: function( json ) {
+			$('#trim').empty();
+			$('#trim').append($('<option>').text("Seleccione el tipo de alquiler").attr('value', -1));
+			$.each(json, function(id, value) {
+				console.log(value);
+				$('#trim').append($('<option>').text(value).attr('value', id));
+			});
+		}
+	});
+}
+  
+  
+
+  
+function bringYears(){
+	var model = $( "#model option:selected" ).val();
+	$.ajax({
+	url:'/getyear',
+	type:'GET',
+	data: 'model=' + model,
+	dataType: 'json',
+	success: function( json ) {
+		$('#year').empty();
+		$('#year').append($('<option>').text("Seleccione el tipo propiedad").attr('value', -1));
+			$.each(json, function(id, value) {
+					$('#year').append($('<option>').text(value).attr('value', id));
+			});
+	}
+	});
+}
+  
+  
+  
+  
+  
+ </script>
+<script>
+setTimeout(function(){menu("#sell_my_car")},500);
+</script>
+
+
+
+
+
+
+
+
+<main id="content" class="bg-gray-01">
+            <div class="px-3 px-lg-6 px-xxl-13 py-5 py-lg-10 my-profile">
+              <div class="mb-6">
+                <h2 class="mb-0 text-heading fs-22 lh-15">Agregar Nueva Propiedad
+                </h2>
+                <p class="mb-1">Registre su nueva propiedad y cumpla con las normal establecidad de lo contrario se desativara su cuenta</p>
+              </div>
+              <div class="collapse-tabs new-property-step">
+                <ul class="nav nav-pills border py-2 px-3 mb-6 d-none d-md-flex mb-6"
+            role="tablist">
+                  <li class="nav-item col">
+                    <a class="nav-link active bg-transparent shadow-none py-2 font-weight-500 text-center lh-214 d-block"
+                   id="description-tab" data-toggle="pill" data-number="1."
+                   href="#description"
+                   role="tab"
+                   aria-controls="description" aria-selected="true"><span class="number">1.</span> Description</a>
+                  </li>
+                  <li class="nav-item col">
+                    <a class="nav-link bg-transparent shadow-none py-2 font-weight-500 text-center lh-214 d-block"
+                   id="media-tab"
+                   data-toggle="pill" data-number="2."
+                   href="#media"
+                   role="tab"
+                   aria-controls="media" aria-selected="false"><span class="number">2.</span> galeria</a>
+                  </li>
+                  <li class="nav-item col">
+                    <a class="nav-link bg-transparent shadow-none py-2 font-weight-500 text-center lh-214 d-block"
+                   id="location-tab"
+                   data-toggle="pill" data-number="3."
+                   href="#location"
+                   role="tab"
+                   aria-controls="location" aria-selected="false"><span class="number">3.</span> localicacion</a>
+                  </li>
+                  <li class="nav-item col">
+                    <a class="nav-link bg-transparent shadow-none py-2 font-weight-500 text-center lh-214 d-block"
+                   id="detail-tab"
+                   data-toggle="pill" data-number="4."
+                   href="#detail"
+                   role="tab"
+                   aria-controls="detail" aria-selected="false"><span class="number">4.</span> detalles</a>
+                  </li>
+                  <li class="nav-item col">
+                    <a class="nav-link bg-transparent shadow-none py-2 font-weight-500 text-center lh-214 d-block"
+                   id="amenities-tab"
+                   data-toggle="pill" data-number="5."
+                   href="#amenities"
+                   role="tab"
+                   aria-controls="amenities" aria-selected="false"><span class="number">5.</span> servicios</a>
+                  </li>
+                </ul>
+                <div class="tab-content shadow-none p-0">
+                  <form role="form" action="" method="post" class="" enctype="multipart/form-data">
+	{% csrf_token %}
+                        <form role="form" action="" method="post" class="submit-form" enctype="multipart/form-data">
+			{% csrf_token %}
+                    <div id="collapse-tabs-accordion">
+                      <div class="tab-pane tab-pane-parent fade show active px-0" id="description"
+                         role="tabpanel"
+                         aria-labelledby="description-tab">
+                        <div class="card bg-transparent border-0">
+                          <div class="card-header d-block d-md-none bg-transparent px-0 py-1 border-bottom-0"
+                                 id="heading-description">
+                            <h5 class="mb-0">
+                              <button class="btn btn-lg collapse-parent btn-block border shadow-none"
+                                            data-toggle="collapse" data-number="1."
+                                            data-target="#description-collapse"
+                                            aria-expanded="true"
+                                            aria-controls="description-collapse">
+                                <span class="number">1.</span> Description
+                              </button>
+                            </h5>
+                          </div>
+                          <div id="description-collapse" class="collapse show collapsible"
+                                 aria-labelledby="heading-description"
+                                 data-parent="#collapse-tabs-accordion">
+                            <div class="card-body py-4 py-md-0 px-0">
+                              <div class="row">
+                                <div class="col-lg-6">
+                                  <div class="card mb-6">
+                                    <div class="card-body p-6">
+                                      <h3 class="card-title mb-0 text-heading fs-22 lh-15">descripción de propiedad</h3>
+                                      <p class="card-text mb-5">Breve detalle de la propiedad</p>
+                                      <div class="form-group">
+                                        
+                                      
+			
+                                        <label for="title" class="text-heading">  {{ form.titulo_a.label_tag }}</label>
+                                        {{ form.titulo_a.errors }}
+			{{ form.titulo_a }}
+                                      </div>
+                                      <div class="form-group mb-0">
+                                        <label for="description-01"
+                                                               class="text-heading"> {{ form.descripción_a.label_tag }}</label>
+                                         {{ form.descripción_a.errors }}
+			{{ form.descripción_a }}
+                                      </div>
+                                    </div>
+                                  </div>
+                                 <div class="card mb-6">
+                                    <div class="card-body p-6">
+                                      <h3 class="card-title mb-0 text-heading fs-22 lh-15">Precio de la propiedad</h3>
+                                      <p class="card-text mb-5">Coloque el precio de su propiedad y con que moneda va recibir</p>
+                                      <div class="form-row mx-n2">
+                                        <div class="col-md-6 col-lg-12 col-xxl-6 px-2">
+                                          <div class="form-group">
+                                            <label for="price" class="text-heading">{{ form.moneda_a.label_tag }} </label>
+                                            {{ form.moneda_a.errors }}
+			{{ form.moneda_a }}
+                                          </div>
+                                        </div>
+                                        <div class="col-md-6 col-lg-12 col-xxl-6 px-2">
+                                          <div class="form-group">
+                                            <label for="tax"
+                                                                       class="text-heading">{{ form.priceaa.label_tag }} <span
+                                                                        class="text-muted"> (solo números)</span></label>
+                                            {{ form.priceaa.errors }}
+			{{ form.priceaa }}
+                                          </div>
+                                        </div>
+                                      </div>
+                                     
+                                     
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="col-lg-6">
+                                  <div class="card mb-6">
+                                    <div class="card-body p-6">
+                                      <h3 class="card-title mb-0 text-heading fs-22 lh-15">selecciona una categoría de su anuncio</h3>
+                                      <p class="card-text mb-5">coloque bien donde va su anuncio para que tenga mayor oportunidad de vender</p>
+                                      <div class="form-row mx-n2">
+                                        <div class="col-md-6 col-lg-12 col-xxl-6 px-2 mb-4 mb-md-0">
+                                          <div class="form-group mb-0">
+                                            
+			
+                                            <label for="category"
+                                                                       class="text-heading">{{ form.makefield.label_tag }}</label>
+                                        {{ form.makefield.errors }}
+			{{ form.makefield }}
+                                          </div>
+                                        </div>
+                                        <div class="col-md-6 col-lg-12 col-xxl-6 px-2 mb-4 mb-md-0">
+                                          <div class="form-group mb-0">
+                                            <label for="list-in" class="text-heading">{{ form.modelfield.label_tag }}</label>
+                                            {{ form.modelfield.errors }}
+			{{ form.modelfield }}
+                                          </div>
+                                        </div>
+                                         <div class="col-md-6 col-lg-12 col-xxl-6 px-2 mb-4 mb-md-0">
+                                          <div class="form-group mb-0">
+                                            <label for="list-in" class="text-heading">{{ form.trim.label_tag }}
+                                          </label>
+                                           {{ form.trim.errors }}
+			{{ form.trim }}
+                                          </div>
+                                        </div>
+                                         <div class="col-md-6 col-lg-12 col-xxl-6 px-2 mb-4 mb-md-0">
+                                          <div class="form-group mb-0">
+                                            <label for="list-in" class="text-heading">{{ form.year.label_tag }}
+                                             </label>
+                                        {{ form.year.errors }}
+			{{ form.year }}
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                 
+                                  <div class="card mb-6">
+                                    <div class="card-body p-6">
+                                      <h3 class="card-title mb-0 text-heading fs-22 lh-15">Seleccionar estado de propiedad</h3>
+                                      <p class="card-text mb-5">En que estado se encuentra esta propiedad</p>
+                                      <div class="form-group mb-0">
+                                        <label for="status"
+                                                               class="text-heading">{{ form.estado_a.label_tag }}</label>
+                                        {{ form.estado_a.errors }}
+			{{ form.estado_a }}
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="text-right">
+                                <button class="btn btn-lg btn-primary next-button">Siguiente
+                                  <span class="d-inline-block ml-2 fs-16"><i
+                                                    class="fal fa-long-arrow-right"></i></span>
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="tab-pane tab-pane-parent fade px-0" id="media"
+                         role="tabpanel"
+                         aria-labelledby="media-tab">
+                        <div class="card bg-transparent border-0">
+                          <div class="card-header d-block d-md-none bg-transparent px-0 py-1 border-bottom-0"
+                                 id="heading-media">
+                            <h5 class="mb-0">
+                              <button class="btn btn-lg collapse-parent btn-block border shadow-none"
+                                            data-toggle="collapse" data-number="2."
+                                            data-target="#media-collapse"
+                                            aria-expanded="true"
+                                            aria-controls="media-collapse">
+                                <span class="number">2.</span> galeria
+                              </button>
+                            </h5>
+                          </div>
+                          <div id="media-collapse" class="collapse collapsible"
+                                 aria-labelledby="heading-media"
+                                 data-parent="#collapse-tabs-accordion">
+                            <div class="card-body py-4 py-md-0 px-0">
+                              <div class="row">
+                                <div class="col-lg-6">
+                                  <div class="card mb-6">
+                                    <div class="card-body p-6">
+                                      <h3 class="card-title mb-0 text-heading fs-22 lh-15">Sube fotos principal  de tu propiedad</h3>
+                                      <p class="card-text mb-5">Aqui solo va seleccionar una imagen de portada principal
+                                        </p>
+                                      <div class="dropzone upload-file text-center py-5"
+                                                         >
+                                        <div class="dz-default dz-message">
+                                          <span class="upload-icon lh-1 d-inline-block mb-4"><i
+                                                                    class="fal fa-cloud-upload-alt"></i></span>
+                                          <p class="text-heading fs-22 lh-15 mb-4">{{ form.image_a.label_tag }}
+                                           </p>
+                                          
+                                          
+                                          {{ form.image_a.errors }}
+                                          {{ form.image_a }}
+                  
+                                          <p>Las fotos deben tener formato JPEG o PNG y al menos 1024x768.</p>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="col-lg-6">
+                                 <div class="card mb-6">
+                                    <div class="card-body p-6">
+                                      <h3 class="card-title mb-0 text-heading fs-22 lh-15">Sube fotos secundaria  de tu propiedad</h3>
+                                      <p class="card-text mb-5">imagenes secundaria minimo puede subir o omas asi tendra mas visita con los clientes
+                                       </p>
+                                   <div class="container">
+                                     <p class="text-heading fs-22 lh-15 mb-4">{{ form.photo.label_tag }}
+                                           </p>
+					<div class="upload">
+             {{ form.photo.errors }}
+						{{ form.photo }}
+					</div>
+					<output id="list"></output>
+					<div class="cont_limpiar">
+						<button type="button" onclick="limpiar()" class="btn btn-warning limpiar"><i class="glyphicon glyphicon-trash"></i> Limpiar</button>
+					</div>
+                                     	{%if car_edit_images%}
+		<div class="container col-xs-12">
+			<output id="list">
+				{%for cimage in car_edit_images%}
+				<img src="{{cimage.url}}" alt="" width="120" height="120" />
+				{%endfor%}
+			</output>
+		</div>
+		{%endif%}       
+
+		</div>
+                                      
+                                      
+                                      
+                      		
+
+		       
+                                      
+                                      
+                                      
+                                      
+                                      
+                                      
+                                      
+                                      
+                                    </div>
+                                  </div>
+                                  
+                                </div>
+                              </div>
+                              <div class="d-flex flex-wrap">
+                                <a href="#"
+                                           class="btn btn-lg bg-hover-white border rounded-lg mb-3 mr-auto prev-button">
+                                  <span class="d-inline-block text-primary mr-2 fs-16"><i
+                                                    class="fal fa-long-arrow-left"></i></span>Atras
+                                </a>
+                                <button class="btn btn-lg btn-primary next-button mb-3">Siguientes
+                                  <span class="d-inline-block ml-2 fs-16"><i
+                                                    class="fal fa-long-arrow-right"></i></span>
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="tab-pane tab-pane-parent fade px-0" id="location" role="tabpanel"
+                         aria-labelledby="location-tab">
+                        <div class="card bg-transparent border-0">
+                          <div class="card-header d-block d-md-none bg-transparent px-0 py-1 border-bottom-0"
+                                 id="heading-location">
+                            <h5 class="mb-0">
+                              <button class="btn btn-block collapse-parent collapsed border shadow-none"
+                                            data-toggle="collapse" data-number="3."
+                                            data-target="#location-collapse"
+                                            aria-expanded="true"
+                                            aria-controls="location-collapse">
+                                <span class="number">3.</span> Ubicacion
+                              </button>
+                            </h5>
+                          </div>
+                          <div id="location-collapse" class="collapse collapsible"
+                                 aria-labelledby="heading-location"
+                                 data-parent="#collapse-tabs-accordion">
+                            <div class="card-body py-4 py-md-0 px-0">
+                              <div class="row">
+                                <div class="col-lg-6">
+                                  
+                                    <div class="card mb-6">
+                                    <div class="card-body p-6">
+                                      <h3 class="card-title mb-0 text-heading fs-22 lh-15">Ubicación del listado</h3>
+                                      <p class="card-text mb-5">Especifique de que pais estado y municipio se encuentra su anuncio</p>
+                                      <div class="form-row mx-n2">
+                                        <div class="col-md-6 col-lg-12 col-xxl-6 px-2 mb-4 mb-md-0">
+                                          <div class="form-group mb-0">
+                                            
+			
+                                            <label for="category"
+                                                                       class="text-heading">{{ form.pais_a.label_tag }}</label>
+                                            {{ form.pais_a.errors }}
+			{{ form.pais_a }}
+                                          </div>
+                                        </div>
+                                        <div class="col-md-6 col-lg-12 col-xxl-6 px-2 mb-4 mb-md-0">
+                                          <div class="form-group mb-0">
+                                            <label for="list-in" class="text-heading">{{ form.estados_a.label_tag }}</label>
+                                             {{ form.estados_a.errors }}
+			{{ form.estados_a }}
+                                          </div>
+                                        </div>
+                                         <div class="col-md-6 col-lg-12 col-xxl-6 px-2 mb-4 mb-md-0">
+                                          <div class="form-group mb-0">
+                                            <label for="list-in" class="text-heading">{{ form.municipios_a.label_tag }}
+                                          </label>
+                                             {{ form.municipios_a.errors }}
+			{{ form.municipios_a }}
+                                          </div>
+                                        </div>
+                                       
+                                      </div>
+                                    </div>
+                                  </div>
+                                  
+                                
+                                </div>
+                                <div class="col-lg-6">
+                                  <div class="card mb-6">
+                                    <div class="card-body p-6">
+                                      <h3 class="card-title mb-6 text-heading fs-22 lh-15">Coloque el lon y lat de suubicacion solo pase el buscafor y abajo le mostrara esa ubicacion en el mapa
+</h3>
+                                      
+                                      
+                                      
+                                      <div id = 'map'></div>
+	<pre id='coordenadas'></pre>
+<script>
+mapboxgl.accessToken = 'pk.eyJ1IjoiZHVvbmdsaCIsImEiOiJjanJnNHQ4czExMzhyNDVwdWo5bW13ZmtnIn0.f1bmXQsS6o4bzFFJc8RCcQ';  
+var map = new mapboxgl.Map({ 
+    container: 'map', 
+    style: 'mapbox://styles/mapbox/streets-v9',  
+    center: [2.168, 41.381],  
+    zoom: 13 
+}); 
+map.addControl(new MapboxGeocoder({
+    accessToken: mapboxgl.accessToken
+}));
+map.addControl(new mapboxgl.NavigationControl());
+map.addControl(new mapboxgl.FullscreenControl());
+map.addControl(new mapboxgl.GeolocateControl({
+    positionOptions: {
+        enableHighAccuracy: true
+    },
+    trackUserLocation: true
+}));
+map.on('mousemove', function (e) {
+    document.getElementById('coordenadas').innerHTML =
+        JSON.stringify(e.lngLat);
+});
+</script>
+                                      
+                                      
+                                      
+                                      
+                                      
+                                     
+                                      
+                                     
+                                      <div class="form-row mx-n2">
+                                        <div class="col-md-6 col-lg-12 col-xxl-6 px-2">
+                                          <div class="form-group mb-md-0">
+                                            <label for="latitude"
+                                                                       class="text-heading">{{ form.lats.label_tag }} </label>
+                                             {{ form.lats.errors }}
+			{{ form.lats }}
+                                          </div>
+                                        </div>
+                                        <div class="col-md-6 col-lg-12 col-xxl-6 px-2">
+                                          <div class="form-group mb-md-0">
+                                            <label for="longitude"
+                                                                       class="text-heading">{{ form.lons.label_tag }}</label>
+                                              {{ form.lons.errors }}
+			{{ form.lons }}
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="d-flex flex-wrap">
+                                <a href="#"
+                                           class="btn btn-lg bg-hover-white border rounded-lg mb-3 mr-auto prev-button">
+                                  <span class="d-inline-block text-primary mr-2 fs-16"><i
+                                                    class="fal fa-long-arrow-left"></i></span>Atras
+                                </a>
+                                <button class="btn btn-lg btn-primary next-button mb-3">Siguiente
+                                  <span class="d-inline-block ml-2 fs-16"><i
+                                                    class="fal fa-long-arrow-right"></i></span>
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="tab-pane tab-pane-parent fade px-0" id="detail" role="tabpanel"
+                         aria-labelledby="detail-tab">
+                        <div class="card bg-transparent border-0">
+                          <div class="card-header d-block d-md-none bg-transparent px-0 py-1 border-bottom-0"
+                                 id="heading-detail">
+                            <h5 class="mb-0">
+                              <button class="btn btn-block collapse-parent collapsed border shadow-none"
+                                            data-toggle="collapse" data-number="4."
+                                            data-target="#detail-collapse"
+                                            aria-expanded="true"
+                                            aria-controls="detail-collapse">
+                                <span class="number">4.</span> Detalles
+                              </button>
+                            </h5>
+                          </div>
+                          <div id="detail-collapse" class="collapse collapsible"
+                                 aria-labelledby="heading-detail"
+                                 data-parent="#collapse-tabs-accordion">
+                            <div class="card-body py-4 py-md-0 px-0">
+                              <div class="card mb-6">
+                                <div class="card-body p-6">
+                                  <h3 class="card-title mb-0 text-heading fs-22 lh-15">especificaciones detalladas de su  propiedada desde cuanta habitaciones tiene hasta y con que cuenta</h3>
+                                  <p class="card-text mb-5">especifique su direrentes area
+                                   </p>
+                                  <div class="row">
+                                    <div class="col-lg-12">
+                                      <div class="form-group">
+                                        
+                                   <label for="size-in-ft" class="text-heading">{{ form.especificaciones_a.label_tag }} <span
+                                                                class="text-muted">especifique detalladamente su anuncio</span></label>
+                                         {{ form.especificaciones_a.errors }}
+			{{ form.especificaciones_a }}
+                                      </div>
+                                    </div>
+                                   
+                                    
+                                  </div>
+                                  
+                                  
+                                  
+                                  
+                                  
+                                </div>
+                              </div>
+                              
+                              <div class="d-flex flex-wrap">
+                                <a href="#"
+                                           class="btn btn-lg bg-hover-white border rounded-lg mb-3 mr-auto prev-button">
+                                  <span class="d-inline-block text-primary mr-2 fs-16"><i
+                                                    class="fal fa-long-arrow-left"></i></span>Atras
+                                </a>
+                                <button class="btn btn-lg btn-primary next-button mb-3">siguentes
+                                  <span class="d-inline-block ml-2 fs-16"><i
+                                                    class="fal fa-long-arrow-right"></i></span>
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="tab-pane tab-pane-parent fade px-0" id="amenities" role="tabpanel"
+                         aria-labelledby="amenities-tab">
+                        <div class="card bg-transparent border-0">
+                          <div class="card-header d-block d-md-none bg-transparent px-0 py-1 border-bottom-0"
+                                 id="heading-amenities">
+                            <h5 class="mb-0">
+                              <button class="btn btn-block collapse-parent collapsed border shadow-none"
+                                            data-toggle="collapse" data-number="5."
+                                            data-target="#amenities-collapse"
+                                            aria-expanded="true"
+                                            aria-controls="amenities-collapse">
+                                <span class="number">5.</span> Servicios
+                              </button>
+                            </h5>
+                          </div>
+                          <div id="amenities-collapse" class="collapse collapsible"
+                                 aria-labelledby="heading-amenities"
+                                 data-parent="#collapse-tabs-accordion">
+                            <div class="card-body py-4 py-md-0 px-0">
+                              <div class="card mb-6">
+                                <div class="card-body p-6">
+                                  <h3 class="card-title mb-0 text-heading fs-22 lh-15">Listing Detail</h3>
+                                  <p class="card-text mb-5">{{form.servicioss.label}}
+                                    </p>
+                                  {{ form.servicioss.errors }}
+                                  <div class="row">
+                                    <div class="col-sm-6 col-lg-12">
+                                      
+                                      	
+			<div>
+				{% for check in form.servicioss %}
+					{{ check.tag }}
+					<label name="servicioss" for="{{ check.id_for_label }}">{{ check.choice_label }}</label>
+				{% endfor %}
+                                   
+                                    
+                                    
+                                    
+                                  </div>
+                                      
+                                      		
+	
+                                </div>
+                              </div>
+                              <div class="d-flex flex-wrap">
+                                <a href="#"
+                                           class="btn btn-lg bg-hover-white border rounded-lg mb-3 mr-auto prev-button">
+                                  <span class="d-inline-block text-primary mr-2 fs-16"><i
+                                                    class="fal fa-long-arrow-left"></i></span>Atras
+                                </a>
+                                
+                                
+                                <div class="row">
+                              <div class="col-md-6 col-lg-6 col-xs-12 col-sm-12">
+                                 <button type="submit" class="btn btn-success bf">Guardar</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                           
+                              
+                        </form>
+                              </div>
+                              </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </main>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  
+  
+<div class="conten">
+<form role="form" action="" method="post" class="" enctype="multipart/form-data">
+	{% csrf_token %}
+	<div class="row barra arriba">
+		<form role="form" action="" method="post" class="from" enctype="multipart/form-data">
+			{% csrf_token %}
+		<div class="col-md-12 title">
+			<h2>Add Cars</h2>
+			<h4>Information</h4>
+		</div>
+		<div class="col-md-4">
+		  <label for="title" class="text-heading">  {{ form.titulo_a.label_tag }}</label>
+                                        {{ form.titulo_a.errors }}
+			{{ form.titulo_a }}
+			<h5>{{form.city_mpg.label_tag}}</h5>
+			{{ form.city_mpg.errors }}
+			{{form.city_mpg}}
+			<p><a href="#" onclick="$('#maps_modal').modal('show');">¿Cómo agregar esta información?</a></p>
+			<h5>{{form.latitude.label_tag}}</h5>
+			{{ form.latitude.errors }}
+			{{form.latitude}}
+			<h5>{{form.longitude.label_tag}}</h5>
+			{{ form.longitude.errors }}
+			{{form.longitude}}
+		</div>
+		<div class="col-md-4">
+			<h5>{{form.eng_des.label_tag}}</h5>
+			{{ form.end_des.errors }}
+			{{form.eng_des}}
+			<h5>{{form.transmission_type_in.label_tag}}</h5>
+			{{ form.transmission_type_in.errors }}
+				{{form.transmission_type_in}}
+			<h5>{{form.transmission_des.label_tag}}</h5>
+			{{ form.transmission_des.errors }}
+				{{form.transmission_des}}
+			<h5 id="sel">{{form.drive_train_in.label_tag}}</h5>
+			{{ form.drive_train_in.errors }}
+					{{form.drive_train_in}}
+			<h5 id="sel">{{form.fuel_type_in.label_tag}}</h5>
+			{{ form.fuel_type_in.errors }}
+					{{form.fuel_type_in}}
+			<h5 id="sel">{{form.high_mpg.label_tag}}</h5>
+			{{ form.high_mpg.errors }}
+					{{form.high_mpg}}
+		</div>
+
+		<div class="col-md-12 title2">
+			<h4>Specifications</h4>
+		</div>
+		<div class="col-md-4">
+			<h5 id="sel">{{form.engine_in.label_tag}}</h5>
+			{{ form.engine_in.errors }}
+					{{form.engine_in}}
+				<h5 id="sel">{{form.doors.label_tag}}</h5>
+				{{ form.doors.errors }}
+						{{form.doors}}
+				<h5 id="sel">{{form.ext_c.label_tag}}</h5>
+				{{ form.ext_c.errors }}
+						{{form.ext_c}}
+				<h5 id="sel">{{form.ext_c_des.label_tag}}</h5>
+				{{ form.ext_c_des.errors }}
+						{{form.ext_c_des}}
+		</div>
+		<div class="col-md-4">
+				<h5 id="sel">{{form.drive.label_tag}}</h5>
+				{{ form.drive.errors }}
+						{{form.drive}}
+				<h5 id="sel">{{form.int_f.label_tag}}</h5>
+				{{ form.int_f.errors }}
+						{{form.int_f}}
+				<h5 id="sel">{{form.int_c_des.label_tag}}</h5>
+				{{ form.int_c_des.errors }}
+						{{form.int_c_des}}
+				<h5 id="sel">{{form.int_c.label_tag}}</h5>
+				{{ form.int_c.errors }}
+						{{form.int_c}}
+		</div>
+		<div class="col-md-12 title2">
+			<h4>Standard Information</h4>
+		</div>
+		<div class="col-md-4">
+			<h5 id="sel">{{form.condition.label_tag}}*</h5>
+			{{ form.condition.errors }}
+				{{form.condition}}
+			<h5 id="sel">{{form.price.label_tag}}*</h5>
+			{{ form.price.errors }}
+				{{form.price}}
+			<h5 id="sel">{{form.stock_n.label_tag}}</h5>
+			{{ form.stock_n.errors }}
+				{{form.stock_n}}
+		</div>
+		<div class="col-md-4">
+			<h5 id="sel">{{form.mileage.label_tag}}</h5>
+			{{ form.mileage.errors }}
+				{{form.mileage}}
+			{%if is_dealer %}
+					<h5 id="sel">{{form.off_price.label_tag}}</h5>
+					{{ form.off_price.errors }}
+			<div class="input-group colxs-12">
+				<span class="input-group-addon">$</span>
+				{{form.off_price}}
+			</div>
+			{% endif %}
+		</div>
+		<div class="col-md-12 title3">
+			{{ form.photo.errors }}
+			<h4>{{ form.photo.label_tag }}</h4>
+		</div>
+		<div class="container col-xs-12">
+					<div class="upload">
+						{{ form.photo }}
+					</div>
+					<output id="list"></output>
+					<div class="cont_limpiar">
+						<button type="button" onclick="limpiar()" class="btn btn-warning limpiar"><i class="glyphicon glyphicon-trash"></i> Limpiar</button>
+					</div>
+		</div>
+
+		{%if car_edit_images%}
+		<div class="container col-xs-12">
+			<output id="list">
+				{%for cimage in car_edit_images%}
+				<img src="{{cimage.url}}" alt="" width="120" height="120" />
+				{%endfor%}
+			</output>
+		</div>
+		{%endif%}
+		 <div class="col-md-12 title2">
+			<h4>Additional Information</h4>
+		</div>
+		<div class="col-lg-12 add">
+			<h5>{{form.Convenience_Comfort.label}}</h5>
+			{{ form.Convenience_Comfort.errors }}
+			<div>
+				{% for check in form.Convenience_Comfort %}
+					{{ check.tag }}
+					<label name="Convenience_Comfort" for="{{ check.id_for_label }}">{{ check.choice_label }}</label>
+				{% endfor %}
+			</div>
+			<h5>{{form.Entertainment_Technology.label}}</h5>
+			{{ form.Entertainment_Technology.errors }}
+			<div>
+				{% for check in form.Entertainment_Technology %}
+					{{ check.tag }}
+					<label name="Entertainment_Technology" for="{{ check.id_for_label }}">{{ check.choice_label }}</label>
+				{% endfor %}
+			</div>
+			<h5>{{form.Luxury.label}}</h5>
+			{{ form.Luxury.errors }}
+			<div>
+				{% for check in form.Luxury %}
+					{{ check.tag }}
+					<label name="Luxury" for="{{ check.id_for_label }}">{{ check.choice_label }}</label>
+				{% endfor %}
+			</div>
+			<h5>{{form.Miscellaneous.label}}</h5>
+			{{ form.Miscellaneous.errors }}
+			<div>
+				{% for check in form.Miscellaneous %}
+					{{ check.tag }}
+					<label name="Miscellaneous" for="{{ check.id_for_label }}">{{ check.choice_label }}</label>
+				{% endfor %}
+			</div>
+		</div>
+		<div class="col-md-4 cf">
+			<button type="submit" class="btn btn-success bf">Save</button>
+		</div>
+	</form>
+<div class="col-md-4 cf">
+	<form action="/dashboard">
+		<button type="submit" class="btn btn-danger bf">Cancel</button>
+	</form>
+</div>
+</div>
+</div>
+{% include 'pages/google_maps_modal.html' %}
+<script type="text/javascript">
+
+
+function handleFileSelect(evt) {
+var files = evt.target.files; // FileList object
+
+// Loop through the FileList and render image files as thumbnails.
+for (var i = 0, f; f = files[i]; i++) {
+
+// Only process image files.
+if (!f.type.match('image.*')) {
+continue;
+}
+
+var reader = new FileReader();
+
+// Closure to capture the file information.
+reader.onload = (function(theFile) {
+return function(e) {
+	// Render thumbnail.
+	var span = document.createElement('span');
+	span.innerHTML = ['<img class="thumb" src="', e.target.result,
+										'" title="', escape(theFile.name), '"/>'].join('');
+	document.getElementById('list').insertBefore(span, null);
+};
+})(f);
+
+// Read in the image file as a data URL.
+reader.readAsDataURL(f);
+}
+}
+
+document.getElementById('img').addEventListener('change', handleFileSelect, false);
+
+function limpiar() {
+
+				$(".imagen_list").remove();
+        var input = $('#img');
+        var clon = input.clone();  // Creamos un clon del elemento original
+        input.replaceWith(clon);   // Y sustituimos el original por el clon
+
+				function handleFileSelect(evt) {
+				var files = evt.target.files; // FileList object
+
+				// Loop through the FileList and render image files as thumbnails.
+				for (var i = 0, f; f = files[i]; i++) {
+
+				// Only process image files.
+				if (!f.type.match('image.*')) {
+				continue;
+				}
+
+				var reader = new FileReader();
+
+				// Closure to capture the file information.
+				reader.onload = (function(theFile) {
+				return function(e) {
+					// Render thumbnail.
+					var span = document.createElement('span');
+					span.classList.toggle("imagen_list");
+					span.innerHTML = ['<img class="thumb" src="', e.target.result,
+														'" title="', escape(theFile.name), '"/>'].join('');
+					document.getElementById('list').insertBefore(span, null);
+				};
+				})(f);
+
+				// Read in the image file as a data URL.
+				reader.readAsDataURL(f);
+				}
+				}
+
+				document.getElementById('img').addEventListener('change', handleFileSelect, false);
+    }
+
+
+</script>
+{% endblock %}

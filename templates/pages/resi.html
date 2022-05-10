@@ -1,0 +1,928 @@
+{% extends 'base/base_backend.html' %}
+{% block content %}
+{% load humanize %}
+{% load static %}
+
+
+
+
+<div class="page-header-area-2 gray">
+         <div class="container">
+            <div class="row">
+               <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                  <div class="small-breadcrumb">
+                     <div class=" breadcrumb-link">
+                        <ul>
+                           <li><a href="/">inicio</a></li>
+                           <li><a class="active" href="#">Panel administrativo</a></li>
+                        </ul>
+                     </div>
+                     <div class="header-page">
+                        <h1>panel de control</h1>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+     {%if is_admin%}
+      <!-- =-=-=-=-=-=-= Breadcrumb End =-=-=-=-=-=-= -->
+      <!-- =-=-=-=-=-=-= Main Content Area =-=-=-=-=-=-= -->
+      <div class="main-content-area clearfix">
+         <!-- =-=-=-=-=-=-= Latest Ads =-=-=-=-=-=-= -->
+         <section class="section-padding no-top gray">
+            <!-- Main Container -->
+            <div class="container">
+               <!-- Row -->
+               <div class="row">
+                  <!-- Middle Content Area -->
+                  <div class="col-md-12 col-xs-12 col-sm-12">
+                     <section class="search-result-item">
+                        <a class="image-link" href="#"><img class="image center-block" alt="" src= {% if user.image %}"{{user.image.url}}" {% else %} "{% static 'images/img.png'%}" {% endif %} alt="" width="120" height="120"> </a>
+                        <div class="search-result-item-body">
+                           <div class="row">
+                              <div class="col-md-5 col-sm-12 col-xs-12">
+                                 <h4 class="search-result-item-heading"><a href="#">{{ username }}</a></h4>
+                                 <p class="info">
+                                    <span><a href="#"><i class="fa fa-user "></i>Perfil</a></span>
+                                    <span><a href="profile"><i class="fa fa-edit"></i>editar perfil</a></span>
+                                 </p>
+                                
+                                 
+                                 <span class="label label-success">Administrador </span>
+                              </div>
+                              <div class="col-md-7 col-sm-12 col-xs-12">
+                                 <div class="row ad-history">
+                                    <div class="col-md-4 col-sm-4 col-xs-12">
+                                       <div class="user-stats">
+                                          <small>Su plan es de </small>
+                                         <h2>{{userobj.cars_to_sell}}</h2>
+                                          <small>vehículos</small>
+                                       </div>
+                                    </div>
+                                    <div class="col-md-4 col-sm-4 col-xs-12">
+                                       <div class="user-stats">
+                                          <small>Ha publicado </small>
+                                         <h2>{{cars|length}}</h2>
+                                          <small>vehículos</small>
+                                       </div>
+                                    </div>
+                                   
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                     </section>
+                     <div class="dashboard-menu-container">
+                        <ul>
+                           <li class="active" style="width: 200px;  height: 50px ">
+                              <a href="/dashboard/new/dealer">
+                                 <div class="menu-name"> <img src="/static/icon/addD.png" alt=""  width="30" height="30">
+                      Crear usuario de sistema de don carros</div>
+                              </a>
+                           </li>
+                           <li class="active" style="width: 200px;  height: 50px ">
+                              <a href="/dashboard/all_users/dealer">
+                                 <div class="menu-name"> <img src="{% static 'icon/searchD.png' %}" alt=""  width="30" height="30">
+                     Búsqueda de distribuidores</div>
+                              </a>
+                           </li>
+                          <li class="active" style="width: 200px;  height: 50px ">
+                              <a href="/dashboard/add_inventory">
+                                 <div class="menu-name"> <img src="{% static 'icon/addcar.png' %}" alt=""  width="30" height="30">
+                      Agregar<br> inventario</div>
+                              </a>
+                           </li>
+                           <li class="active" style="width: 200px;  height: 50px ">
+                              <a href="/dashboard/Inventory">
+                                 <div class="menu-name"> <img src="{% static 'icon/live.png' %}" alt=""  width="30" height="30">
+                      Inventario <br>publicado</div>
+                              </a>
+                           </li>
+                          <li class="active" style="width: 200px;  height: 50px ">
+                              <a href="/dashboard/all_users/dealer/">
+                                 <div class="menu-name"> <img src="{% static 'icon/suspended3.png' %}" alt=""  width="30" height="30">
+                      Distribuidores suspendidos</div>
+                              </a>
+                           </li>
+                          <li class="active" style="width: 200px;  height: 50px ">
+                              <a href="/dashboard/all_users/dealer/">
+                                 <div class="menu-name"> <img src="{% static 'icon/trash.png' %}" alt=""  width="30" height="30">
+                      Dealers <br>eliminados</div>
+                              </a>
+                           </li>
+                           <li class="active" style="width: 200px;  height: 50px ">
+                              <a href="/dashboard/all_users/private">
+                                 <div class="menu-name"> <img src="{% static 'icon/searchU.png' %}" alt=""  width="30" height="30">
+                      Búsqueda de <br>usuarios</div>
+                              </a>
+                           </li>
+                          <li class="active" style="width: 200px;  height: 50px ">
+                              <a href="/dashboard/new/private">
+                                 <div class="menu-name"> <img src="{% static 'icon/addU.png' %}" alt=""  width="30" height="30">
+                      Agregar usuario privado</div>
+                              </a>
+                           </li>
+                          <li class="active" style="width: 200px;  height: 50px ">
+                              <a href="/dashboard/Inventory">
+                                 <div class="menu-name"> <img src="{% static 'icon/searchCar.png' %}" alt=""  width="30" height="30">
+                      Búsqueda de inventarios</div>
+                              </a>
+                           </li>
+                          <li class="active" style="width: 200px;  height: 50px ">
+                              <a href="/dashboard/all_users/private/">
+                                 <div class="menu-name"> <img src="{% static 'icon/suspended2.png' %}" alt=""  width="30" height="30">
+                      Usuarios <br>suspendidos</div>
+                              </a>
+                           </li>
+                          <li class="active" style="width: 200px;  height: 50px ">
+                              <a href="/dashboard/all_users/private/">
+                                 <div class="menu-name"> <img src="{% static 'icon/suspended.png' %}" alt=""  width="30" height="30">
+                      Usuarios <br>eliminados</div>
+                              </a>
+                           </li>
+                          <li class="active" style="width: 200px;  height: 50px ">
+                              <a href="/dashboard/my_favourites">
+                                 <div class="menu-name"> <img src="{% static 'icon/like.png' %}" alt=""  width="30" height="30">
+                      Automovil que<br> le dado me Gusta</div>
+                              </a>
+                           </li>
+                          <li class="active" style="width: 200px;  height: 50px ">
+                              <a href="/dashboard/website">
+                                 <div class="menu-name"> <img src="{% static 'icon/Setting.png' %}" alt=""  width="30" height="30">
+                     Configuraciones <br>del sitio</div>
+                              </a>
+                           </li>
+                          <li class="active" style="width: 200px;  height: 50px ">
+                              <a href="/dashboard/blog/new">
+                                 <div class="menu-name"> <img src="{% static 'icon/blog.png' %}" alt=""  width="30" height="30">
+                     Manejo<br> del blog</div>
+                              </a>
+                           </li>
+                          <li class="active" style="width: 200px;  height: 50px ">
+                              <a href="/dashboard/editterms">
+                                 <div class="menu-name"> <img src="/static/icon/terms.png" alt=""  width="30" height="30">
+                     Terms and<br> Conditions</div>
+                              </a>
+                           </li>
+                          <li class="active" style="width: 200px;  height: 50px ">
+                              <a href="/dashboard/Edit_Company_Information">
+                                 <div class="menu-name"> <img src="/static/icon/terms.png" alt=""  width="30" height="30">
+                     Company <br>Information</div>
+                              </a>
+                           </li>
+                        </ul>
+                     </div>
+                  </div>
+                  <!-- Middle Content Area  End -->
+               </div>
+               <!-- Row End -->
+               <div class="row margin-top-40">
+                  <!-- Middle Content Area -->
+                  <div class="col-md-12 col-xs-12 col-sm-12">
+                     <!-- Row -->
+                     <div class="profile-section margin-bottom-20">
+                        <div class="profile-tabs">
+                           <ul class="nav nav-justified nav-tabs">
+                              <li class="active"><a href="#profile" data-toggle="tab">Perfil</a></li>
+                              <li><a href="#edit" data-toggle="tab">Editar perfil</a></li>
+                              
+                             
+                           </ul>
+                           <div class="tab-content">
+                              <div class="profile-edit tab-pane fade in active" id="profile">
+                                 
+                                 <dl class="dl-horizontal">
+                                    <dt><strong>Nombre </strong></dt>
+                                    <dd>
+                                       {{userobj.first_name}}
+                                    </dd>
+                                    <dt><strong>Correo </strong></dt>
+                                    <dd>
+                                       {{userobj.email}}
+                                    </dd>
+                                    <dt><strong>Telefono </strong></dt>
+                                    <dd>
+                                       {{userobj.phone}}
+                                    </dd>
+                                    <dt><strong>tipo </strong></dt>
+                                    <dd>
+                                       administrador
+                                    </dd>
+                                    <dt><strong>ciudad </strong></dt>
+                                    <dd>
+                     {{userobj.address}}
+
+                                    </dd>
+                                   
+                                 </dl>
+                              </div>
+                              <div class="profile-edit tab-pane fade" id="edit">
+                                 <h2 class="heading-md">Manage your Security Settings</h2>
+                                 <p>Manage Your Account</p>
+                                 <div class="clearfix"></div>
+                                 <form class="row" action="" method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="col-md-6">
+        <h5>Confirmar contraseña</h5>
+        <input aria-describedby="sizing-addon2" class="form-control" id="old_psw" name="old_psw" placeholder="Old Password" type="password">
+        <h5>Nueva contraseña</h5>
+        <input aria-describedby="sizing-addon2" class="form-control" id="new_psw" name="new_psw" placeholder="New Password" type="password">
+        <h5>Nombre</h5>
+        <input aria-describedby="sizing-addon2" class="form-control" {% if userobj.first_name %} value="{{userobj.first_name}}"{%endif%} id="fname" name="fname" placeholder="First Name" type="text">
+        <h5>Apellido</h5>
+        <input aria-describedby="sizing-addon2" class="form-control" {% if userobj.last_name %} value="{{userobj.last_name}}"{%endif%} id="lname" name="lname" placeholder="Last Name" type="text">
+        <h5>Correo electrónico</h5>
+        <input aria-describedby="sizing-addon2" class="form-control" value="{{userobj.email}}" id="email" name="email" placeholder="Email" type="email">
+        <h5>Teléfono</h5>
+        <input aria-describedby="sizing-addon2" class="form-control" {% if userobj.phone %} value="{{userobj.phone}}"{%endif%} id="phone" name="phone" placeholder="Phone" type="tel">
+        <h5>Teléfono celular</h5>
+        <input aria-describedby="sizing-addon2" class="form-control" {% if userobj.cell_phone %} value="{{userobj.cell_phone}}" {%endif%} id="cphone" name="cphone" placeholder="Cell Phone" type="tel">
+        <h5>Dirección</h5>
+        <input aria-describedby="sizing-addon2" class="form-control" {% if userobj.address %} value="{{userobj.address}}" {%endif%} id="address" name="address" placeholder="Address">
+        <h5>Descripción</h5>
+        <textarea rows="4" cols="50" aria-describedby="sizing-addon2" class="form-control" id="description" name="description" placeholder="Description">{% if userobj.description %}{{userobj.description}}{%endif%}</textarea>
+      </div>
+      <div class="col-md-6">
+        <h5>Foto de perfil</h5>
+        <div class="upload">
+          <input name="img" id="img" type=file class="file" accept="image/*">
+        </div>
+        <output id="list"></output>
+        <div class="cont_limpiar">
+          <button type="button" onclick="limpiar()" class="btn btn-warning limpiar"><i class="glyphicon glyphicon-trash"></i> Limpiar</button>
+        </div>
+      </div>
+      <div class="col-xs-12 separar">
+        <div class="col-md-6 cf">
+          <button type="submit" class="btn btn-primary bf">Guardar</button>
+        </div>
+        <div class="col-md-6 cf">
+          <form action="/dashboard">
+            <button type="button" class="btn btn-danger bf">Cancelar</button>
+          </form>
+        </div>
+      </div>
+    </form>
+                                
+                                <script type="text/javascript">
+function handleFileSelect(evt) {
+var files = evt.target.files; // FileList object
+document.getElementById('list').innerHTML="";
+// Loop through the FileList and render image files as thumbnails.
+for (var i = 0, f; f = files[i]; i++) {
+
+// Only process image files.
+if (!f.type.match('image.*')) {
+continue;
+}
+
+var reader = new FileReader();
+
+// Closure to capture the file information.
+reader.onload = (function(theFile) {
+return function(e) {
+	// Render thumbnail.
+	var span = document.createElement('span');
+	span.innerHTML = ['<img class="thumb" src="', e.target.result,
+										'" title="', escape(theFile.name), '"/>'].join('');
+  document.getElementById('list').insertBefore(span, null);
+};
+})(f);
+
+// Read in the image file as a data URL.
+reader.readAsDataURL(f);
+}
+}
+
+document.getElementById('img').addEventListener('change', handleFileSelect, false);
+
+function limpiar() {
+
+				$(".imagen_list").remove();
+        var input = $('#img');
+        var clon = input.clone();  // Creamos un clon del elemento original
+        input.replaceWith(clon);   // Y sustituimos el original por el clon
+
+				function handleFileSelect(evt) {
+				var files = evt.target.files; // FileList object
+
+				// Loop through the FileList and render image files as thumbnails.
+				for (var i = 0, f; f = files[i]; i++) {
+
+				// Only process image files.
+				if (!f.type.match('image.*')) {
+				continue;
+				}
+
+				var reader = new FileReader();
+
+				// Closure to capture the file information.
+				reader.onload = (function(theFile) {
+				return function(e) {
+					// Render thumbnail.
+					var span = document.createElement('span');
+					span.classList.toggle("imagen_list");
+					span.innerHTML = ['<img class="thumb" src="', e.target.result,
+														'" title="', escape(theFile.name), '"/>'].join('');
+					document.getElementById('list').insertBefore(span, null);
+				};
+				})(f);
+
+				// Read in the image file as a data URL.
+				reader.readAsDataURL(f);
+				}
+				}
+
+				document.getElementById('img').addEventListener('change', handleFileSelect, false);
+    }
+
+
+</script>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                     <!-- Row End -->
+                  </div>
+                  <!-- Middle Content Area  End -->
+               </div>
+            </div>
+            <!-- Main Container End -->
+         </section>
+        
+
+
+
+<!-- -------------------------------------Home dealer------------------------------ -->
+{%else %}
+  {%if is_dealer%}
+        
+         <!-- =-=-=-=-=-=-= Breadcrumb End =-=-=-=-=-=-= -->
+      <!-- =-=-=-=-=-=-= Main Content Area =-=-=-=-=-=-= -->
+      <div class="main-content-area clearfix">
+         <!-- =-=-=-=-=-=-= Latest Ads =-=-=-=-=-=-= -->
+         <section class="section-padding no-top gray">
+            <!-- Main Container -->
+            <div class="container">
+               <!-- Row -->
+               <div class="row">
+                  <!-- Middle Content Area -->
+                  <div class="col-md-12 col-xs-12 col-sm-12">
+                     <section class="search-result-item">
+                        <a class="image-link" href="#"><img class="image center-block" alt="" src= {% if user.image %}"{{user.image.url}}" {% else %} "{% static 'images/img.png'%}" {% endif %} alt="" width="120" height="120"> </a>
+                        <div class="search-result-item-body">
+                           <div class="row">
+                              <div class="col-md-5 col-sm-12 col-xs-12">
+                                 <h4 class="search-result-item-heading"><a href="#">{{ username }}</a></h4>
+                                 <p class="info">
+                                    <span><a href="#"><i class="fa fa-user "></i>Perfil</a></span>
+                                    <span><a href="profile"><i class="fa fa-edit"></i>editar perfil</a></span>
+                                 </p>
+                                
+                                 
+                                 <span class="label label-success">distribuidor</span>
+                              </div>
+                              <div class="col-md-7 col-sm-12 col-xs-12">
+                                 <div class="row ad-history">
+                                    <div class="col-md-4 col-sm-4 col-xs-12">
+                                       <div class="user-stats">
+                                          <small>Su plan es de </small>
+                                         <h2>{{userobj.cars_to_sell}}</h2>
+                                          <small>vehículos</small>
+                                       </div>
+                                    </div>
+                                    <div class="col-md-4 col-sm-4 col-xs-12">
+                                       <div class="user-stats">
+                                          <small>Ha publicado </small>
+                                         <h2>{{cars|length}}</h2>
+                                          <small>vehículos</small>
+                                       </div>
+                                    </div>
+                                    <div class="col-md-4 col-sm-4 col-xs-12">
+                                       <div class="user-stats">
+                                          <small><a href="https://wa.me/18099144873?text=Hola%20me%20gustaria%20cambiar%20el%20plan%20de%20venta%20de%20mi%20cuenta%20de%20Don%20Carros">Actualizar el plan de ventas de carros</a></small>
+                                         
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                     </section>
+                     <div class="dashboard-menu-container">
+                        <ul>
+                           
+                          <li class="active" style="width: 200px;  height: 50px ">
+                              <a href="/dashboard/add_inventory">
+                                 <div class="menu-name"> <img src="{% static 'icon/addcar.png' %}" alt=""  width="30" height="30">
+                      Agregar<br> inventario</div>
+                              </a>
+                           </li>
+                           <li class="active" style="width: 200px;  height: 50px ">
+                              <a href="/dashboard/Inventory">
+                                 <div class="menu-name"> <img src="{% static 'icon/live.png' %}" alt=""  width="30" height="30">
+                      Inventario <br>publicado</div>
+                              </a>
+                           </li>
+                          
+                          <li class="active" style="width: 200px;  height: 50px ">
+                              <a href="/dashboard/sold_inventory">
+                                 <div class="menu-name"> <img src="{% static 'icon/sold.png' %}" alt=""  width="30" height="30">
+                      Inventario <br>Vendido</div>
+                              </a>
+                           </li>
+                          
+                          <li class="active" style="width: 200px;  height: 50px ">
+                              <a href="/dashboard/Inventory">
+                                 <div class="menu-name"> <img src="{% static 'icon/searchCar.png' %}" alt=""  width="30" height="30">
+                      Búsqueda de inventarios</div>
+                              </a>
+                           </li>
+                         
+                          <li class="active" style="width: 200px;  height: 50px ">
+                              <a href="/dashboard/my_favourites">
+                                 <div class="menu-name"> <img src="{% static 'icon/like.png' %}" alt=""  width="30" height="30">
+                      Automovil que<br> le dado me Gusta</div>
+                              </a>
+                           </li>
+                          <li class="active" style="width: 200px;  height: 50px ">
+                              <a href="/dashboard/website">
+                                 <div class="menu-name"> <img src="{% static 'icon/Setting.png' %}" alt=""  width="30" height="30">
+                     Configuraciones <br>del sitio</div>
+                              </a>
+                           </li>
+                          
+                          <li class="active" style="width: 200px;  height: 50px ">
+                              <a href="/dashboard/pago">
+                                 <div class="menu-name"> <img src="/static/icon/terms.png" alt=""  width="30" height="30">
+                     Pagos <br> de planes</div>
+                              </a>
+                           </li>
+                        </ul>
+                     </div>
+                  </div>
+                  <!-- Middle Content Area  End -->
+               </div>
+               <!-- Row End -->
+               <div class="row margin-top-40">
+                  <!-- Middle Content Area -->
+                  <div class="col-md-12 col-xs-12 col-sm-12">
+                     <!-- Row -->
+                     <div class="profile-section margin-bottom-20">
+                        <div class="profile-tabs">
+                           <ul class="nav nav-justified nav-tabs">
+                              <li class="active"><a href="#profile" data-toggle="tab">Perfil</a></li>
+                              <li><a href="#edit" data-toggle="tab">Editar perfil</a></li>
+                              
+                             
+                           </ul>
+                           <div class="tab-content">
+                              <div class="profile-edit tab-pane fade in active" id="profile">
+                                 
+                                 <dl class="dl-horizontal">
+                                    <dt><strong>Nombre </strong></dt>
+                                    <dd>
+                                       {{userobj.first_name}}
+                                    </dd>
+                                    <dt><strong>Correo </strong></dt>
+                                    <dd>
+                                       {{userobj.email}}
+                                    </dd>
+                                    <dt><strong>Telefono </strong></dt>
+                                    <dd>
+                                       {{userobj.phone}}
+                                    </dd>
+                                    <dt><strong>tipo </strong></dt>
+                                    <dd>
+                                       distribuidor
+                                    </dd>
+                                    <dt><strong>ciudad </strong></dt>
+                                    <dd>
+                     {{userobj.address}}
+
+                                    </dd>
+                                   
+                                 </dl>
+                              </div>
+                              <div class="profile-edit tab-pane fade" id="edit">
+                                 <h2 class="heading-md">Manage your Security Settings</h2>
+                                 <p>Manage Your Account</p>
+                                 <div class="clearfix"></div>
+                                 <form class="row" action="" method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="col-md-6">
+        <h5>Confirmar contraseña</h5>
+        <input aria-describedby="sizing-addon2" class="form-control" id="old_psw" name="old_psw" placeholder="Old Password" type="password">
+        <h5>Nueva contraseña</h5>
+        <input aria-describedby="sizing-addon2" class="form-control" id="new_psw" name="new_psw" placeholder="New Password" type="password">
+        <h5>Nombre</h5>
+        <input aria-describedby="sizing-addon2" class="form-control" {% if userobj.first_name %} value="{{userobj.first_name}}"{%endif%} id="fname" name="fname" placeholder="First Name" type="text">
+        <h5>Apellido</h5>
+        <input aria-describedby="sizing-addon2" class="form-control" {% if userobj.last_name %} value="{{userobj.last_name}}"{%endif%} id="lname" name="lname" placeholder="Last Name" type="text">
+        <h5>Correo electrónico</h5>
+        <input aria-describedby="sizing-addon2" class="form-control" value="{{userobj.email}}" id="email" name="email" placeholder="Email" type="email">
+        <h5>Teléfono</h5>
+        <input aria-describedby="sizing-addon2" class="form-control" {% if userobj.phone %} value="{{userobj.phone}}"{%endif%} id="phone" name="phone" placeholder="Phone" type="tel">
+        <h5>Teléfono celular</h5>
+        <input aria-describedby="sizing-addon2" class="form-control" {% if userobj.cell_phone %} value="{{userobj.cell_phone}}" {%endif%} id="cphone" name="cphone" placeholder="Cell Phone" type="tel">
+        <h5>Dirección</h5>
+        <input aria-describedby="sizing-addon2" class="form-control" {% if userobj.address %} value="{{userobj.address}}" {%endif%} id="address" name="address" placeholder="Address">
+        <h5>Descripción</h5>
+        <textarea rows="4" cols="50" aria-describedby="sizing-addon2" class="form-control" id="description" name="description" placeholder="Description">{% if userobj.description %}{{userobj.description}}{%endif%}</textarea>
+      </div>
+      <div class="col-md-6">
+        <h5>Foto de perfil</h5>
+        <div class="upload">
+          <input name="img" id="img" type=file class="file" accept="image/*">
+        </div>
+        <output id="list"></output>
+        <div class="cont_limpiar">
+          <button type="button" onclick="limpiar()" class="btn btn-warning limpiar"><i class="glyphicon glyphicon-trash"></i> Limpiar</button>
+        </div>
+      </div>
+      <div class="col-xs-12 separar">
+        <div class="col-md-6 cf">
+          <button type="submit" class="btn btn-primary bf">Guardar</button>
+        </div>
+        <div class="col-md-6 cf">
+          <form action="/dashboard">
+            <button type="button" class="btn btn-danger bf">Cancelar</button>
+          </form>
+        </div>
+      </div>
+    </form>
+                                
+                                <script type="text/javascript">
+function handleFileSelect(evt) {
+var files = evt.target.files; // FileList object
+document.getElementById('list').innerHTML="";
+// Loop through the FileList and render image files as thumbnails.
+for (var i = 0, f; f = files[i]; i++) {
+
+// Only process image files.
+if (!f.type.match('image.*')) {
+continue;
+}
+
+var reader = new FileReader();
+
+// Closure to capture the file information.
+reader.onload = (function(theFile) {
+return function(e) {
+	// Render thumbnail.
+	var span = document.createElement('span');
+	span.innerHTML = ['<img class="thumb" src="', e.target.result,
+										'" title="', escape(theFile.name), '"/>'].join('');
+  document.getElementById('list').insertBefore(span, null);
+};
+})(f);
+
+// Read in the image file as a data URL.
+reader.readAsDataURL(f);
+}
+}
+
+document.getElementById('img').addEventListener('change', handleFileSelect, false);
+
+function limpiar() {
+
+				$(".imagen_list").remove();
+        var input = $('#img');
+        var clon = input.clone();  // Creamos un clon del elemento original
+        input.replaceWith(clon);   // Y sustituimos el original por el clon
+
+				function handleFileSelect(evt) {
+				var files = evt.target.files; // FileList object
+
+				// Loop through the FileList and render image files as thumbnails.
+				for (var i = 0, f; f = files[i]; i++) {
+
+				// Only process image files.
+				if (!f.type.match('image.*')) {
+				continue;
+				}
+
+				var reader = new FileReader();
+
+				// Closure to capture the file information.
+				reader.onload = (function(theFile) {
+				return function(e) {
+					// Render thumbnail.
+					var span = document.createElement('span');
+					span.classList.toggle("imagen_list");
+					span.innerHTML = ['<img class="thumb" src="', e.target.result,
+														'" title="', escape(theFile.name), '"/>'].join('');
+					document.getElementById('list').insertBefore(span, null);
+				};
+				})(f);
+
+				// Read in the image file as a data URL.
+				reader.readAsDataURL(f);
+				}
+				}
+
+				document.getElementById('img').addEventListener('change', handleFileSelect, false);
+    }
+
+
+</script>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                     <!-- Row End -->
+                  </div>
+                  <!-- Middle Content Area  End -->
+               </div>
+            </div>
+            <!-- Main Container End -->
+         </section>
+        
+        
+        
+        
+
+  {%else%}
+<!-- -------------------------------------Home private seller------------------------------ -->
+ <!-- =-=-=-=-=-=-= Breadcrumb End =-=-=-=-=-=-= -->
+      <!-- =-=-=-=-=-=-= Main Content Area =-=-=-=-=-=-= -->
+      <div class="main-content-area clearfix">
+         <!-- =-=-=-=-=-=-= Latest Ads =-=-=-=-=-=-= -->
+         <section class="section-padding no-top gray">
+            <!-- Main Container -->
+            <div class="container">
+               <!-- Row -->
+               <div class="row">
+                  <!-- Middle Content Area -->
+                  <div class="col-md-12 col-xs-12 col-sm-12">
+                     <section class="search-result-item">
+                        <a class="image-link" href="#"><img class="image center-block" alt="" src= {% if user.image %}"{{user.image.url}}" {% else %} "{% static 'images/img.png'%}" {% endif %} alt="" width="120" height="120"> </a>
+                        <div class="search-result-item-body">
+                           <div class="row">
+                              <div class="col-md-5 col-sm-12 col-xs-12">
+                                 <h4 class="search-result-item-heading"><a href="#">{{ username }}</a></h4>
+                                 <p class="info">
+                                    <span><a href="#"><i class="fa fa-user "></i>Perfil</a></span>
+                                    <span><a href="profile"><i class="fa fa-edit"></i>editar perfil</a></span>
+                                 </p>
+                                
+                                 
+                                 <span class="label label-success">distribuidor</span>
+                              </div>
+                              <div class="col-md-7 col-sm-12 col-xs-12">
+                                 <div class="row ad-history">
+                                    <div class="col-md-4 col-sm-4 col-xs-12">
+                                       <div class="user-stats">
+                                          <small>Su plan es de </small>
+                                         <h2>{{userobj.cars_to_sell}}</h2>
+                                          <small>vehículos</small>
+                                       </div>
+                                    </div>
+                                    <div class="col-md-4 col-sm-4 col-xs-12">
+                                       <div class="user-stats">
+                                          <small>Ha publicado </small>
+                                         <h2>{{cars|length}}</h2>
+                                          <small>vehículos</small>
+                                       </div>
+                                    </div>
+                                    <div class="col-md-4 col-sm-4 col-xs-12">
+                                       <div class="user-stats">
+                                          <small><a href="https://wa.me/18099144873?text=Hola%20me%20gustaria%20cambiar%20el%20plan%20de%20venta%20de%20mi%20cuenta%20de%20Don%20Carros">Actualizar el plan de ventas de carros</a></small>
+                                         
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                     </section>
+                     <div class="dashboard-menu-container">
+                        <ul>
+                           
+                          <li class="active" style="width: 200px;  height: 50px ">
+                              <a href="/dashboard/add_inventory">
+                                 <div class="menu-name"> <img src="{% static 'icon/addcar.png' %}" alt=""  width="30" height="30">
+                      Agregar<br> inventario</div>
+                              </a>
+                           </li>
+                           <li class="active" style="width: 200px;  height: 50px ">
+                              <a href="/dashboard/Inventory">
+                                 <div class="menu-name"> <img src="{% static 'icon/live.png' %}" alt=""  width="30" height="30">
+                      Inventario <br>publicado</div>
+                              </a>
+                           </li>
+                          
+                          <li class="active" style="width: 200px;  height: 50px ">
+                              <a href="/dashboard/sold_inventory">
+                                 <div class="menu-name"> <img src="{% static 'icon/sold.png' %}" alt=""  width="30" height="30">
+                      Inventario <br>Vendido</div>
+                              </a>
+                           </li>
+                          
+                          <li class="active" style="width: 200px;  height: 50px ">
+                              <a href="/dashboard/Inventory">
+                                 <div class="menu-name"> <img src="{% static 'icon/searchCar.png' %}" alt=""  width="30" height="30">
+                      Búsqueda de inventarios</div>
+                              </a>
+                           </li>
+                         
+                          <li class="active" style="width: 200px;  height: 50px ">
+                              <a href="/dashboard/my_favourites">
+                                 <div class="menu-name"> <img src="{% static 'icon/like.png' %}" alt=""  width="30" height="30">
+                      Automovil que<br> le dado me Gusta</div>
+                              </a>
+                           </li>
+                        
+                          
+                          <li class="active" style="width: 200px;  height: 50px ">
+                              <a href="/dashboard/pago">
+                                 <div class="menu-name"> <img src="/static/icon/terms.png" alt=""  width="30" height="30">
+                     Pagos <br> de planes</div>
+                              </a>
+                           </li>
+                        </ul>
+                     </div>
+                  </div>
+                  <!-- Middle Content Area  End -->
+               </div>
+               <!-- Row End -->
+               <div class="row margin-top-40">
+                  <!-- Middle Content Area -->
+                  <div class="col-md-12 col-xs-12 col-sm-12">
+                     <!-- Row -->
+                     <div class="profile-section margin-bottom-20">
+                        <div class="profile-tabs">
+                           <ul class="nav nav-justified nav-tabs">
+                              <li class="active"><a href="#profile" data-toggle="tab">Perfil</a></li>
+                              <li><a href="#edit" data-toggle="tab">Editar perfil</a></li>
+                              
+                             
+                           </ul>
+                           <div class="tab-content">
+                              <div class="profile-edit tab-pane fade in active" id="profile">
+                                 
+                                 <dl class="dl-horizontal">
+                                    <dt><strong>Nombre </strong></dt>
+                                    <dd>
+                                       {{userobj.first_name}}
+                                    </dd>
+                                    <dt><strong>Correo </strong></dt>
+                                    <dd>
+                                       {{userobj.email}}
+                                    </dd>
+                                    <dt><strong>Telefono </strong></dt>
+                                    <dd>
+                                       {{userobj.phone}}
+                                    </dd>
+                                    <dt><strong>tipo </strong></dt>
+                                    <dd>
+                                       distribuidor
+                                    </dd>
+                                    <dt><strong>ciudad </strong></dt>
+                                    <dd>
+                     {{userobj.address}}
+
+                                    </dd>
+                                   
+                                 </dl>
+                              </div>
+                              <div class="profile-edit tab-pane fade" id="edit">
+                                 <h2 class="heading-md">Manage your Security Settings</h2>
+                                 <p>Manage Your Account</p>
+                                 <div class="clearfix"></div>
+                                 <form class="row" action="" method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="col-md-6">
+        <h5>Confirmar contraseña</h5>
+        <input aria-describedby="sizing-addon2" class="form-control" id="old_psw" name="old_psw" placeholder="Old Password" type="password">
+        <h5>Nueva contraseña</h5>
+        <input aria-describedby="sizing-addon2" class="form-control" id="new_psw" name="new_psw" placeholder="New Password" type="password">
+        <h5>Nombre</h5>
+        <input aria-describedby="sizing-addon2" class="form-control" {% if userobj.first_name %} value="{{userobj.first_name}}"{%endif%} id="fname" name="fname" placeholder="First Name" type="text">
+        <h5>Apellido</h5>
+        <input aria-describedby="sizing-addon2" class="form-control" {% if userobj.last_name %} value="{{userobj.last_name}}"{%endif%} id="lname" name="lname" placeholder="Last Name" type="text">
+        <h5>Correo electrónico</h5>
+        <input aria-describedby="sizing-addon2" class="form-control" value="{{userobj.email}}" id="email" name="email" placeholder="Email" type="email">
+        <h5>Teléfono</h5>
+        <input aria-describedby="sizing-addon2" class="form-control" {% if userobj.phone %} value="{{userobj.phone}}"{%endif%} id="phone" name="phone" placeholder="Phone" type="tel">
+        <h5>Teléfono celular</h5>
+        <input aria-describedby="sizing-addon2" class="form-control" {% if userobj.cell_phone %} value="{{userobj.cell_phone}}" {%endif%} id="cphone" name="cphone" placeholder="Cell Phone" type="tel">
+        <h5>Dirección</h5>
+        <input aria-describedby="sizing-addon2" class="form-control" {% if userobj.address %} value="{{userobj.address}}" {%endif%} id="address" name="address" placeholder="Address">
+        <h5>Descripción</h5>
+        <textarea rows="4" cols="50" aria-describedby="sizing-addon2" class="form-control" id="description" name="description" placeholder="Description">{% if userobj.description %}{{userobj.description}}{%endif%}</textarea>
+      </div>
+      <div class="col-md-6">
+        <h5>Foto de perfil</h5>
+        <div class="upload">
+          <input name="img" id="img" type=file class="file" accept="image/*">
+        </div>
+        <output id="list"></output>
+        <div class="cont_limpiar">
+          <button type="button" onclick="limpiar()" class="btn btn-warning limpiar"><i class="glyphicon glyphicon-trash"></i> Limpiar</button>
+        </div>
+      </div>
+      <div class="col-xs-12 separar">
+        <div class="col-md-6 cf">
+          <button type="submit" class="btn btn-primary bf">Guardar</button>
+        </div>
+        <div class="col-md-6 cf">
+          <form action="/dashboard">
+            <button type="button" class="btn btn-danger bf">Cancelar</button>
+          </form>
+        </div>
+      </div>
+    </form>
+                                
+                                <script type="text/javascript">
+function handleFileSelect(evt) {
+var files = evt.target.files; // FileList object
+document.getElementById('list').innerHTML="";
+// Loop through the FileList and render image files as thumbnails.
+for (var i = 0, f; f = files[i]; i++) {
+
+// Only process image files.
+if (!f.type.match('image.*')) {
+continue;
+}
+
+var reader = new FileReader();
+
+// Closure to capture the file information.
+reader.onload = (function(theFile) {
+return function(e) {
+	// Render thumbnail.
+	var span = document.createElement('span');
+	span.innerHTML = ['<img class="thumb" src="', e.target.result,
+										'" title="', escape(theFile.name), '"/>'].join('');
+  document.getElementById('list').insertBefore(span, null);
+};
+})(f);
+
+// Read in the image file as a data URL.
+reader.readAsDataURL(f);
+}
+}
+
+document.getElementById('img').addEventListener('change', handleFileSelect, false);
+
+function limpiar() {
+
+				$(".imagen_list").remove();
+        var input = $('#img');
+        var clon = input.clone();  // Creamos un clon del elemento original
+        input.replaceWith(clon);   // Y sustituimos el original por el clon
+
+				function handleFileSelect(evt) {
+				var files = evt.target.files; // FileList object
+
+				// Loop through the FileList and render image files as thumbnails.
+				for (var i = 0, f; f = files[i]; i++) {
+
+				// Only process image files.
+				if (!f.type.match('image.*')) {
+				continue;
+				}
+
+				var reader = new FileReader();
+
+				// Closure to capture the file information.
+				reader.onload = (function(theFile) {
+				return function(e) {
+					// Render thumbnail.
+					var span = document.createElement('span');
+					span.classList.toggle("imagen_list");
+					span.innerHTML = ['<img class="thumb" src="', e.target.result,
+														'" title="', escape(theFile.name), '"/>'].join('');
+					document.getElementById('list').insertBefore(span, null);
+				};
+				})(f);
+
+				// Read in the image file as a data URL.
+				reader.readAsDataURL(f);
+				}
+				}
+
+				document.getElementById('img').addEventListener('change', handleFileSelect, false);
+    }
+
+
+</script>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                     <!-- Row End -->
+                  </div>
+                  <!-- Middle Content Area  End -->
+               </div>
+            </div>
+            <!-- Main Container End -->
+         </section>
+        
+{%endif %}
+
+{%endif %}
+</div>
+{% endblock %}

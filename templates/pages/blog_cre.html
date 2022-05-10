@@ -1,0 +1,49 @@
+{% extends 'base/backend-prontocasa.html' %}
+{% block content %}
+{% load humanize %}
+{% load static %}
+
+
+<main id="content">
+
+      <section>
+        <div class="container">
+          <div class="card border-0 mt-n13 z-index-3 pb-8 pt-10">
+            <div class="card-body p-0">
+              <h2 class="text-heading mb-2 fs-22 fs-md-32 text-center lh-16">¡Siempre estamos ansiosos por saber de usted!</h2>
+              
+             
+              <form class="mxw-751 px-md-10" method="post" action="">
+              <table>
+                
+             
+                      
+                        {% csrf_token %}
+                        {{error}}
+                        {{ form2 }}
+                       </table>
+                
+                <div class="text-center">
+                  <button type="submit" class="btn btn-lg btn-primary px-9">Submit</button>
+                </div>
+              </form>
+              
+               <div class="form-group">   
+                       
+                        {{ mensaje }}
+                    
+                </div>
+              
+              
+             
+            </div>
+          </div>
+          <di
+        </div>
+      </section>
+      
+    </main>          
+      
+
+
+{% endblock %}

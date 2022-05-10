@@ -1,0 +1,318 @@
+{% extends 'base/backend-prontocasa.html' %}
+{% block content %}
+{% load replace %}
+{%if message%}
+<script>
+  swal(
+    'Mensaje',
+    '{{message}}',
+    'info'
+  )
+</script>
+{%endif%}
+
+
+
+
+
+<main id="content" class="bg-gray-01">
+            <div class="px-3 px-lg-6 px-xxl-13 py-5 py-lg-10">
+              <div class="mb-6">
+                <h2 class="mb-0 text-heading fs-22 lh-15">Creacion de nuevo Usuario
+                </h2>
+                <p class="mb-1">Ingrese el Nuevo Usuario con su clasificacion</p>
+              </div>
+               <form class="row" action="" method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+                <div class="row mb-6">
+                  <div class="col-lg-6">
+                    <div class="card mb-6">
+                      <div class="card-body px-6 pt-6 pb-5">
+                        <div class="row">
+                 
+                          <div class="col-sm-4 col-xl-12 col-xxl-7 mb-6">
+                            <h3 class="card-title mb-0 text-heading fs-22 lh-15">{{ form.photo.label_tag }}</h3>
+                            {{ form.photo.errors }}
+                            <p class="card-text">Sube la Foto de Perfil</p>
+                          </div>
+                          <div class="col-sm-8 col-xl-12 col-xxl-5">
+                            <output id="list" class="left"></output>
+                            <div class="custom-file mt-4 h-auto">
+                               {{ form.photo }}
+                               <div class="cont_limpiar">
+                        <button type="button" onclick="limpiar()" class="btn btn-warning limpiar"><i class="glyphicon glyphicon-trash"></i> Limpiar</button>
+                      </div>
+                             
+                            </div>
+                            <p class="mb-0 mt-2">
+                              *minimum 500px x 500px
+                            </p>
+                          </div>
+                        </div>
+                        {%if edit_user%}
+          <div style="display: none;" class="info col col-xs-6">
+          {%endif%}
+
+                      </div>
+                    </div>
+                    <div class="card mb-6">
+                      <div class="card-body px-6 pt-6 pb-5">
+                        <h3 class="card-title mb-0 text-heading fs-22 lh-15">Contact information</h3>
+                        <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>
+                        <div class="form-row mx-n4">
+                          
+       
+                           {%if edit_user%}
+          <div style="display: none;" class="">
+          {%endif%}
+                          
+                          <div class="form-group col-md-6 px-4">
+                            <label for="firstName" class="text-heading">{{ form.username.label_tag }}</label>
+                             {{ form.username.errors }}
+                            {{ form.username }}
+          {%if edit_user%}
+          </div>
+          {%endif%}
+                          </div>
+                          <div class="form-group col-md-6 px-4">
+                            <label for="lastName" class="text-heading">{{ form.first_name.label_tag }}</label>
+                            {{ form.first_name.errors }}
+                            {{ form.first_name }}
+                          </div>
+                        </div>
+                        <div class="form-row mx-n4">
+                          <div class="form-group col-md-6 px-4">
+                            <label for="phone" class="text-heading">{{ form.email.label_tag }}</label>
+                             {{ form.email.errors }}
+          {{ form.email }}
+                          </div>
+                          <div class="form-group col-md-6 px-4">
+                            <label for="mobile" class="text-heading">{{ form.phone.label_tag }}</label>
+                            {{ form.phone.errors }}
+          {{ form.phone }}
+                          </div>
+                        </div>
+                        <div class="form-row mx-n4">
+                          <div class="form-group col-md-6 px-4 mb-md-0">
+                            <label for="email" class="text-heading">{{ form.last_name.label_tag }}</label>
+                             {{ form.last_name.errors }}
+          {{ form.last_name }}
+                          </div>
+                          <div class="form-group col-md-6 px-4 mb-md-0">
+                            <label for="skype" class="text-heading">{{ form.address.label_tag }}</label>
+                           {{ form.address.errors }}
+          {{ form.address }}
+                          </div>
+                        </div>
+                        
+                        <div class="form-row mx-n4">
+                          <div class="form-group col-md-6 px-4 mb-md-0">
+                            <label for="email" class="text-heading">{{ form.cell_phone.label_tag }}</label>
+                            {{ form.cell_phone.errors }}
+          {{ form.cell_phone }}
+
+          {%if show_selection%}
+            <div style="display: none;" class="">
+          {%endif%}
+                          </div>
+                          <div class="form-group col-md-6 px-4 mb-md-0">
+                            <label for="skype" class="text-heading">{{ form.user_type.label_tag }}</label>
+                             {{ form.user_type.errors }}
+            {{ form.user_type }}
+          {%if show_selection%}
+            </div>
+          {%endif%}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="card mb-6 mb-lg-0">
+                      <div class="card-body px-6 pt-6 pb-5">
+                        <h3 class="card-title mb-0 text-heading fs-22 lh-15">User detail</h3>
+                        <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>
+                        <div class="form-group mb-0">
+                          
+                          <label for="title" class="text-heading">{{ form.description.label_tag }}</label>
+                         {{ form.description.errors }}
+        {{ form.description }}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-lg-6">
+                    <div class="card mb-6">
+                      <div class="card-body px-6 pt-6 pb-5">
+                        <h3 class="card-title mb-0 text-heading fs-22 lh-15">User detail</h3>
+                        <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>
+                        
+            
+                        
+                        
+                        <div class="form-group">
+                          <label for="facebook" class="text-heading">{{ form.facebook.label_tag }}</label>
+                          {{ form.facebook.errors }}
+          {{ form.facebook }}
+                        </div>
+                        <div class="form-group">
+                          <label for="pinterest" class="text-heading">{{ form.twitter.label_tag }}</label>
+                           {{ form.twitter.errors }}
+          {{ form.twitter }}
+                        </div>
+                        <div class="form-group">
+                          <label for="instagram" class="text-heading">{{ form.youtube.label_tag }}</label>
+                          {{ form.youtube.errors }}
+          {{ form.youtube }}
+                        </div>
+                        <div class="form-group">
+                          <label for="twitter" class="text-heading">{{ form.instagram.label_tag }}</label>
+                          {{ form.instagram.errors }}
+          {{ form.instagram }}
+                        </div>
+                       
+                       
+                      </div>
+                    </div>
+                    <div class="card">
+                      <div class="card-body px-6 pt-6 pb-5">
+                        <h3 class="card-title mb-0 text-heading fs-22 lh-15">Change password</h3>
+                        <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>
+                       
+
+         
+                         
+                             {%if edit_user%}
+          <div style="display: none;" class="info col col-xs-6">
+          {%endif%}
+                        <div class="form-group">
+                          <label for="oldPassword" class="text-heading">{{ form.password.label_tag }}</label>
+                           {{ form.password.errors }}
+          {{ form.password }}
+
+          {%if edit_user%}
+          </div>
+          {%endif%}
+                        </div>
+                       
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="d-flex justify-content-end flex-wrap">
+                  
+                  
+          <button type="submit" class="btn btn-lg bg-hover-white border rounded-lg mb-3">Guarda</button>
+        
+      
+                </div>
+              </form>
+            </div>
+          </main>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script type="text/javascript">
+
+  function handleFileSelect(evt) {
+  var files = evt.target.files; // FileList object
+
+  // Loop through the FileList and render image files as thumbnails.
+  for (var i = 0, f; f = files[i]; i++) {
+
+  // Only process image files.
+  if (!f.type.match('image.*')) {
+  continue;
+  }
+
+  var reader = new FileReader();
+
+  // Closure to capture the file information.
+  reader.onload = (function(theFile) {
+  return function(e) {
+    // Render thumbnail.
+    var span = document.createElement('span');
+    span.innerHTML = ['<img class="thumb" src="', e.target.result,
+                      '" title="', escape(theFile.name), '"/>'].join('');
+    document.getElementById("list").innerHTML="";
+    document.getElementById('list').insertBefore(span, null);
+  };
+  })(f);
+
+  // Read in the image file as a data URL.
+  reader.readAsDataURL(f);
+  }
+  }
+
+  document.getElementById('photo').addEventListener('change', handleFileSelect, false);
+  function limpiar() {
+
+  				$(".imagen_list").remove();
+          var input = $('#img');
+          var clon = input.clone();  // Creamos un clon del elemento original
+          input.replaceWith(clon);   // Y sustituimos el original por el clon
+
+  				function handleFileSelect(evt) {
+  				var files = evt.target.files; // FileList object
+
+  				// Loop through the FileList and render image files as thumbnails.
+  				for (var i = 0, f; f = files[i]; i++) {
+
+  				// Only process image files.
+  				if (!f.type.match('image.*')) {
+  				continue;
+  				}
+
+  				var reader = new FileReader();
+
+  				// Closure to capture the file information.
+  				reader.onload = (function(theFile) {
+  				return function(e) {
+  					// Render thumbnail.
+  					var span = document.createElement('span');
+  					span.classList.toggle("imagen_list");
+  					span.innerHTML = ['<img class="thumb" src="', e.target.result,
+  														'" title="', escape(theFile.name), '"/>'].join('');
+  					document.getElementById('list').insertBefore(span, null);
+  				};
+  				})(f);
+
+  				// Read in the image file as a data URL.
+  				reader.readAsDataURL(f);
+  				}
+  				}
+
+  				document.getElementById('img').addEventListener('change', handleFileSelect, false);
+      }
+
+</script>
+{% endblock %}

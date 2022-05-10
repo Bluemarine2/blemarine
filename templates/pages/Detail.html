@@ -1,0 +1,958 @@
+
+{% extends 'base/basecasa_edit.html' %}
+
+{% load image_at %}
+{% load static %}
+{% block content %}
+
+<head>
+  
+
+<script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="paycalc" src="{% static 'js/paycalc.min.js' %}"></script>
+  <style>
+.fab {
+
+text-align: center;
+text-decoration: none;
+
+}
+
+.fab:hover {
+opacity: 0.7;
+}
+
+.fa-whatsapp {
+background: #45bbff;
+color: white;
+}
+
+
+</style>
+</head>
+   <body>
+     <main id="content">
+       
+      
+      <section class="pb-7 shadow-5">
+        <div class="container">
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb py-3">
+              <li class="breadcrumb-item fs-12 letter-spacing-087">
+                <a href="/">inicio</a>
+              </li>
+              <li class="breadcrumb-item fs-12 letter-spacing-087">
+                <a href="">Listar</a>
+              </li>
+              <li class="breadcrumb-item fs-12 letter-spacing-087 active">{{anuncio.titulo}} </li>
+            </ol>
+          </nav>
+          <div class="d-md-flex justify-content-md-between mb-1">
+            <ul class="list-inline d-sm-flex align-items-sm-center mb-0">
+              <li class="list-inline-item badge badge-orange mr-2">{{anuncio.estado_propiedad}}</li>
+              <li class="list-inline-item badge badge-primary mr-3">{{anuncio.tipo_oferta}}</li>
+              <li class="list-inline-item mr-2 mt-2 mt-sm-0"><i class="fal fa-clock mr-1"></i>2 months ago</li>
+              <li class="list-inline-item mt-2 mt-sm-0"><i class="fal fa-eye mr-1"></i>1039 views</li>
+            </ul>
+            <ul class="list-inline mb-0 mr-n2 my-4 my-md-0">
+              <li class="list-inline-item mr-2">
+                <a href="#" class="btn btn-outline-light px-3 text-body d-flex align-items-center h-32 border">
+                  <i class="far fa-heart mr-2 fs-15 text-primary"></i>Save
+                </a>
+              </li>
+              <li class="list-inline-item mr-2">
+                <a href="#" class="btn btn-outline-light px-3 text-body d-flex align-items-center h-32 border">
+                  <i class="far fa-share-alt mr-2 fs-15 text-primary"></i>Comparti
+                </a>
+              </li>
+              <li class="list-inline-item mr-2">
+                <a href="#" class="btn btn-outline-light px-3 text-body d-flex align-items-center h-32 border">
+                  <i class="far fa-print mr-2 fs-15 text-primary"></i>Print
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div class="d-md-flex justify-content-md-between mb-6">
+            <div>
+              <h2 class="fs-35 font-weight-600 lh-15 text-heading">{{anuncio.titulo}}</h2>
+              <p class="mb-0"><i class="fal fa-map-marker-alt mr-2"></i>{{anuncio.pais}}/{{anuncio.estado_pais}}/{{anuncio.ciudad}}</p>
+            </div>
+            <div class="mt-2 text-md-right">
+              <p class="fs-22 text-heading font-weight-bold mb-0">{{anuncio.moneda}}{{anuncio.precio}}</p>
+             
+            </div>
+          </div>
+          <div class="galleries position-relative">
+            <ul class="nav nav-pills position-absolute pos-fixed-top-right z-index-3 pt-4 pr-5 flex-nowrap nav-gallery"
+                id="pills-tab"
+                role="tablist">
+              <li class="nav-item mr-2" role="presentation">
+                <a class="nav-link p-0 active d-flex align-items-center justify-content-center w-48px h-48 bg-white text-heading bg-hover-primary hover-white rounded-circle fs-18"
+                       data-toggle="pill" href="#image" role="tab"
+                       aria-selected="true">
+                  <i class="fal fa-camera"></i>
+                </a>
+              </li>
+              <li class="nav-item mr-2" role="presentation">
+                <a class="nav-link p-0 d-flex align-items-center justify-content-center w-48px h-48 bg-white text-heading bg-hover-primary hover-white rounded-circle fs-18"
+                       data-toggle="pill" href="#map-view" role="tab"
+                       aria-selected="false">
+                  <i class="fal fa-map-marked-alt"></i>
+                </a>
+              </li>
+            </ul>
+            <div class="tab-content p-0 shadow-none">
+              <div class="tab-pane fade show active" id="image" role="tabpanel">
+                <div class="slick-slider dots-white arrow-inner"
+                         data-slick-options='{"slidesToShow": 1, "autoplay":false}'>
+                  
+             
+                  
+                    {% for im in all_photos %}
+                       
+                  <div class="box">
+                    <div class="item item-size-3-2">
+                      <div class="card p-0">
+                        <a href="{{im.image.url}}" class="card-img"
+                                       data-gtf-mfp="true"
+                                       data-gallery-id="03"
+                                       style="background-image:url('{{im.image.url}}')">
+                        </a>
+                        
+                      </div>
+                    </div>
+                  </div>
+               {% endfor %}  
+                 
+                 
+                </div>
+              </div>
+             <div class="tab-pane fade" id="map-view" role="tabpanel">
+               
+               
+               
+               <div id="map"></div>
+
+<script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.min.js"></script>
+<link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.css" type="text/css">
+ 
+<!-- Promise polyfill script is required -->
+<!-- to use Mapbox GL Geocoder in IE 11. -->
+<script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.auto.min.js"></script>
+
+<script>
+	mapboxgl.accessToken = 'pk.eyJ1IjoicHJvbnRvY2FzYSIsImEiOiJja29pcmRwZ3AwejVjMnBwbmM1NGsycDJ6In0.mjPYv6x0jxWkxxt8oMiwrg';
+var map = new mapboxgl.Map({ 
+    container: 'map', 
+    style: 'mapbox://styles/mapbox/streets-v9',  
+    center: [{{anuncio.lon}}, {{anuncio.lat}}],  
+    zoom: 12 
+});
+map.addControl(
+new MapboxGeocoder({
+accessToken: mapboxgl.accessToken,
+mapboxgl: mapboxgl
+})
+);
+map.addControl(new mapboxgl.NavigationControl());
+map.addControl(new mapboxgl.FullscreenControl());
+map.addControl(new mapboxgl.GeolocateControl({
+    positionOptions: {
+        enableHighAccuracy: true
+    },
+    trackUserLocation: true
+})); 
+map.on('load', function () {
+map.addSource('places', {
+// This GeoJSON contains features that include an "icon"
+// property. The value of the "icon" property corresponds
+// to an image in the Mapbox Streets style's sprite.
+'type': 'geojson',
+'data': {
+'type': 'FeatureCollection',
+'features': [
+  
+
+{
+'type': 'Feature',
+'properties': {
+'description':
+'<strong>Sitio de Pronto casa</strong><div data-toggle="modal" id="#login-register-modal2"><a class="nav-link pl-3 pr-2" data-toggle="modal" href="#login-register-modal2">Visualizar</a>',
+'icon': 'place-of-worship-15'
+},
+'geometry': {
+'type': 'Point',
+'coordinates': [{{anuncio.lon}}, {{anuncio.lat}}]
+}
+}
+]
+}
+});
+
+
+
+// Add a layer showing the places.
+map.addLayer({
+'id': 'places',
+'type': 'symbol',
+'source': 'places',
+'layout': {
+'icon-image': '{icon}',
+'icon-allow-overlap': true
+}
+});
+ 
+// When a click event occurs on a feature in the places layer, open a popup at the
+// location of the feature, with description HTML from its properties.
+map.on('click', 'places', function (e) {
+var coordinates = e.features[0].geometry.coordinates.slice();
+var description = e.features[0].properties.description;
+ 
+// Ensure that if the map is zoomed out such that multiple
+// copies of the feature are visible, the popup appears
+// over the copy being pointed to.
+while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+}
+ 
+new mapboxgl.Popup()
+.setLngLat(coordinates)
+.setHTML(description)
+.addTo(map);
+});
+ 
+// Change the cursor to a pointer when the mouse is over the places layer.
+map.on('mouseenter', 'places', function () {
+map.getCanvas().style.cursor = 'pointer';
+});
+ 
+// Change it back to a pointer when it leaves.
+map.on('mouseleave', 'places', function () {
+map.getCanvas().style.cursor = '';
+});
+});
+</script>
+               
+               
+               
+             
+               
+               
+               
+               
+               
+               
+               
+               
+               
+               
+              </div>
+          </div>
+        </div>
+      </section>
+    <div class="primary-content bg-gray-01 pt-7 pb-12">
+      <div class="container">
+        <div class="row">
+          <article class="col-lg-8">
+            <section class="pb-8 px-6 pt-6 bg-white rounded-lg">
+             
+              <h4 class="fs-22 text-heading mt-6 mb-2">Descripción</h4>
+              <p class="mb-0 lh-214">{{anuncio.description}}</p>
+            </section>
+            <section class="mt-2 pb-3 px-6 pt-5 bg-white rounded-lg">
+              <h4 class="fs-22 text-heading mb-6">Especificaciones</h4>
+              <div class="row">
+                  <p class="mb-0 lh-214">{{anuncio.especificaciones}}</p>
+                
+              </div>
+            </section>
+            <section class="mt-2 pb-6 px-6 pt-5 bg-white rounded-lg">
+              <h4 class="fs-22 text-heading mb-4">Detalles adicionales</h4>
+              <div class="row">
+                <dl class="col-sm-6 mb-0 d-flex">
+                  <dt class="w-110px fs-14 font-weight-500 text-heading pr-2">Id </dt>
+                  <dd>{{anuncio.id}}</dd>
+                </dl>
+                <dl class="col-sm-6 mb-0 d-flex">
+                  <dt class="w-110px fs-14 font-weight-500 text-heading pr-2">Precio</dt>
+                  <dd>{{anuncio.moneda}}{{anuncio.precio}}</dd>
+                </dl>
+                <dl class="col-sm-6 mb-0 d-flex">
+                  <dt class="w-110px fs-14 font-weight-500 text-heading pr-2">Tipo de Propiedad</dt>
+                  <dd>{{anuncio.propiedad}}/{{anuncio.tipo_oferta}}<br>{{anuncio.tipo_propiedad}}/{{anuncio.tipo_objeto}}</dd>
+                </dl>
+                <dl class="col-sm-6 mb-0 d-flex">
+                  <dt class="w-110px fs-14 font-weight-500 text-heading pr-2">Estado de la propiedad</dt>
+                  <dd>{{anuncio.estado_propiedad}}</dd>
+                </dl>
+                <dl class="col-sm-6 mb-0 d-flex">
+                  <dt class="w-110px fs-14 font-weight-500 text-heading pr-2">Pais</dt>
+                  <dd>{{anuncio.pais}}</dd>
+                </dl>
+                <dl class="col-sm-6 mb-0 d-flex">
+                  <dt class="w-110px fs-14 font-weight-500 text-heading pr-2">Estado</dt>
+                  <dd>{{anuncio.estado_pais}}</dd>
+                </dl>
+                
+              </div>
+            </section>
+            
+            
+            
+            
+           
+            
+            
+            <section class="mt-2 pb-7 px-6 pt-5 bg-white rounded-lg">
+              
+             
+              
+             
+              
+              <h4 class="fs-22 text-heading mb-4">Caracteristicas</h4>
+              <ul class="list-unstyled mb-0 row no-gutters">
+                   
+                
+                <li class="col-sm-3 col-6 mb-2"><i class="far fa-check mr-2 text-primary"></i> {{anuncio.servicios}}</</li>
+                  
+                  
+                  
+                   
+                     
+              </ul>
+               
+            </section>
+             <section class="py-6 border-bottom">
+              <h4 class="fs-22 text-heading mb-6">Virtual Tour</h4>
+               <iframe width="100%" height=390 src=" {{anuncio.youtube}}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            
+            </section>
+            <section class="mt-2 pb-7 px-6 pt-6 bg-white rounded-lg">
+              <h4 class="fs-22 text-heading mb-6">Planos</h4>
+              <div class="accordion accordion-03 mb-3" id="accordion-01">
+                <div class="card border-0 shadow-xxs-5 bg-gray-01">
+                  <div class="card-header bg-gray-01 border-gray border-0 p-0" id="floor-plans-01">
+                    <div class="heading bg-gray-01 d-flex justify-content-between align-items-center px-6" data-toggle="collapse" data-target="#collapse-01" aria-expanded="true" aria-controls="collapse-01" role="button">
+                      <h2 class="mb-0 fs-16 text-heading font-weight-500 py-4 lh-13"></h2>
+                      <ul class="list-inline mb-0 d-none d-sm-block pr-2">
+                        <li class=" list-inline-item text-muted mr-4">Beds : <span class="font-weight-500 text-heading">2</span></li>
+                        <li class=" list-inline-item text-muted mr-4">Bath : <span class="font-weight-500 text-heading">2</span></li>
+                        <li class=" list-inline-item text-muted mr-4">Sqft : <span class="font-weight-500 text-heading">900</span></li>
+                      </ul>
+                    </div>
+                  </div>
+                  <div id="collapse-01" class="collapse show mx-6 mb-6 bg-white" aria-labelledby="floor-plans-01" data-parent="#accordion-01">
+                    <div class="card-body card-body col-sm-6 offset-sm-3 mb-3">
+                      <img src="/static/casa/images/single-detail-property-01.jpg" class="card-img" alt="Floor Plans">
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+             
+             
+            </section>
+            <section class="mt-2 pb-7 px-6 pt-6 bg-white rounded-lg">
+              <h4 class="fs-22 text-heading lh-15 mb-5">Calificación y reseñas</h4>
+              <div class="card border-0">
+                <div class="card-body p-0">
+                  <div class="row">
+                    <div class="col-sm-6 mb-6 mb-sm-0">
+                      <div class="bg-gray-01 rounded-lg pt-2 px-6 pb-6">
+                        <h5 class="fs-16 lh-2 text-heading mb-6">
+                          Calificación promedio de usuarios
+                        </h5>
+                        <p class="fs-40 text-heading font-weight-bold mb-6 lh-1">4.6 <span class="fs-18 text-gray-light font-weight-normal">/5</span></p>
+                        <ul class="list-inline">
+                          <li class="list-inline-item bg-warning text-white w-46px h-46 rounded-lg d-inline-flex align-items-center justify-content-center fs-18 mb-1">
+                            <i class="fas fa-star"></i>
+                          </li>
+                          <li class="list-inline-item bg-warning text-white w-46px h-46 rounded-lg d-inline-flex align-items-center justify-content-center fs-18 mb-1">
+                            <i class="fas fa-star"></i>
+                          </li>
+                          <li class="list-inline-item bg-warning text-white w-46px h-46 rounded-lg d-inline-flex align-items-center justify-content-center fs-18 mb-1">
+                            <i class="fas fa-star"></i>
+                          </li>
+                          <li class="list-inline-item bg-warning text-white w-46px h-46 rounded-lg d-inline-flex align-items-center justify-content-center fs-18 mb-1">
+                            <i class="fas fa-star"></i>
+                          </li>
+                          <li class="list-inline-item bg-gray-04 text-white w-46px h-46 rounded-lg d-inline-flex align-items-center justify-content-center fs-18 mb-1">
+                            <i class="fas fa-star"></i>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                    <div class="col-sm-6 pt-3">
+                      <h5 class="fs-16 lh-2 text-heading mb-5">
+                        Desglose de la calificación
+                      </h5>
+                      <div class="d-flex align-items-center mx-n1">
+                        <ul class="list-inline d-flex px-1 mb-0">
+                          <li class="list-inline-item text-warning mr-1">
+                            <i class="fas fa-star"></i>
+                          </li>
+                          <li class="list-inline-item text-warning mr-1">
+                            <i class="fas fa-star"></i>
+                          </li>
+                          <li class="list-inline-item text-warning mr-1">
+                            <i class="fas fa-star"></i>
+                          </li>
+                          <li class="list-inline-item text-warning mr-1">
+                            <i class="fas fa-star"></i>
+                          </li>
+                          <li class="list-inline-item text-warning mr-1">
+                            <i class="fas fa-star"></i>
+                          </li>
+                        </ul>
+                        <div class="d-block w-100 px-1">
+                          <div class="progress rating-progress">
+                            <div class="progress-bar bg-warning" role="progressbar" style="width: 60%" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
+                          </div>
+                        </div>
+                        <div class="text-muted px-1">60%</div>
+                      </div>
+                      <div class="d-flex align-items-center mx-n1">
+                        <ul class="list-inline d-flex px-1 mb-0">
+                          <li class="list-inline-item text-warning mr-1">
+                            <i class="fas fa-star"></i>
+                          </li>
+                          <li class="list-inline-item text-warning mr-1">
+                            <i class="fas fa-star"></i>
+                          </li>
+                          <li class="list-inline-item text-warning mr-1">
+                            <i class="fas fa-star"></i>
+                          </li>
+                          <li class="list-inline-item text-warning mr-1">
+                            <i class="fas fa-star"></i>
+                          </li>
+                          <li class="list-inline-item text-border mr-1">
+                            <i class="fas fa-star"></i>
+                          </li>
+                        </ul>
+                        <div class="d-block w-100 px-1">
+                          <div class="progress rating-progress">
+                            <div class="progress-bar bg-warning" role="progressbar" style="width: 40%" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
+                          </div>
+                        </div>
+                        <div class="text-muted px-1">40%</div>
+                      </div>
+                      <div class="d-flex align-items-center mx-n1">
+                        <ul class="list-inline d-flex px-1 mb-0">
+                          <li class="list-inline-item text-warning mr-1">
+                            <i class="fas fa-star"></i>
+                          </li>
+                          <li class="list-inline-item text-warning mr-1">
+                            <i class="fas fa-star"></i>
+                          </li>
+                          <li class="list-inline-item text-warning mr-1">
+                            <i class="fas fa-star"></i>
+                          </li>
+                          <li class="list-inline-item text-border mr-1">
+                            <i class="fas fa-star"></i>
+                          </li>
+                          <li class="list-inline-item text-border mr-1">
+                            <i class="fas fa-star"></i>
+                          </li>
+                        </ul>
+                        <div class="d-block w-100 px-1">
+                          <div class="progress rating-progress">
+                            <div class="progress-bar bg-warning" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                          </div>
+                        </div>
+                        <div class="text-muted px-1">0%</div>
+                      </div>
+                      <div class="d-flex align-items-center mx-n1">
+                        <ul class="list-inline d-flex px-1 mb-0">
+                          <li class="list-inline-item text-warning mr-1">
+                            <i class="fas fa-star"></i>
+                          </li>
+                          <li class="list-inline-item text-warning mr-1">
+                            <i class="fas fa-star"></i>
+                          </li>
+                          <li class="list-inline-item text-border mr-1">
+                            <i class="fas fa-star"></i>
+                          </li>
+                          <li class="list-inline-item text-border mr-1">
+                            <i class="fas fa-star"></i>
+                          </li>
+                          <li class="list-inline-item text-border mr-1">
+                            <i class="fas fa-star"></i>
+                          </li>
+                        </ul>
+                        <div class="d-block w-100 px-1">
+                          <div class="progress rating-progress">
+                            <div class="progress-bar bg-warning" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                          </div>
+                        </div>
+                        <div class="text-muted px-1">0%</div>
+                      </div>
+                      <div class="d-flex align-items-center mx-n1">
+                        <ul class="list-inline d-flex px-1 mb-0">
+                          <li class="list-inline-item text-warning mr-1">
+                            <i class="fas fa-star"></i>
+                          </li>
+                          <li class="list-inline-item text-border mr-1">
+                            <i class="fas fa-star"></i>
+                          </li>
+                          <li class="list-inline-item text-border mr-1">
+                            <i class="fas fa-star"></i>
+                          </li>
+                          <li class="list-inline-item text-border mr-1">
+                            <i class="fas fa-star"></i>
+                          </li>
+                          <li class="list-inline-item text-border mr-1">
+                            <i class="fas fa-star"></i>
+                          </li>
+                        </ul>
+                        <div class="d-block w-100 px-1">
+                          <div class="progress rating-progress">
+                            <div class="progress-bar bg-warning" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                          </div>
+                        </div>
+                        <div class="text-muted px-1">0%</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+            
+            
+          
+            <section class="mt-2 pb-7 px-6 pt-6 bg-white rounded-lg">
+              
+              
+              
+              
+             <div class="widget">
+                <div>
+                  
+                    <form name="fm_calc">
+                  <h3 class="tabbed_top-header">Calcular pago mensual</h3>
+                      
+                       <div class="row">
+                  <div class="col-md-6 mb-4">
+                    <label>Precio de anuncio</label>
+                    <div class="position-relative">
+                      <input type="number" class="form-control border-0 pr-3 h-52 pl-7" value="{{anuncio.precio}}" onchange="calculate(this);" name="amount">
+                      <span class="position-absolute pl-3 pos-fixed-left-center fs-13 font-weight-600">$</span>
+                    </div>
+                  </div>
+                  <div class="col-md-6 mb-4">
+                    <label>Deposito:</label>
+                    <div class="position-relative">
+                      <input type="number" class="form-control border-0 pr-3 h-52 pl-7" onchange="calculate(this);" name="downpayment" value="0">
+                      <span class="position-absolute pl-3 pos-fixed-left-center fs-13 font-weight-600">$</span>
+                    </div>
+                  </div>
+                </div>
+                      
+                 <div class="row">
+                  <div class="col-md-6 mb-4">
+                    <label>Abono:</label>
+                    <div class="position-relative">
+                      <input type="number" class="form-control border-0 pr-3 h-52 pl-7"  onchange="calculate(this);" name="tradein" value="0">
+                      <span class="position-absolute pl-3 pos-fixed-left-center fs-13 font-weight-600">$</span>
+                    </div>
+                  </div>
+                  <div class="col-md-6 mb-4">
+                    <label>Termino de meses</label>
+                    <div class="position-relative">
+                      <input type="number" class="form-control border-0 pr-3 h-52 pl-7" onchange="calculate(this);" name="term"  id="month-min"  value="1">
+                      <span class="position-absolute pl-3 pos-fixed-left-center fs-13 font-weight-600">M</span>
+                    </div>
+                  </div>
+                </div>      
+                   <div class="row">
+                
+                <div class="col-md-6 mb-4">
+                  <label>Tasas de interes en %</label>
+                  <input class="form-control border-0 pr-3 h-52 pl-7" type="number" onchange="calculate(this);" name="rate"  value="1">
+                     </div>
+                  
+                  
+                   <div class="col-lg-6">
+                     <input class="btn btn-primary fs-14 h-52 px-8" type="button" onclick="calculate(this);" value="Calculate">
+                  </div>
+                  
+
+                </div>   
+                      <br>
+                  <fieldset class="rounded_corners ">
+     
+                   
+                    <label class="thm-light_text_color">Su pago mensual</label>
+                    <div class="input_container">
+                      <input class="form-control" type="text" name="payment">
+                    </div>
+                  </fieldset>
+                </form>
+                </div>
+    </div>
+            
+         
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+          
+            </section>
+            
+            <section class="mt-2 pb-7 px-6 pt-6 bg-white rounded-lg">
+              <h4 class="fs-22 text-heading mb-6">Propiedades subida por el mismo dueño</h4>
+              <div class="slick-slider"
+					     data-slick-options='{"slidesToShow": 2, "dots":false,"responsive":[{"breakpoint": 1200,"settings": {"slidesToShow":2,"arrows":false}},{"breakpoint": 992,"settings": {"slidesToShow":2}},{"breakpoint": 768,"settings": {"slidesToShow": 1}},{"breakpoint": 576,"settings": {"slidesToShow": 1}}]}'>
+                
+                
+                
+                              
+         
+                
+               {% for lanuncio in rest_of_anuncio %}
+                               
+                                           
+                <div class="box">
+                  <div class="card shadow-hover-2">
+                    <div class="hover-change-image bg-hover-overlay rounded-lg card-img-top">
+                      
+                      
+                       <a href="/detail/{{lcar.id}}">
+                      <img src="{{rest_of_cars_photos|image_at:lanuncio.id}}"
+									     alt="Home in Metric Way">
+                          </a>
+                      <div class="card-img-overlay p-2 d-flex flex-column">
+                        <div>
+                          <span class="badge mr-2 badge-primary">{{lanuncio.tipo_oferta}}</span>
+                        </div>
+                        <ul class="list-inline mb-0 mt-auto hover-image">
+                          <li class="list-inline-item mr-2" data-toggle="tooltip" title="9 Images">
+                            <a href="#" class="text-white hover-primary">
+                              <i class="far fa-images"></i><span class="pl-1">9</span>
+                            </a>
+                          </li>
+                          <li class="list-inline-item" data-toggle="tooltip" title="2 Video">
+                            <a href="#" class="text-white hover-primary">
+                              <i class="far fa-play-circle"></i><span class="pl-1">2</span>
+                            </a>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                    <div class="card-body pt-3">
+                      <h2 class="card-title fs-16 lh-2 mb-0"><a href="/detail/{{lanuncio.id}}" class="text-dark hover-primary">{{lanuncio.titulo}}</a></h2>
+                      <p class="card-text font-weight-500 text-gray-light mb-2">{{lanuncio.pais}}/{{lanuncio.estado_pais}}/{{lanuncio.ciudad}}</p>
+                      <ul class="list-inline d-flex mb-0 flex-wrap mr-n5">
+                        <li class="list-inline-item text-gray font-weight-500 fs-13 d-flex align-items-center mr-5" data-toggle="tooltip" title="3 Bedroom">
+                          <svg class="icon icon-bedroom fs-18 text-primary mr-1"><use xlink:href="#icon-bedroom"></use></svg>3 Br
+                        </li>
+                        <li class="list-inline-item text-gray font-weight-500 fs-13 d-flex align-items-center mr-5" data-toggle="tooltip" title="3 Bathrooms">
+                          <svg class="icon icon-shower fs-18 text-primary mr-1"><use xlink:href="#icon-shower"></use></svg>3 Ba
+                        </li>
+                        <li class="list-inline-item text-gray font-weight-500 fs-13 d-flex align-items-center mr-5-2" data-toggle="tooltip" title="Size">
+                          <svg class="icon icon-square fs-18 text-primary mr-1"><use xlink:href="#icon-square"></use></svg>2300 Sq.Ft
+                        </li>
+                        <li class="list-inline-item text-gray font-weight-500 fs-13 d-flex align-items-center mr-5" data-toggle="tooltip" title="1 Garage">
+                          <svg class="icon icon-Garage fs-18 text-primary mr-1"><use xlink:href="#icon-Garage"></use></svg>1 Gr
+                        </li>
+                      </ul>
+                    </div>
+                    <div class="card-footer bg-transparent d-flex justify-content-between align-items-center py-3">
+                      <p class="fs-17 font-weight-bold text-heading mb-0">{{lanuncio.moneda}}{{lanuncio.precio}}</p>
+                      <ul class="list-inline mb-0">
+                        <li class="list-inline-item">
+                          <a href="#"
+											   class="w-40px h-40 border rounded-circle d-inline-flex align-items-center justify-content-center text-secondary bg-accent border-accent" data-toggle="tooltip" title="Wishlist"><i
+													class="fas fa-heart"></i></a>
+                        </li>
+                        <li class="list-inline-item">
+                          <a href="#"
+											   class="w-40px h-40 border rounded-circle d-inline-flex align-items-center justify-content-center text-body hover-secondary bg-hover-accent border-hover-accent" data-toggle="tooltip" title="Compare"><i
+													class="fas fa-exchange-alt"></i></a>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                 {% endfor %}
+                
+                
+              </div>
+            </section>
+          </article>
+          <aside class="col-lg-4 pl-xl-4 primary-sidebar sidebar-sticky" id="sidebar">
+            <div class="primary-sidebar-inner">
+              <div class="card border-0 widget-request-tour bg-transparent">
+                <ul class="nav nav-tabs d-flex" role="tablist">
+                  <li class="nav-item">
+                    <a class="nav-link active px-3" data-toggle="tab" href="#schedule" role="tab"
+							   aria-selected="true">Cal de hipoteca</a>
+                  </li>
+                  <li class="nav-item" role="presentation">
+                    <a class="nav-link px-3" data-toggle="tab" href="#request-info" role="tab"
+							   aria-selected="false">dueño</a>
+                  </li>
+                </ul>
+                <div class="card-body px-sm-6 shadow-xxs-2 pb-5 pt-0 bg-white">
+                  <form>
+                    <div class="tab-content pt-1 pb-0 px-0 shadow-none">
+                      <div class="tab-pane fade show active" id="schedule" role="tabpanel">
+                        
+                        <br>
+              <form name="fm_calc">
+                  <h3 class="tabbed_top-header">Calcular pago mensual</h3>
+                      
+                       <div class="row">
+                  <div class="col-md-6 mb-4">
+                    <label>Precio de anuncio</label>
+                    <div class="position-relative">
+                      <input type="number" class="form-control border-0 pr-3 h-52 pl-7" value="{{anuncio.precio}}" onchange="calculate(this);" name="amount">
+                      <span class="position-absolute pl-3 pos-fixed-left-center fs-13 font-weight-600">$</span>
+                    </div>
+                  </div>
+                  <div class="col-md-6 mb-4">
+                    <label>Deposito:</label>
+                    <div class="position-relative">
+                      <input type="number" class="form-control border-0 pr-3 h-52 pl-7" onchange="calculate(this);" name="downpayment" value="0">
+                      <span class="position-absolute pl-3 pos-fixed-left-center fs-13 font-weight-600">$</span>
+                    </div>
+                  </div>
+                </div>
+                      
+                 <div class="row">
+                  <div class="col-md-6 mb-4">
+                    <label>Abono:</label>
+                    <div class="position-relative">
+                      <input type="number" class="form-control border-0 pr-3 h-52 pl-7"  onchange="calculate(this);" name="tradein" value="0">
+                      <span class="position-absolute pl-3 pos-fixed-left-center fs-13 font-weight-600">$</span>
+                    </div>
+                  </div>
+                  <div class="col-md-6 mb-4">
+                    <label>Termino de meses</label>
+                    <div class="position-relative">
+                      <input type="number" class="form-control border-0 pr-3 h-52 pl-7" onchange="calculate(this);" name="term"  id="month-min"  value="1">
+                      <span class="position-absolute pl-3 pos-fixed-left-center fs-13 font-weight-600">M</span>
+                    </div>
+                  </div>
+                </div>      
+                   <div class="row">
+                
+                <div class="col-md-6 mb-4">
+                  <label>Tasas de interes en %</label>
+                  <input class="form-control border-0 pr-3 h-52 pl-7" type="number" onchange="calculate(this);" name="rate"  value="1">
+                     </div>
+                  
+                  
+                   <div class="col-lg-6">
+                     <input class="btn btn-primary fs-14 h-52 px-8" type="button" onclick="calculate(this);" value="Calculate">
+                  </div>
+                  
+
+                </div>   
+                      <br>
+                  <fieldset class="rounded_corners ">
+     
+                   
+                    <label class="thm-light_text_color">Su pago mensual</label>
+                    <div class="input_container">
+                      <input class="form-control" type="text" name="payment">
+                    </div>
+                  </fieldset>
+                </form>
+                     
+                      
+                      </div>
+                      <div class="tab-pane fade pt-5" id="request-info" role="tabpanel">
+                        
+                         
+                       
+                        
+                         {% if dueno.is_dealer%}
+                        <div class="form-check d-flex align-items-center border-bottom pb-3 mb-3">
+                         
+                          <div class="form-check-label ml-2">
+                            <div class="d-flex align-items-center">
+                              <a href="agent-details-1.html" class="d-block w-60px h-60 mr-3">
+                                <img src="{{dueno.image.url}}"
+													      alt="Oliver Beddows">
+                              </a>
+                                {% else %}
+                      <h3>Vendedor privado</h3>
+                    {% endif %}     
+                              <div>
+                                <a href="agent-details-1.html"
+													   class="d-block text-dark font-weight-500 lh-15 hover-primary">{% if dueno.is_dealer%}
+                      Agente:
+                    {% else %}
+                      Vendedor:
+                    {% endif %}
+                    {{dueno.username}}</a>
+                                
+                                <p class="mb-0 fs-13 mb-0 lh-17"><span
+															class="text-heading d-inline-block ml-2">{{dueno.phone}}</span>
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <a href="https://wa.me/34555005500/?text=tu%20texto%20personalizado" target="_blank">
+    <img src="/static/casa/images/wha.png" width="100" height="100">Comunicarse con el Cliente
+ </a>
+                        
+                             </div>
+                              
+                                   
+                                   
+                                   
+                                   
+                
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </div>
+    <section>
+      <div class="d-flex bottom-bar-action bottom-bar-action-01 py-2 px-4 bg-gray-01 align-items-center position-fixed fixed-bottom d-sm-none">
+        <div class="media align-items-center">
+           <img src= {% if user.image %}"{{dueno.image.url}}" {% else %} "{% static 'images/img.png'%}" {% endif %} alt="" class="mr-4 rounded-circle">
+          <div class="media-body">
+            <a href="#" class="d-block text-dark fs-15 font-weight-500 lh-15">{{dueno.username}}</a>
+            <span class="fs-13 lh-2">Sales Excutive</span>
+          </div>
+        </div>
+        <div class="ml-auto">
+          <button type="button" class="btn btn-primary fs-18 p-2 lh-1 mr-1 mb-1 shadow-none" data-toggle="modal" data-target="#modal-messenger"><i class="fab fa-whatsapp"></i></button>
+          <a href="tel:{{dueno.phone}}" class="btn btn-primary fs-18 p-2 lh-1 mb-1 shadow-none" target ="_blank"><i class="fal fa-phone"></i></a>
+        </div>
+      </div>
+      <div class="modal fade" id="modal-messenger" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header border-0 pb-0">
+              <h4 class="modal-title text-heading" id="exampleModalLabel">Contact Form</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body pb-6">
+              <div class="form-group mb-2">
+                <input type="text" class="form-control form-control-lg border-0" placeholder="First Name, Last Name">
+              </div>
+              <div class="form-group mb-2">
+                <input type="email" class="form-control form-control-lg border-0" placeholder="Your Email">
+              </div>
+              <div class="form-group mb-2">
+                <input type="tel" class="form-control form-control-lg border-0" placeholder="Your phone">
+              </div>
+              <div class="form-group mb-2">
+                <textarea class="form-control border-0" rows="4">Hello, I'm interested in Villa Called Archangel</textarea>
+              </div>
+              <div class="form-group form-check mb-4">
+                <input type="checkbox" class="form-check-input" id="exampleCheck3">
+                <label class="form-check-label fs-13" for="exampleCheck3">Egestas fringilla phasellus faucibus scelerisque eleifend donec.</label>
+              </div>
+              <button type="submit" class="btn btn-primary btn-lg btn-block rounded">Request Info</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+     <footer class="bg-dark pt-8 pb-6 footer text-muted">
+      <div class="container container-xxl">
+        <div class="row">
+          <div class="col-md-6 col-lg-4 mb-6 mb-md-0">
+            <a class="d-block mb-2" href="#">
+              <img src="/static/casa/images/wh.png" alt="HomeID">
+            </a>
+            <div class="lh-26 font-weight-500">
+              <p class="mb-0">Dirrecion de su ubicacion</p>
+              <a class="d-block text-muted hover-white" href="mailto:prontocasa@gmail.com">prontocasa@gmail.com</a>
+              <a class="d-block text-lighter font-weight-bold fs-15 hover-white"
+                       href="tel:(+68)000-000-0000">(+68)000-0000</a>
+              <a class="d-block text-muted hover-white" href=".">www.Prontocasa.com</a>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-2 mb-6 mb-md-0">
+            <h4 class="text-white fs-16 my-4 font-weight-500">Búsquedas populares</h4>
+            <ul class="list-group list-group-flush list-group-no-border">
+              <li class="list-group-item bg-transparent p-0">
+                <a href="#" class="text-muted lh-26 font-weight-500 hover-white">Se renta apartamento</a>
+              </li>
+              
+              <li class="list-group-item bg-transparent p-0">
+                <a href="#" class="text-muted lh-26 font-weight-500 hover-white">Oficinas para Compra</a>
+              </li>
+              
+            </ul>
+          </div>
+          <div class="col-md-6 col-lg-2 mb-6 mb-md-0">
+            <h4 class="text-white fs-16 my-4 font-weight-500">Enlaces rápidos</h4>
+            <ul class="list-group list-group-flush list-group-no-border">
+              <li class="list-group-item bg-transparent p-0">
+                <a href="#" class="text-muted lh-26 font-weight-500 hover-white">Condiciones de uso</a>
+              </li>
+              <li class="list-group-item bg-transparent p-0">
+                <a href="#" class="text-muted lh-26 font-weight-500 hover-white">Política de privacidad</a>
+              </li>
+              <li class="list-group-item bg-transparent p-0">
+                <a href="#" class="text-muted lh-26 font-weight-500 hover-white">Conctato</a>
+              </li>
+             
+            </ul>
+          </div>
+          <div class="col-md-6 col-lg-4 mb-6 mb-md-0">
+            <h4 class="text-white fs-16 my-4 font-weight-500">Suscríbase a nuestro boletín</h4>
+            <p class="font-weight-500 text-muted lh-184">sucribarse para que le llegue las notificaciones de los nuevos anuncio </p>
+            <form>
+              <div class="input-group input-group-lg mb-6">
+                <input type="email" name="email" class="form-control bg-white shadow-none border-0 z-index-1" placeholder="Tu correo Electronico">
+                <div class="input-group-append">
+                  <button class="btn btn-primary" type="submit">Subscribe</button>
+                </div>
+              </div>
+            </form>
+            <ul class="list-inline mb-0">
+              <li class="list-inline-item mr-0">
+                <a href="#" class="text-white opacity-3 fs-25 px-4 opacity-hover-10"><i
+                                class="fab fa-twitter"></i></a>
+              </li>
+              <li class="list-inline-item mr-0">
+                <a href="#" class="text-white opacity-3 fs-25 px-4 opacity-hover-10"><i
+                                class="fab fa-facebook-f"></i></a>
+              </li>
+              
+            </ul>
+          </div>
+        </div>
+        <div class="mt-0 mt-md-10 row">
+          <ul class="list-inline mb-0 col-md-6 mr-auto">
+            <li class="list-inline-item mr-6">
+              <a href="#" class="text-muted lh-26 font-weight-500 hover-white">Terminos y Usos</a>
+            </li>
+            <li class="list-inline-item">
+              <a href="#" class="text-muted lh-26 font-weight-500 hover-white">Politicas y Seguridad</a>
+            </li>
+          </ul>
+          <p class="col-md-auto mb-0 text-muted">
+            © 2021 Pronto casa. Reservados todos los derechos
+
+
+          </p>
+        </div>
+      </div>
+    </footer>
+   </body>
+{% endblock %}

@@ -1,0 +1,133 @@
+{% extends 'base/backend-prontocasa.html' %}
+{% load static %}
+{% block content %}
+<link href="{% static 'css/list.css' %}" rel='stylesheet' type='text/css'>
+{%if message%}
+<script>
+  swal(
+    'Mensaje',
+    '{{message}}',
+    'info'
+  )
+</script>
+{%endif%}
+
+
+
+
+
+
+
+
+
+
+
+
+
+ <main id="content" class="bg-gray-01">
+            <div class="px-3 px-lg-6 px-xxl-13 py-5 py-lg-10">
+              <div class="d-flex flex-wrap flex-md-nowrap mb-6">
+                <div class="mr-0 mr-md-auto">
+                  <h2 class="mb-0 text-heading fs-22 lh-15">Todos los usuarios de sistema<span
+                    class="badge badge-white badge-pill text-primary fs-18 font-weight-bold ml-2">5</span>
+                  </h2>
+                  <p>verifique los usuarios que hay e el sistema </p>
+                </div>
+               
+              </div>
+              <div class="table-responsive">
+                <table class="table table-hover border rounded-lg mb-6 bg-white">
+                  <thead class="thead-sm thead-black">
+                    <tr>
+                      <th scope="col" class="border-top-0 px-6 pt-5 pb-4">imagen</th>
+                      <th scope="col" class="border-top-0 pt-5 pb-4">Nombre</th>
+                      <th scope="col" class="border-top-0 pt-5 pb-4">Plans</th>
+                      <th scope="col" class="border-top-0 pt-5 pb-4">anuncio</th>
+                      <th scope="col" class="border-top-0 pt-5 pb-4">Nivel</th>
+                      <th scope="col" class="border-top-0 pt-5 pb-4">funciones</th>
+                      <th scope="col" class="border-top-0 pt-5 pb-4">funciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                     {% for user in all_users %}
+                    <tr class="shadow-hover-xs-2 bg-hover-white">
+                      <td class="align-middle p-6">
+                        {%if user.image%}
+          <img class="circimg" src="{{user.image.url}}">
+          {%else%}
+          <img class="circimg" src="{% static 'images/img.png' %}">
+          {% endif %}
+                      </td>
+                        <form action="" method="post">
+            {% csrf_token %}
+                      <td class="align-middle">
+                          <h4>{{user.username}}</h4>
+              {% if user.is_dealer%}
+               
+                          
+                          
+                          
+                          </td>
+                      <td class="align-middle">
+                        
+                         <select class="dropdown form-control" onchange="this.form.submit()" id="plan" name="plan">
+                  {%for plan in plans%}
+                        <option {%if user.cars_to_sell == plan.number_of_cars %} selected="selected" {%endif%}value="{{user.username}}|{{plan.id}}">{{plan.name}} ({{plan.number_of_cars}} anuncios)</option>
+                        {%empty%}
+                        <option selected="selected" value="">No hay planes (El usuario puede vender la última cantidad de anuncio que se le asigno: {{user.cars_to_sell}})</option>
+                  {% endfor %}
+                </select>
+              {%endif%}
+                        
+                        
+                      </td>
+                      <td class="align-middle">                  <button type="submit" id="manage" name="manage" value="{{user.username}}" class="btn btn-default" > Administrar  anuncio </button>
+</td>
+                      <td class="align-middle">
+                        {% if not user.is_dealer%}
+                  <button type="submit" id="upgrade" name="upgrade" value="{{user.username}}" class="btn btn-default" > Ascender a distribuidor </button>
+                  {% else %}
+                  <button type="submit" id="down" name="down" value="{{user.username}}" class="btn btn-default" > Disminuir a vendedor</button>
+                  {%endif%}
+                      </td>
+                      <td class="align-middle">
+                         <button type="submit" id="delete" name="delete" value="{{user.username}}" class="btn btn-danger" > Eliminar </button>
+                      </td>
+                           <td class="align-middle">
+                               <button type="submit" id="edit" name="edit" value="{{user.username}}" class="btn btn-warning" > Editar </button>
+                         
+                      </td>
+                           </form>
+                    </tr>
+                   {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            
+            </div>
+          </main>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+{% load replace %}
+{% endblock %}

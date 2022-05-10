@@ -1,0 +1,318 @@
+	{% extends 'base/base.html' %}
+{% block content %}
+{% load multiply %}
+{% load static %}
+		<div class="pages">
+	<!--Script menu -->
+	<script>
+	setTimeout(function(){menu("none")},500);
+	</script>
+	<script type="text/javascript">
+	function changeModels(){
+		var maker = $( "#make option:selected" ).val();
+		$('.opts').hide()
+		$(".no").text(maker?"Select Model":"Select Make")
+		$('._' + maker).show()
+		$("#model").val('');
+	}
+
+	function changeYT(){
+		var maker = $( "#make option:selected" ).val();
+		var model = $( "#model option:selected" ).val();
+		$('.minfo').hide()
+		if(!(model === -1 || maker === -1)){
+			$('.' + model).show()
+		}
+	}
+	</script>
+	<!-- content of the page-->
+	<!-- --------------------------------------------List search------------------------------------ -->
+			<section class="content" id="no-top">
+        <br>
+        <br><br>
+        
+       
+			
+		
+        <h2 class="text-center title" style="margin-bottom: 1em;"><FONT COLOR="#a31818">listado de busqueda</FONT></h2>
+        
+				<div class="row">
+					<button id="open" onclick="desplegar()" type="button" class="btsearch btn btn-default" aria-label="Left Align">
+						<span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+					</button>
+					<button id="close" onclick="plegar()" type="button" class="btn btn-default btsearch2" aria-label="Left Align">
+						<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+					</button>
+					<div id="mostrar" class="iz col-sm-12 col-md-2 row no-view">
+						<div class="search col-xs-12 row">
+
+								
+               <form class="form" enctype="multipart/form-data" role="form" action="/search" method="post">
+				{% csrf_token %}
+					<div class="col-md-12">
+						<h2 class="text-center">Busqueda</h2>
+						<a name="search"></a>
+					</div>
+					<input type="hidden" name="type" value="simple">
+					<div class="col-xs-12 tira" id="condition">
+								<input type="radio" name="condition" id="New" value="Nuevo">
+								<label class="radio left" for="New">Nuevo</label>
+								<input type="radio" name="condition" id="Used" value="Usado">
+								<label class="radio left" for="Used">Usado</label>
+								<input type="radio" name="condition" id="certified" value="Certificado">
+								<label class="radio left" for="certified">Certificado</label>
+								<input type="radio" checked name="condition" id="All" value="All">
+								<label class="radio left" for="All">Todos</label>
+					</div>
+
+					<div class="Npd col-sm-6">
+						{{ form.makefield.errors }}
+							{{ form.makefield }}
+					</div>
+					<div class="Npd col-sm-6">
+						{{ form.modelfield.errors }}
+						{{ form.modelfield }}
+					</div>
+					<div class="Npd col-sm-6">
+		 				<select class="dropdown" id="byear" name="byear">
+		    				<option value="0">Del año</option>
+	  					</select>
+					</div>
+					<div class="Npd col-sm-6">
+		 				<select class="dropdown" id="fyear" name="fyear">
+		    				<option value="10000">Al año</option>
+		  				</select>
+					</div>
+					<div class="Npd col-sm-6">
+		 				<select class="dropdown" id="bprice" name="bprice">
+							<option value="0">Precio Mínimo</option>
+		  				</select>
+					</div>
+					<div class="Npd col-sm-6">
+		 				<select class="dropdown" id="fprice" name="fprice">
+							<option value="1000000000000">Precio Máximo</option>
+		  				</select>
+					</div>
+					<div class="Npd col-sm-12">
+						{{ form.city.errors }}
+							{{ form.city }}
+					</div>
+					<div class="col-sm-12 row no-pr Search">
+	  					<div class="cbtn">
+	  						<button type="submit" class="btn btn-danger Search" aria-label="center Align">Buscar</button>
+	  					</div>
+	  					
+	 				</div>
+			</form>
+						</div>
+						<div class="search  Modify col-xs-12 row">
+							
+							
+						</div>
+					</div>
+					<form class="" action="search" method="get">
+				<div class="results col-sm-12 col-md-10 row">
+					<div class="header col-xs-12">
+						<div class="location">
+							<h5>Republica Dominicana</h5>
+							
+						</div>
+						<div class="jun">
+							<div class="total">
+								<p>Todas las listas <strong>(18)</strong></p>
+							</div>
+							<div class="miles">
+								<p><strong>Entre: </strong>30 millas of 3333</p>
+							</div>
+						</div>
+						<div class="right">
+							<div>
+				 				<select class="dropdown" onchange="this.form2.submit()" id="filter" name="filter">
+				    				<option
+										{% if filter == 1%}
+											selected="selected"
+										{%endif%}
+										value="1">Fecha de publicación: Mas Antigua</option>
+				    				<option
+										{% if filter == 2%}
+											selected="selected"
+										{%endif%}
+										value="2">Fecha de publicación: Mas Nueva</option>
+				    				<option
+										{% if filter == 3%}
+											selected="selected"
+										{%endif%}
+										value="3">Año: Mas Antiguo</option>
+				    				<option
+										{% if filter == 4%}
+											selected="selected"
+										{%endif%}
+										value="4">Año: Mas Nueva</option>
+				    				<option
+										{% if filter == 5%}
+											selected="selected"
+										{%endif%}
+										value="5">Precio : Mas Alto</option>
+				    				<option
+										{% if filter == 6%}
+											selected="selected"
+										{%endif%}
+										value="6">Precio : Mas Bajo</option>
+				  				</select>
+							</div>
+							
+						</div>
+					</div>
+				<section class="custom-padding">
+            <!-- Main Container -->
+            <div class="bottom-box row">
+               <!-- Row -->
+               <div class="row">
+                  <div class="clearfix"></div>
+                  <!-- Heading Area -->
+                 
+                  <!-- Middle Content Box -->
+                 <form class="" action="/" method="get">
+                  <div class="row">
+                     <div class="col-md-12 col-xs-12 col-sm-12">
+                        <div class="posts-masonry">
+                          <section id="cambiar" class="cards list row">
+							{% for obj in cars %}
+							{% if forloop.counter == 1%}
+								<div class="tres">
+							{% endif %}
+                           <div class="col-md-4 col-xs-12 col-sm-6">
+                              <!-- Ad Box -->
+                              <div class="category-grid-box">
+                                 <!-- Ad Img -->
+                                 <div class="category-grid-img">
+                                   {% for id, im in all_photos.items %}
+									{% if id == obj.id%}
+									{% for i in im %}
+									{% if forloop.counter < 2%}
+										<!-- <div> -->
+										<img class="img-responsive" src="{{i.image.url}}">
+										<!-- <div class="item"> -->
+									{% endif %}
+									<!-- </div> -->
+									{% endfor %}
+									{% endif %}
+									{% endfor %}
+									{%if authenticated%}
+										<a id="mlist1" onclick="like({{obj.id}});" class="favoritos"><i class="glyphicon glyphicon-star"></i></a>
+									{%endif%}
+                                    <!-- Ad Status -->
+                                    <!-- User Review -->
+                                     <div class="user-preview">
+                                       <a href="/detail/{{obj.id}}">
+                                         	{% if obj.owner.is_dealer %}
+								{%if obj.owner.image%}
+									<div><img src="{{obj.owner.image.url}}" alt="" class="avatar avatar-small" ></div>
+									{% else %}
+								
+								{% endif %}
+								
+								{% else %}
+							
+								{% endif %}
+								{% if obj.owner.phone%}
+								{% endif %}
+								
+                                         
+            
+                                         
+                                         
+                                  </a>
+                                    </div>
+                                    <!-- View Details --><a class="view-details"  href="/detail/{{obj.id}}"><FONT COLOR="black">{{obj.model.year}} {{obj.model.maker}} {{obj.model.description}}</FONT></a>
+									 <a onclick="collapse('#CarInfo{{forloop.counter}}','#Car{{forloop.counter}}')"><i id="Car{{forloop.counter}}"></i></a>
+                                   <!-- Additional Info -->
+                                    <div class="additional-information">
+                                       <p>.</p>
+                                       <p>.</p>
+                                      <p><a  href="/detail/{{obj.id}}"><h3>
+                                        
+                                        Ver detalles</a></h3></p>
+                                       <p>.</p>
+                                       <p>.</p>
+                                    </div>
+                                    <!-- Additional Info End-->
+                                 </div>
+                                 <!-- Ad Img End -->
+                                 <div class="short-description">
+                                    <!-- Ad Category -->
+                                    <div class="category-title"> <span><a href="/detail/{{obj.id}}">modelo y especificaciones </a></span> </div>
+                                    <!-- Ad Title -->
+                                   <h3><a title="" href="/detail/{{obj.id}}">{{obj.model.year}} {{obj.model.maker}} {{obj.model.description}} </a>
+                                   <a onclick="collapse('#CarInfo{{forloop.counter}}','#Car{{forloop.counter}}')"><i id="Car{{forloop.counter}}"></i></a>
+                                   </h3>
+                                    <!-- Price -->
+                                   <div class="price">${{ obj.price}}<span class="negotiable"><FONT COLOR="blue">({{ obj.condition}})</FONT></span></div>
+                                 </div>
+                                 <!-- Addition Info -->
+                                  <div class="ad-info">
+                                    <ul>
+                                       <li><i class="flaticon-fuel-1"></i>{{ obj.fuel_t}}</li>
+                                       <li><i class="flaticon-dashboard"></i>{{ obj.mileage}}Km</li>
+                                       <li><i class="flaticon-engine-2"></i> {{obj.model.year}}</li>
+                                    </ul>
+                                 </div>
+                              </div>
+                              <!-- Ad Box End -->
+                           </div>
+                            <div class="tres">
+                      
+                     {% endfor %}
+
+						</section>
+                    <nav>
+
+						  <ul class="pagination">
+								{% if current_page  > 1%}
+								<li>
+									<button style="border:none; padding: 10px;" type="submit" id="page" name="page" value="{{current_page|add:'-1'}}" >
+										<span aria-hidden="true">&laquo;</span>
+									</button>
+						    </li>
+								{% endif %}
+								{% for i in max_pages_range %}
+							    <li>
+									<button
+
+									{% if forloop.counter == current_page %}
+										class="btn btn-success"
+									{% endif %}
+									style="border:none; padding: 10px;" type="submit" id="page" name="page" value="{{forloop.counter}}" > {{forloop.counter}}</button>
+									</li>
+								{% endfor %}
+
+								{% if current_page < max_pages %}
+								<li>
+									<button style="border:none; padding: 10px;" type="submit" id="page" name="page" value="{{current_page|add:'1'}}" >
+										<span aria-hidden="true">&raquo;</span>
+									</button>
+						    </li>
+								{% endif %}
+						  </ul>
+						</form>
+						</nav>
+						</div>
+						</div>
+            </div>
+                
+	</div>
+                          
+                        </div>
+                     </div>
+                  </div>
+                  <!-- Middle Content Box End -->
+                  <img alt="" class="block-content wow zoomIn "  data-wow-delay="0ms" data-wow-duration="3500ms" src="images/cars.png">
+               </div>
+               <!-- Row End -->
+            </div>
+            <!-- Main Container End -->
+         </section>
+
+	</div>
+
+{% endblock %}

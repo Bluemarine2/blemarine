@@ -1,0 +1,91 @@
+
+{% extends 'base/base34.html' %}
+{% block content %}
+   <link rel="stylesheet" href="../static/css/principal.css">
+   <link rel="stylesheet" href="../static/css/blog.css">
+
+	<div class="page-outer">
+		
+  
+
+    <!--Portada-->
+
+    <div class="container-all" id="move-content">
+
+    
+   <div class="container-category">
+          
+          {% if articulos %}
+          <label>distribuidor encontrado: {{articulos|length}} </label>
+          
+
+        </div>
+
+    
+
+        <div class="posts">
+         
+     
+       
+     
+             {% for articulos in articulos %}
+          <center>
+            <div class="post" data-category="{{distribuidor.categoria}}">
+                 
+                <div class="ctn-img">
+                    <img src="{{articulos.image.url}}" alt="">
+                </div>
+                <h2><strong>{{articulos.nombre}}</strong></h2>
+                <span>{{articulos.ubicacion}}</span>
+                <span>{{articulos.telefono}}</span>
+              <span> {{articulos.clasificacion}}</span>
+                <span>{{articulos.email}}</span>
+                <ul class="ctn-tag">
+                    <li>{{articulos.tipo}}</li>
+                </ul>
+                <a href="/dealer/{{articulos.nombre}}/"><button>Sitio Web</button></a>
+
+            </div>
+            </center>
+          {% endfor %}
+          {% else %}
+        
+      <p>
+        No hay distribuidor por ese nombre
+      </p>
+          
+
+           
+         {% endif %}
+
+            
+
+        </div>
+
+    </div>
+
+
+
+</div>
+	</div>
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

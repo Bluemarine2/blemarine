@@ -1,0 +1,121 @@
+{% extends 'base/base34.html' %}
+{% block content %}
+   <link rel="stylesheet" href="../static/css/principal.css">
+   <link rel="stylesheet" href="../static/css/blog.css">
+
+	<div class="page-outer">
+		
+  
+
+    <!--Portada-->
+
+    <div class="container-all" id="move-content">
+
+    
+   
+
+    <div class="container-post">
+
+      <input type="radio" id="TODOS" name="categories" value="TODOS" checked>
+      <input type="radio" id="A" name="categories" value="A">
+      <input type="radio" id="B" name="categories" value="B">
+      <input type="radio" id="C" name="categories" value="C">
+      <input type="radio" id="D" name="categories" value="D">
+      <input type="radio" id="E" name="categories" value="E">
+      <input type="radio" id="F" name="categories" value="F">
+      <input type="radio" id="G" name="categories" value="G">
+      <input type="radio" id="H" name="categories" value="H">
+      <input type="radio" id="I" name="categories" value="I">
+      <input type="radio" id="J" name="categories" value="J">
+      <input type="radio" id="K" name="categories" value="K">
+      <input type="radio" id="L" name="categories" value="L">
+      <input type="radio" id="M" name="categories" value="M">
+      <input type="radio" id="N" name="categories" value="N">
+      <input type="radio" id="Ñ" name="categories" value="Ñ">
+      <input type="radio" id="O" name="categories" value="O">
+      <input type="radio" id="P" name="categories" value="P">
+      <input type="radio" id="Q" name="categories" value="Q">
+      <input type="radio" id="R" name="categories" value="R">
+      <input type="radio" id="S" name="categories" value="S">
+      <input type="radio" id="T" name="categories" value="T">
+      <input type="radio" id="U" name="categories" value="U">
+      <input type="radio" id="V" name="categories" value="V">
+      <input type="radio" id="W" name="categories" value="W">
+      <input type="radio" id="X" name="categories" value="X">
+      <input type="radio" id="Y" name="categories" value="Y">
+      <input type="radio" id="Z" name="categories" value="Z">
+      
+         <form action="/buscar1" method="GET">
+    
+    <input type="text" name="prd" placeholder="ingrese el nombre de distribuidor">
+    <input type="submit" value="buscar">
+    
+  </form>
+        <div class="container-category">
+          
+          <label for="TODOS">TODOS</label>
+          <label for="A">A</label>
+          <label for="B">B</label>
+          <label for="C">C</label>
+          <label for="D">D</label>
+          <label for="E">E</label>
+          <label for="F">F</label>
+          <label for="G">G</label>
+          <label for="H">H</label>
+          <label for="I">I</label>
+          <label for="J">J</label>
+          <label for="K">K</label>
+          <label for="L">L</label>
+          <label for="M">M</label>
+          <label for="N">N</label>
+          <label for="Ñ">Ñ</label>
+          <label for="O">O</label>
+          <label for="P">P</label>
+          <label for="Q">Q</label>
+          <label for="R">R</label>
+          <label for="S">S</label>
+          <label for="T">T</label>
+          <label for="U">U</label>
+          <label for="V">V</label>
+          <label for="W">W</label>
+          <label for="X">X</label>
+          <label for="Y">Y</label>
+          <label for="Z">Z</label>
+
+        </div>
+
+        <div class="posts">
+            {%for distribuidor in distribuidors%}
+            <div class="post" data-category="{{distribuidor.categoria}}">
+                 
+                <div class="ctn-img">
+                    <img src="{{distribuidor.image.url}}" alt="">
+                </div>
+                <h2><strong>{{distribuidor.nombre}}</strong></h2>
+                <span>{{distribuidor.ubicacion}}</span>
+                <span>{{distribuidor.telefono}}</span>
+              <span> {{distribuidor.clasificacion}}</span>
+                <span>{{distribuidor.email}}</span>
+                <ul class="ctn-tag">
+                    <li>{{distribuidor.tipo}}</li>
+                </ul>
+                <a href="/dealer/{{distribuidor.nombre}}/"><button>Sitio Web</button></a>
+
+            </div>
+          {% endfor %}
+          
+
+           
+
+
+            
+
+        </div>
+
+    </div>
+
+
+
+</div>
+	</div>
+{% endblock %}
